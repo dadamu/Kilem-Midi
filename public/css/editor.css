@@ -1,0 +1,51 @@
+.main{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #FFFFFF;
+}
+
+.editor{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.editor-header{
+    padding: 10px 0;
+    background-color: #333940;
+    border-bottom: #AAAAAA solid 1px; 
+}
+
+.editor-menu{
+    padding : 5px 10px;
+    height : 30px;
+}
+
+.editor-toolbox{
+    padding: 5px 10px;
+    height : 30px;
+}
+
+.editor-body{
+    background-color: #333940;
+    display: flex;
+    flex-grow: 1;
+}   
+
+.tracks-title{
+    width:300px;
+    background-color: #23242d;
+}
+
+.tracks-content{
+    width: 100%;    
+}
+
+.editor-footer{
+    background-color: #333940;
+    margin-top: auto;
+    padding: 10px;
+    height: 20px;
+    border-top: #AAAAAA solid 1px;
+}

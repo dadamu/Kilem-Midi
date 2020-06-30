@@ -3,7 +3,7 @@ const app = express();
 const frontRouter = require('./server/route/front');
 require('dotenv').config();
 
-
+app.use("/public", express.static('./public'));
 app.use("/", frontRouter);
 
 app.get("/", (req, res)=>{
