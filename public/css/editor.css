@@ -1,4 +1,7 @@
-div{
+div,
+section,
+header,
+a{
     box-sizing: border-box;
 }
 .main{
@@ -137,27 +140,10 @@ div{
     position: absolute;
 }
 
-.midi-panel{
-    background-color: #333940;
-    height: 500px;
-    min-height: 300px;
-    z-index: 100;
-}
-
 .editor-footer{
     background-color: #333940;
     margin-top: auto;
     padding: 10px;
     height: 20px;
     border-top: #AAAAAA solid 1px;
-}
-
-.midi-panel-button{
-    display: inline-block;
-    width: 300px;
-    cursor: pointer;
-}
-
-.hidden{
-    display: none;
 }

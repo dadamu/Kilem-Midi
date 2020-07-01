@@ -15,6 +15,9 @@ app.UIListen = () => {
 app.render = () => {
     const pTasks = [];
     pTasks.push(app.rulerScaleRender(5, app.musicLength, app.scaleInterval));
+    pTasks.push(app.initKeysRender());
+    pTasks.push(app.initGridsRender());
+    pTasks.push(app.initSvgGrids());
     return Promise.all(pTasks);
 };
 

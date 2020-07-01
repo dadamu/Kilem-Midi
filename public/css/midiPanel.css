@@ -1,0 +1,89 @@
+
+.midi-panel-button{
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.midi-header{
+    height: 20px;
+}
+
+.midi-toolbox{
+    padding: 10px;
+    height: 50px;
+}
+
+.panel-track-name{
+    padding: 10px;
+}
+
+.midi-panel{
+    display: flex;
+    flex-direction: column;
+    background-color: #333940;
+    height: 500px;
+    min-height: 300px;
+    z-index: 100;
+}
+
+.panel-content{
+    display: flex;
+    height: calc(100% - 20px);
+}
+
+.panel-info{
+    min-width: 200px;
+}
+
+.panel-editor{
+    height: 100%; 
+    overflow: hidden;
+}
+
+.keys-and-grid{
+    display: flex;
+    height: 100%; 
+    overflow-y: scroll;
+    border: #AAAAAA solid 1px;
+}
+
+.keys{
+    min-width: 50px;
+}
+
+.white-key {
+    height: 19px;
+    background-color: white;
+    z-index: 3;
+    border-top: 1px solid #d2d2d2;
+    border-radius: 0 4px 4px 0;
+    line-height: 17px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 5px;
+    color: #9b9b9b;
+}
+
+.black-key {
+    float: left;
+    margin-top: -5.5px;
+    height: 11px;
+    width: 50%;
+    z-index: 4;
+    background-color: #555555;
+    border-radius: 0 4px 4px 0;
+}
+
+.grids{
+    position: relative;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    border: #AAAAAA solid 1px;
+}
+
+.hidden{
+    display: none;
+}

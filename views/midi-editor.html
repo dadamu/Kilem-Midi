@@ -7,6 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/public/css/normalize.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/midiPanel.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -47,12 +48,23 @@
             </section>
         </div>
         <section id="midiPanel" class="midi-panel hidden">
-            <header>
-                <div class="panel-name"></div>
+            <header class="midi-header">
+                <div class="midi-toolbox">ToolBox</div>
             </header>
+            <div class="panel-content">
+                <div class="panel-info">
+                    <div id="trackName" class="panel-track-name"></div>
+                </div>
+                <div class="keys-and-grid">
+                    <div id="keys" class="keys"></div>
+                    <div id="grids" class="grids">
+                        <div>head</div>
+                    </div>
+                </div>
+            </div>
         </section>
         <footer class="editor-footer">
-            <div id="midi-panel-button" class="midi-panel-button">Midi Panel</div>
+            <div id="midiPanelButton" class="midi-panel-button">Midi Editor</div>
         </footer>
     </main>
 </body>
@@ -60,4 +72,5 @@
 <script src="/public/js/editor/tracks.js"></script>
 <script src="/public/js/editor/midiPanel.js"></script>
 <script src="/public/js/editor/generate.js"></script>
+
 </html>
