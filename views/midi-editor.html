@@ -46,14 +46,18 @@
                 </div>
             </section>
         </div>
-        <section class="midi-panel">
-            <div>Panel</div>
+        <section id="midiPanel" class="midi-panel hidden">
+            <header>
+                <div class="panel-name"></div>
+            </header>
         </section>
         <footer class="editor-footer">
             <div id="midi-panel-button" class="midi-panel-button">Midi Panel</div>
         </footer>
     </main>
 </body>
-<script src="/public/js/editor.js"></script>
-
+<script src="/public/js/editor/config.js"></script>
+<script src="/public/js/editor/tracks.js"></script>
+<script src="/public/js/editor/midiPanel.js"></script>
+<script src="/public/js/editor/generate.js"></script>
 </html>

@@ -157,3 +157,7 @@ div{
     width: 300px;
     cursor: pointer;
 }
+
+.hidden{
+    display: none;
+}
