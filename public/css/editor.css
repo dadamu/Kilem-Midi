@@ -1,7 +1,10 @@
+div{
+    box-sizing: border-box;
+}
 .main{
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
     color: #FFFFFF;
 }
 
@@ -9,24 +12,60 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    overflow-y: scroll;
 }
 
 .editor-header{
     padding: 10px 0;
     background-color: #333940;
-    border-bottom: #AAAAAA solid 1px; 
+    border-bottom: #888888 solid 1px; 
 }
 
-.editor-menu{
+.editor-title{
+    display: flex;
+    position: relative;
     padding : 5px 10px;
-    height : 30px;
+    height : 20px;
+}
+
+.file-title{
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    left: calc( 50% - 100px);
+}
+
+.exit{
+    margin-left: auto;
+    cursor: pointer;
 }
 
 .editor-toolbox{
+    display: flex;
     padding: 5px 10px;
-    height : 30px;
 }
 
+.toolbox-edit{
+    margin-left: 10px;
+    display: inline-block;
+    width: 50px;
+    background-color: #555555;
+    cursor: pointer;
+    text-align: center;
+}
+
+.toolbox-eraser{
+    margin-left: 10px;
+    display: inline-block;
+    width: 50px;
+    background-color: #555555;
+    text-align: center;
+    cursor: pointer;
+}
+
+.selected{
+    background-color: #444444; 
+}
 .editor-body{
     background-color: #333940;
     display: flex;
@@ -38,8 +77,71 @@
     background-color: #23242d;
 }
 
+.tracks-control{
+    border-right: #888888 solid 1px; 
+    border-bottom: #888888 solid 1px; 
+    background-color: #333940;
+    padding: 5px 10px;
+    height: 50px;
+    display: flex;
+    vertical-align: middle;
+}
+
+.add-track,
+.delete-track{
+    cursor: pointer;
+    width: 30px;
+    margin-right: 5px;
+    text-align: center;
+}
+
 .tracks-content{
-    width: 100%;    
+    display: flex;
+    flex-direction: column;
+    width: 100%; 
+}
+
+.track{
+    height: 80px;
+    padding: 10px;
+    border-right: #888888 solid 1px; 
+    border-bottom: #888888 solid 1px;
+}
+
+.tracks-region{
+    overflow-x: scroll;
+    width: 100%; 
+}
+
+.region{
+    height: 80px;
+    border-bottom: #888888 solid 1px;
+}
+
+.ruler{ 
+    height: 50px;
+    border-bottom: #888888 solid 1px; 
+}
+
+.ruler-title{
+    position: relative;
+    height: 25px;
+}
+
+.ruler-control{
+    background-color: #23242d;
+    height: 25px;
+}
+
+.scale{
+    position: absolute;
+}
+
+.midi-panel{
+    background-color: #333940;
+    height: 500px;
+    min-height: 300px;
+    z-index: 100;
 }
 
 .editor-footer{
@@ -48,4 +150,10 @@
     padding: 10px;
     height: 20px;
     border-top: #AAAAAA solid 1px;
+}
+
+.midi-panel-button{
+    display: inline-block;
+    width: 300px;
+    cursor: pointer;
 }
