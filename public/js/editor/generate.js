@@ -10,6 +10,8 @@ app.UIListen = () => {
     app.deleteTrackListen();
     app.trackSelectListen();
     app.openMidiPanelListen();
+    app.addMidiNoteListen();
+    app.noteDeleteListen();
 };
 
 app.render = () => {

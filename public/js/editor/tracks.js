@@ -31,7 +31,6 @@ app.addTrack = () => {
     $(track).append(trackName);
     $("#tracksContent").append(track);
     app.trackSelect(track);
-    app.trackSelectListen();
 }
 
 app.deleteTrackListen = () => {
@@ -42,10 +41,10 @@ app.deleteTrackListen = () => {
 };
 
 app.trackSelectListen = () => {
-    $(".track").click(function () {
+    $("#tracksContent").on('click', '.track',function () {
         app.trackSelect(this);
     });
-    $(".region").click(function () {
+    $("#regionContent").on('click', '.region',function () {
         app.trackSelect(this);
     });
 };

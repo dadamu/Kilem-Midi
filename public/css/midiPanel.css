@@ -7,7 +7,7 @@
 }
 
 .midi-header{
-    height: 20px;
+    height: 50px;
 }
 
 .midi-toolbox{
@@ -25,16 +25,15 @@
     background-color: #333940;
     height: 500px;
     min-height: 300px;
-    z-index: 100;
 }
 
 .panel-content{
     display: flex;
-    height: calc(100% - 20px);
+    min-height: calc(100% - 50px);
 }
 
 .panel-info{
-    min-width: 200px;
+    min-width: 250px;
 }
 
 .panel-editor{
@@ -43,18 +42,22 @@
 }
 
 .keys-and-grid{
+    position: relative;
     display: flex;
     height: 100%; 
     overflow-y: scroll;
+    overflow-x: scroll;
     border: #AAAAAA solid 1px;
 }
 
 .keys{
+    position: sticky;
     min-width: 50px;
+    left: 0px;
 }
 
 .white-key {
-    height: 19px;
+    height: 20px;
     background-color: white;
     z-index: 3;
     border-top: 1px solid #d2d2d2;
@@ -78,10 +81,22 @@
 }
 
 .grids{
+    position: absolute;
     position: relative;
-    overflow-y: hidden;
-    overflow-x: scroll;
+    left: 0px;
     border: #AAAAAA solid 1px;
+}
+
+.svgGrids{
+    position: absolute;
+    top: -1px;
+}
+
+.note{
+    position: absolute;
+    z-index: 10;
+    background-color: steelblue; 
+    border: #123123 solid 1px;
 }
 
 .hidden{
