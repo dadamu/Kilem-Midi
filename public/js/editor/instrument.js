@@ -5,16 +5,12 @@ class Instrument {
         this.minPitch = minPitch;
         this.maxPitch = maxPitch;
         this.sounds = {};
-        this.buffers = {};
+        this.audio = {};
         this.generate();
     }
 
     async generate() {
-        await this.getFiles();
-        for (let pitch = this.minPitch; pitch <= this.maxPitch; pitch++) {
-            const sound = this.getSound(pitch);
-            this.sounds[pitch] = sound;
-        }
+        this.getFiles();
     }
 
     async getFiles() {
@@ -22,10 +18,14 @@ class Instrument {
         for (let pitch = this.minPitch; pitch <= this.maxPitch; pitch++) {
             const task = new Promise((resolve) => {
                 const asyncDo = async () => {
-                    const getData = await fetch(`/public/instruments/${this.name}/${this.padLeft(pitch, 3)}-${this.name}.ogg`);
+                    const condition = (pitch-1) % 3;
+                    const fileNum = this.getFileNum(condition, pitch);
+                    const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
                     const blob = await getData.blob();
                     const buffer = await blob.arrayBuffer();
-                    this.buffers[pitch] = await app.audioCtx.decodeAudioData(buffer);
+                    this.audio[pitch] = {}; 
+                    this.audio[pitch].buffer= await app.audioCtx.decodeAudioData(buffer);
+                    this.audio[pitch].condition = condition;
                     resolve();
                 }
                 asyncDo();
@@ -33,6 +33,11 @@ class Instrument {
             pTask.push(task);
         }
         return Promise.all(pTask);
+    }
+
+    getFileNum(condition, pitch){
+        
+        return this.padLeft(pitch-condition, 3);
     }
 
     padLeft(str, length) {

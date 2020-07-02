@@ -61,8 +61,10 @@ app.clickKeysListen = () => {
 
 app.playNote = async (pitch) => {
     const source =app.audioCtx.createBufferSource();
-    source.buffer = app.piano.buffers[pitch];
-    const duration = 0.5
+    const {buffer, condition} = app.piano.audio[pitch];
+    source.buffer = buffer;
+    source.detune.value = condition * 100;
+    const duration = 0.5;
     app.fadeAudio(source, duration);
 };
 
