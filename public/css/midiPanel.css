@@ -56,6 +56,14 @@
     left: 0px;
 }
 
+.key{
+    cursor: pointer;
+}
+
+.key:hover{
+    background-color: #9b9b9b;
+}
+
 .white-key {
     height: 20px;
     background-color: white;
@@ -97,6 +105,7 @@
     z-index: 10;
     background-color: steelblue; 
     border: #123123 solid 1px;
+    cursor: pointer;
 }
 
 .hidden{

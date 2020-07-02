@@ -1,3 +1,4 @@
 node_modules
 .env
 database/config/config.json
+public/instruments

@@ -1,8 +1,10 @@
 /* global $ document app */
 app.init = async () => {
+    app.startUserMedia();
     await app.render();
     app.addTrack();
     app.UIListen();
+    app.piano = app.setPiano();
 };
 
 app.UIListen = () => {
@@ -12,6 +14,7 @@ app.UIListen = () => {
     app.openMidiPanelListen();
     app.addMidiNoteListen();
     app.noteDeleteListen();
+    app.clickKeysListen();
 };
 
 app.render = () => {
