@@ -1,11 +1,4 @@
 
-.midi-panel-button{
-    display: inline-block;
-    width: 100px;
-    text-align: center;
-    cursor: pointer;
-}
-
 .midi-header{
     height: 50px;
 }
@@ -54,6 +47,7 @@
     position: sticky;
     min-width: 50px;
     left: 0px;
+    z-index: 10;
 }
 
 .key{
@@ -92,7 +86,9 @@
     position: absolute;
     position: relative;
     left: 0px;
-    border: #AAAAAA solid 1px;
+
+    
+    flex: auto;
 }
 
 .svgGrids{
@@ -102,7 +98,7 @@
 
 .note{
     position: absolute;
-    z-index: 10;
+    z-index: 5;
     background-color: steelblue; 
     border: #123123 solid 1px;
     cursor: pointer;
@@ -110,4 +106,18 @@
 
 .hidden{
     display: none;
+}
+
+.playhead{
+    will-change: transform;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 2px;
+    background-color: #FFBB66;
+    height: 100%;
+}
+
+.midi-playhead{
+    left: 50px;
 }

@@ -3,12 +3,16 @@ const app = {};
 app.scaleNumMax = 5;
 app.scaleNumMin = 3;
 app.trackNum = 0;
-app.musicLength = 9;
+app.musicLength = 8;
 app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
 app.bpm = 120;
-app.scaleInterval = 120;
-app.gridsInterval = 160;
+app.regionInterval = 200;
+app.gridsInterval = 200;
 app.picthHeight = 11.65;
+app.tracks = {};
+app.currentTime = 0;
+app.isplaying = false;
+app.isMidiEditorOpen = false;
 
 app.startUserMedia = () => {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;

@@ -1,7 +1,7 @@
 /* global $ document app */
 app.init = async () => {
     app.startUserMedia();
-    await app.render();
+    await app.initRender();
     app.addTrack();
     app.UIListen();
     app.piano = app.setPiano();
@@ -15,11 +15,15 @@ app.UIListen = () => {
     app.addMidiNoteListen();
     app.noteDeleteListen();
     app.clickKeysListen();
+    app.midiPlayListen();
+    app.midiStopListen();
+    app.midiResetListen();
 };
 
-app.render = () => {
+app.initRender = () => {
     const pTasks = [];
-    pTasks.push(app.rulerScaleRender(5, app.musicLength, app.scaleInterval));
+    pTasks.push(app.initRegionRender());
+    pTasks.push(app.initRulerRender());
     pTasks.push(app.initKeysRender());
     pTasks.push(app.initGridsRender());
     pTasks.push(app.initSvgGrids());

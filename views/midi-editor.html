@@ -36,13 +36,14 @@
                 </div>
                 <div id="tracksRegion" class="tracks-region">
                     <div id="ruler" class="ruler">
-                        <div class="ruler-title">
+                        <div id="rulerTitle" class="ruler-title">
                             <div id="rulerScale">
                             </div>
                         </div>
-                        <div class="ruler-control">Control</div>
+                        <div id="rulerControl" class="ruler-control">Control</div>
                     </div>
                     <div id="regionContent" class="region-content">
+                        <div id="regionPlayhead" class="region-playhead playhead" style="transform: translateX(0px);"></div>
                     </div>
                 </div>
             </section>
@@ -60,18 +61,25 @@
                     <div id="grids" class="grids">
                         <div>head</div>
                     </div>
+                    <div id="midiPlayhead" class="midi-playhead playhead" style="transform: translateX(0px);">
+
+                    </div>
                 </div>
             </div>
         </section>
         <footer class="editor-footer">
-            <div id="midiPanelButton" class="midi-panel-button">Midi Editor</div>
-            <div id="controlPlay" class="control-play">Start</div>
+            <div id="midiPanelButton" class="midi-panel-button control-button">Midi Editor</div>
+            <div id="playButton" class="control-play-button control-button">Start</div>
+            <div id="stopButton" class="control-stop-button control-button">Stop</div>
+            <div id="resetButton" class="control-reset-button control-button">Reset</div>
         </footer>
     </main>
 </body>
 <script src="/public/js/editor/config.js"></script>
 <script src="/public/js/editor/tracks.js"></script>
 <script src="/public/js/editor/midiPanel.js"></script>
-<script src="/public/js/editor/generate.js"></script>
 <script src="/public/js/editor/instrument.js"></script>
+<script src="/public/js/editor/control.js"></script>
+<script src="/public/js/editor/generate.js"></script>
+
 </html>

@@ -3,11 +3,22 @@ app.openMidiPanelListen = () => {
     $("#midiPanelButton").click(() => {
         if ($("#midiPanel").hasClass("hidden")) {
             $("#midiPanel").removeClass("hidden");
+            $("#midiPanel").attr("trackId", $(".track.selected").attr("trackId"));
+            app.isMidiEditorOpen = true;
+            app.setCurrentPlayhead(app.currentTime);
         }
         else {
             $("#midiPanel").addClass("hidden");
+            app.isMidiEditorOpen = false;
         }
     });
+};
+
+app.setCurrentPlayhead = (current) => {
+    const intervalX = app.gridsInterval;
+    const bpm = app.bpm;
+    const currentX = intervalX / 4 * bpm * current / 60 / 1000;
+    $('#midiPlayhead').css('-webkit-transform', `translateX(${currentX}px)`);
 };
 
 app.svgToNote = (x, y) => {
@@ -32,7 +43,6 @@ app.createNote = (note) => {
 
     const pitch = y + 12 * (app.scaleNumMin + 1);
     noteDiv.attr("pitch", pitch);
-
     app.playNote(pitch);
     return noteDiv;
 }
@@ -60,8 +70,8 @@ app.clickKeysListen = () => {
 };
 
 app.playNote = async (pitch) => {
-    const source =app.audioCtx.createBufferSource();
-    const {buffer, pitchShift} = app.piano.audio[pitch];
+    const source = app.audioCtx.createBufferSource();
+    const { buffer, pitchShift } = app.piano.audio[pitch];
     source.buffer = buffer;
     source.detune.value = pitchShift * 100;
     const duration = 0.5;
@@ -73,9 +83,10 @@ app.initSvgGrids = async () => {
     const picthHeight = app.picthHeight;
     const musicLength = app.musicLength;
     const keysNum = app.keysNum;
-    const svg = app.midiSvgGrid(app.gridsInterval, picthHeight, keysNum, musicLength)
     const grids = $("#grids");
+    $("#midiPlayhead").height(keysNum * picthHeight);
     grids.width(gridsWidth).height(keysNum * picthHeight);
+    const svg = app.midiSvgGrid(app.gridsInterval, picthHeight, keysNum, musicLength);
     grids.html(svg);
     return;
 };
@@ -93,10 +104,10 @@ app.initGridsRender = async () => {
     const gridsWidth = app.gridsInterval * app.musicLength;
     $("#grids").width(gridsWidth);
     return
-}
+};
 
 app.noteDeleteListen = () => {
     $("#grids").on('dblclick', 'div.note', function () {
         $(this).remove();
     });
-}
+};

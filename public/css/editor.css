@@ -128,12 +128,16 @@ a{
 
 .tracks-region{
     overflow-x: scroll;
-    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    margin-right : 20px;
 }
 
 .region{
     height: 80px;
     border-bottom: #888888 solid 1px;
+    border-right: #888888 solid 1px;
+    width: 100%;
 }
 
 .ruler{ 
@@ -144,21 +148,42 @@ a{
 .ruler-title{
     position: relative;
     height: 25px;
+    
 }
 
 .ruler-control{
     background-color: #23242d;
     height: 25px;
+
 }
 
 .scale{
     position: absolute;
 }
 
+
+.control-button{
+    display: inline-block;
+    width: 80px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.region-content{
+    position: relative;
+    flex:auto;
+}
+
 .editor-footer{
+    display: flex;
     background-color: #333940;
     margin-top: auto;
     padding: 10px;
     height: 20px;
     border-top: #AAAAAA solid 1px;
+}
+
+.region-playhead{
+    left: 0px;
+    height: 100%;
 }
