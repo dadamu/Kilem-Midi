@@ -4,7 +4,9 @@ app.init = async () => {
     await app.initRender();
     app.addTrack();
     app.UIListen();
-    app.piano = app.setPiano();
+    app.instruments.piano = app.setPiano();
+    app.instruments.bass = app.setBass();
+    app.instruments.guitar = app.setGuitar();
 };
 
 app.UIListen = () => {
@@ -18,6 +20,7 @@ app.UIListen = () => {
     app.midiPlayListen();
     app.midiStopListen();
     app.midiResetListen();
+    app.changeInstrumentListen();
 };
 
 app.initRender = () => {

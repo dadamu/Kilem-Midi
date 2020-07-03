@@ -68,3 +68,11 @@ class Instrument {
 app.setPiano = () => {
     return new Instrument("GrandPiano", app.scaleNumMin * 12 + 12, (app.scaleNumMax + 1) * 12 + 12);
 };
+
+app.setGuitar = () => {
+    return new Instrument("AcousticGuitar", 48, 72);
+};
+
+app.setBass = () => {
+    return new Instrument("DubBass", 36, 60);
+};

@@ -6,7 +6,7 @@ app.midiPlayListen = () => {
     });
 };
 
-app.midiPlay = ()=>{
+app.midiPlay = () => {
     if (!app.isplaying) {
         const tracks = app.setPlayingTracks();
         app.isplaying = true;
@@ -26,8 +26,8 @@ app.midiPlay = ()=>{
     }
 };
 
-app.playTracks = (tracks)=>{
-    for(let id in tracks){
+app.playTracks = (tracks) => {
+    for (let id in tracks) {
         app.playTrack(tracks[id]);
     }
 }
@@ -72,19 +72,21 @@ app.setPlayingTracks = () => {
 app.playTrack = (track) => {
     const posX = Math.floor(app.currentTime / (1 / (app.bpm / 60) * 1000));
     if (track[posX]) {
-        app.playTrackNotes(track[posX]);
+        app.playTrackNotes(track.instrument, track[posX]);
         delete track[posX];
     }
 };
 
-app.playTrackNotes = (notesSet) => {
+app.playTrackNotes = (instrument, notesSet) => {
     for (let pitch of notesSet) {
-        const source = app.audioCtx.createBufferSource();
-        const { buffer, pitchShift } = app.piano.audio[pitch];
-        source.buffer = buffer;
-        source.detune.value = pitchShift * 100;
-        const duration = 1/(app.bpm / 60 );
-        app.fadeAudio(source, duration);
+        if (app.instruments[instrument].audio[pitch]) {
+            const source = app.audioCtx.createBufferSource();
+            const { buffer, pitchShift } = app.instruments[instrument].audio[pitch];
+            source.buffer = buffer;
+            source.detune.value = pitchShift * 100;
+            const duration = 1 / (app.bpm / 60);
+            app.fadeAudio(source, duration);
+        }
     }
 };
 

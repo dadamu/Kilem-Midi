@@ -1,7 +1,7 @@
 /* global window AudioContext */
 const app = {};
 app.scaleNumMax = 5;
-app.scaleNumMin = 3;
+app.scaleNumMin = 1;
 app.trackNum = 0;
 app.musicLength = 8;
 app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
@@ -14,6 +14,7 @@ app.playingTracks = {};
 app.currentTime = 0;
 app.isplaying = false;
 app.isMidiEditorOpen = false;
+app.instruments = {};
 
 app.startUserMedia = () => {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -28,7 +29,7 @@ app.midiSvgGrid = (interval, picthHeight, keysNum, musicLength) => `
                 <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="gray" stroke-width="0.5" />
             </pattern>
             <pattern id="svgMainGrid" width="${interval}" height="${12 * picthHeight}" patternUnits="userSpaceOnUse">
-                <rect width="${interval}" height="${keysNum * picthHeight}" fill="url(#svgSmallGrid)" />
+                <rect width="${interval}" height="${(keysNum) * picthHeight}" fill="url(#svgSmallGrid)" />
                 <path d="M ${interval} 0 L 0 0 0 ${interval}" fill="none" stroke="white" stroke-width="2" />
             </pattern>
         </defs>
@@ -50,6 +51,6 @@ app.midiKeysTemplate = (num) => {
     <div class="black-key key" pitch="${num * 12 + 3 + offset}"></div>
     <div class="white-key key" pitch="${num * 12 + 2 + offset}"></div>
     <div class="black-key key" pitch="${num * 12 + 1 + offset}"></div>
-    <div class="white-key key" pitch="${num * 12 + offset}">C${num - 1}</div>
+    <div class="white-key key" pitch="${num * 12 + offset}">C${num}</div>
 `;
 }

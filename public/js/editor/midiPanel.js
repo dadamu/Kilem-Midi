@@ -19,16 +19,18 @@ app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
     $("#midiPanel").attr("trackId", trackId);
     for (let [posX, pitches] of Object.entries(app.tracks[trackId])) {
-        app.notesRender(posX, pitches);
+        if (parseInt(posX) >= 0) {
+            app.notesRender(posX, pitches);
+        }
     }
 };
 
 app.notesRender = (posX, pitches) => {
     for (let pitch of pitches) {
-        const left = posX * app.gridsInterval/4;
-        const bottom = (pitch- 12 * (app.scaleNumMin + 1)) * app.picthHeight;
+        const left = Math.floor(posX * app.gridsInterval / 4);
+        const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.picthHeight;
         const noteDiv = $("<div></div>");
-        noteDiv.addClass("note").width(app.gridsInterval/4).height(app.picthHeight);
+        noteDiv.addClass("note").width(app.gridsInterval / 4).height(app.picthHeight);
         noteDiv.css("left", left).css("bottom", bottom);
         noteDiv.attr("pitch", pitch);
         $("#grids").append(noteDiv);
@@ -66,7 +68,9 @@ app.createNote = (note) => {
     noteDiv.attr("pitch", pitch);
     $("#grids").append(noteDiv);
     app.noteIntoTrack(x, pitch);
-    app.playNote(pitch);
+    const trackId = $("#midiPanel").attr("trackId");
+    const instrument = app.tracks[trackId].instrument;
+    app.playNote(instrument, pitch);
 };
 
 app.noteIntoTrack = (posX, pitch) => {
@@ -92,20 +96,24 @@ app.addMidiNoteListen = () => {
 
 app.clickKeysListen = () => {
     $("#keys").on("click", ".key", async function () {
+        const trackId = $("#midiPanel").attr("trackId");
+        const instrument = app.tracks[trackId].instrument;
         const target = this;
         const pitch = $(target).attr("pitch");
-        app.playNote(pitch);
+        app.playNote(instrument, pitch);
         return;
     });
 };
 
-app.playNote = async (pitch) => {
-    const source = app.audioCtx.createBufferSource();
-    const { buffer, pitchShift } = app.piano.audio[pitch];
-    source.buffer = buffer;
-    source.detune.value = pitchShift * 100;
-    const duration = 0.5;
-    app.fadeAudio(source, duration);
+app.playNote = async (instrument, pitch) => {
+    if (app.instruments[instrument].audio[pitch]) {
+        const source = app.audioCtx.createBufferSource();
+        const { buffer, pitchShift } = app.instruments[instrument].audio[pitch];
+        source.buffer = buffer;
+        source.detune.value = pitchShift * 100;
+        const duration = 0.5;
+        app.fadeAudio(source, duration);
+    }
 };
 
 app.initSvgGrids = async () => {
