@@ -10,6 +10,7 @@ app.regionInterval = 200;
 app.gridsInterval = 200;
 app.picthHeight = 11.65;
 app.tracks = {};
+app.playingTracks = {};
 app.currentTime = 0;
 app.isplaying = false;
 app.isMidiEditorOpen = false;

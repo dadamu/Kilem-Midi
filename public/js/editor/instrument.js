@@ -68,14 +68,3 @@ class Instrument {
 app.setPiano = () => {
     return new Instrument("GrandPiano", app.scaleNumMin * 12 + 12, (app.scaleNumMax + 1) * 12 + 12);
 };
-
-app.fadeAudio = function (source, duration) {
-    const currentTime = app.audioCtx.currentTime;
-    const gain = app.audioCtx.createGain();
-    gain.gain.linearRampToValueAtTime(0, currentTime + duration);
-
-    source.connect(gain);
-    gain.connect(app.audioCtx.destination);
-    source.start(0);
-    source.stop(currentTime + duration);
-};

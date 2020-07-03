@@ -47,8 +47,13 @@ app.addTrack = () => {
 
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(() => {
-        $(".track.selected").remove();
+        const selectedTrack = $(".track.selected");
+        delete app.tracks[selectedTrack.attr('trackId')];
+        selectedTrack.remove();
         $(".region.selected").remove();
+        $(".track").last().addClass("selected");
+        $(".region").last().addClass("selected");
+        app.panelLoadTrack($(".region").last().attr("trackId"));
     });
 };
 
@@ -70,7 +75,7 @@ app.trackSelect = (target) => {
 
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
-    $("#midiPanel").attr("trackId", $(".track.selected").attr("trackId"));
+    app.panelLoadTrack($(".track.selected").attr("trackId"));
 };
 
 
