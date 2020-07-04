@@ -16,8 +16,8 @@
     display: flex;
     flex-direction: column;
     background-color: #333940;
-    height: 300px;
-    min-height: 200px;
+    height: 40%;
+    min-height: 400px;
 }
 
 .panel-content{

@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
-const frontRouter = require('./server/route/front');
 require('dotenv').config();
+const { API_VERSION } = process.env;
 
 app.use("/public", express.static('./public'));
-app.use("/", frontRouter);
+app.use("/", require('./server/routes/front_route'));
+app.use('/api/' + API_VERSION, [
+    require('./server/routes/1.0/user_api')
+]);
 
 app.get("/", (req, res)=>{
     res.send("Hello Kilem-Midi.");
