@@ -6,7 +6,8 @@ const { API_VERSION } = process.env;
 app.use("/public", express.static('./public'));
 app.use("/", require('./server/routes/front_route'));
 app.use('/api/' + API_VERSION, [
-    require('./server/routes/1.0/user_api')
+    require('./server/routes/1.0/user_api'),
+    require('./server/routes/1.0/midi_api')
 ]);
 
 app.get("/", (req, res)=>{
