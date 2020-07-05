@@ -8,42 +8,41 @@ app.midiPlayListen = () => {
 
 app.midiPlay = () => {
     if (!app.isplaying) {
-        const tracks = app.setPlayingTracks();
+        const bpm = app.music.user.bpm;
+        const tracks = app.music.user.outPutPlayMidi();
         app.isplaying = true;
-        const maxTime = app.musicLength * 4 / (app.bpm / 60) * 1000;
+        const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
             if (app.currentTime >= maxTime) {
                 clearInterval(app.playInterval);
                 app.isplaying = false;
             }
-            app.regionPlayheadTrans();
+            app.regionPlayheadTrans(bpm);
             if (app.isMidiEditorOpen) {
-                app.midiPlayheadTrans();
+                app.midiPlayheadTrans(bpm);
             }
-            app.playTracks(tracks);
+            app.playTracks(bpm, tracks);
             app.currentTime += 50
         }, 50);
     }
 };
 
-app.playTracks = (tracks) => {
+app.playTracks = (bpm, tracks) => {
     for (let id in tracks) {
-        app.playTrack(tracks[id]);
+        app.playTrack(bpm, tracks[id]);
     }
 }
 
-app.regionPlayheadTrans = () => {
+app.regionPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.regionInterval;
-    const bpm = app.bpm;
     const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
     $('#regionPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
 };
 
-app.midiPlayheadTrans = () => {
+app.midiPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.gridsInterval;
-    const bpm = app.bpm;
     const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
     $('#midiPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
 };
@@ -58,8 +57,9 @@ app.midiStopListen = () => {
 app.midiResetListen = () => {
     $("#resetButton").click(() => {
         app.currentTime = 0;
-        app.regionPlayheadTrans();
-        app.midiPlayheadTrans();
+        const bpm = app.music.user.bpm;
+        app.regionPlayheadTrans(bpm);
+        app.midiPlayheadTrans(bpm);
         clearInterval(app.playInterval);
         app.isplaying = false;
     });
@@ -69,35 +69,35 @@ app.setPlayingTracks = () => {
     return JSON.parse(JSON.stringify(app.tracks));
 }
 
-app.playTrack = (track) => {
-    const posX = Math.floor(app.currentTime / (1 / (app.bpm / 60) * 1000));
-    if (track[posX]) {
-        app.playTrackNotes(track.instrument, track[posX]);
-        delete track[posX];
+app.playTrack = (bpm, track) => {
+    const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000));
+    if (track.notes[posX]) {
+        app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
+        delete track.notes[posX];
     }
 };
 
-app.playTrackNotes = (instrument, notesSet) => {
-    for (let pitch of notesSet) {
-        if (app.instruments[instrument].audio[pitch]) {
+app.playTrackNotes = (bpm, instrument, notes) => {
+    for (let note of notes) {
+        if (app.instruments[instrument].audio[note.pitch]) {
             const source = app.audioCtx.createBufferSource();
-            const { buffer, pitchShift } = app.instruments[instrument].audio[pitch];
+            const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
             source.detune.value = pitchShift * 100;
-            const duration = 1 / (app.bpm / 60);
-            app.fadeAudio(source, duration);
+            const time = 1 / (bpm / 60);
+            app.fadeAudio(source, time);
         }
     }
 };
 
 
-app.fadeAudio = function (source, duration) {
+app.fadeAudio = function (source, time) {
     const currentTime = app.audioCtx.currentTime;
     const gain = app.audioCtx.createGain();
-    gain.gain.linearRampToValueAtTime(0, currentTime + duration);
+    gain.gain.linearRampToValueAtTime(0, currentTime + time);
 
     source.connect(gain);
     gain.connect(app.audioCtx.destination);
     source.start(0);
-    source.stop(currentTime + duration);
+    source.stop(currentTime + time);
 };

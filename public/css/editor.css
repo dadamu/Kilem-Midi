@@ -63,22 +63,13 @@ a{
     padding: 5px 10px;
 }
 
-.toolbox-edit{
+.tool{
     margin-left: 10px;
     display: inline-block;
     width: 50px;
     background-color: #555555;
     cursor: pointer;
     text-align: center;
-}
-
-.toolbox-eraser{
-    margin-left: 10px;
-    display: inline-block;
-    width: 50px;
-    background-color: #555555;
-    text-align: center;
-    cursor: pointer;
 }
 
 .selected{

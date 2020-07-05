@@ -1,21 +1,20 @@
-/* global window AudioContext */
+/* global window AudioContext MidiDoc */
 const app = {};
 app.scaleNumMax = 5;
 app.scaleNumMin = 1;
 app.trackNum = 0;
 app.musicLength = 8;
 app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
-app.bpm = 120;
 app.regionInterval = 200;
 app.gridsInterval = 200;
 app.picthHeight = 11.65;
-app.tracks = {};
 app.playingTracks = {};
 app.currentTime = 0;
 app.isplaying = false;
 app.isMidiEditorOpen = false;
 app.instruments = {};
-
+app.music = {};
+app.music.user = new MidiDoc(120);
 app.startUserMedia = () => {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     app.audioCtx = new AudioContext();
