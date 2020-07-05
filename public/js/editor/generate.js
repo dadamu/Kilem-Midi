@@ -1,5 +1,6 @@
 /* global $ document app */
 app.init = async () => {
+    app.setConfig();
     app.startUserMedia();
     await app.initRender();
     app.addTrack();
