@@ -64,15 +64,12 @@ class Instrument {
             return this.padLeft("0" + str, length);
     }
 }
-
 app.setPiano = () => {
     return new Instrument("GrandPiano", 22, 108);
 };
-
 app.setGuitar = () => {
     return new Instrument("AcousticGuitar", 40, 72);
 };
-
 app.setBass = () => {
     return new Instrument("DubBass", 25, 60);
 };
