@@ -54,7 +54,7 @@ class Instrument {
     }
 
     getFileNum(pitch) {
-        return this.padLeft(pitch, 3);
+        return this.padLeft(pitch.toString(), 3);
     }
 
     padLeft(str, length) {
@@ -66,13 +66,13 @@ class Instrument {
 }
 
 app.setPiano = () => {
-    return new Instrument("GrandPiano", app.scaleNumMin * 12 + 12, (app.scaleNumMax + 1) * 12 + 12);
+    return new Instrument("GrandPiano", 22, 108);
 };
 
 app.setGuitar = () => {
-    return new Instrument("AcousticGuitar", 48, 72);
+    return new Instrument("AcousticGuitar", 40, 72);
 };
 
 app.setBass = () => {
-    return new Instrument("DubBass", 36, 60);
+    return new Instrument("DubBass", 25, 60);
 };
