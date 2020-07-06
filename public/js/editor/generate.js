@@ -1,9 +1,8 @@
 /* global $ document app */
 app.init = async () => {
     app.setConfig();
-    app.startUserMedia();
+    await app.setFile();
     await app.initRender();
-    app.addTrack();
     app.UIListen();
     app.instruments.piano = app.setPiano();
     app.instruments.bass = app.setBass();
@@ -32,6 +31,7 @@ app.initRender = () => {
     pTasks.push(app.initKeysRender());
     pTasks.push(app.initGridsRender());
     pTasks.push(app.initSvgGrids());
+    pTasks.push(app.initiTrackRender());
     return Promise.all(pTasks);
 };
 

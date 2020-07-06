@@ -8,8 +8,8 @@ app.midiPlayListen = () => {
 
 app.midiPlay = () => {
     if (!app.isplaying) {
-        const bpm = app.music.user.bpm;
-        const tracks = app.music.user.outPutPlayMidi();
+        const bpm = app.music[app.user].bpm;
+        const tracks = app.music[app.user].outPutPlayMidi();
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
@@ -57,7 +57,7 @@ app.midiStopListen = () => {
 app.midiResetListen = () => {
     $("#resetButton").click(() => {
         app.currentTime = 0;
-        const bpm = app.music.user.bpm;
+        const bpm = app.music[app.user].bpm;
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
         clearInterval(app.playInterval);

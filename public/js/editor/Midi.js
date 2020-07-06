@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 class MidiDoc{
-    constructor(bpm) {
+    constructor(bpm, tracks={}) {
         this.bpm = bpm;
-        this.tracks = {};
+        this.tracks = this.initTracks(tracks);
     }
     addTrack(track){
         this.tracks[track.trackId] = track;
@@ -13,13 +13,21 @@ class MidiDoc{
     outPutPlayMidi(){
         return JSON.parse(JSON.stringify(this.tracks));
     }
+    initTracks(tracks){
+        const newTracks = {};
+        for(let track of Object.values(tracks)){
+            newTracks[track.trackId] = new Track(track.trackId, track.trackName, track.instrument, track.notes);
+        }
+        return newTracks;
+    }
 }
 
 class Track{
-    constructor(trackId, instrument, notes = {}) {
+    constructor(trackId, trackName, instrument, notes={}) {
         this.trackId = trackId;
+        this.trackName = trackName;
         this.instrument = instrument
-        this.notes = notes;
+        this.notes = this.initNotes(notes);
     }
     
     addNote(note){
@@ -39,6 +47,13 @@ class Track{
             delete this.notes[posX]
         else
             this.notes[posX] = posXNotes;
+    }
+    initNotes(notes){
+        const newNotes = {};
+        for(let [ posX, xNotes ] of Object.entries(notes)){
+            newNotes[posX] = xNotes.map(note=> new Note(note.pitch, note.posX, note.length));
+        }
+        return newNotes;
     }
 }
 

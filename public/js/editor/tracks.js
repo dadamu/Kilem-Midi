@@ -20,7 +20,6 @@ app.initRegionRender = async () => {
     const length = app.musicLength;
     const width = interval * length;
     $("#tracksRegion").width(width);
-
     return;
 };
 
@@ -31,31 +30,45 @@ app.addTrackListen = () => {
     });
 };
 
+app.initiTrackRender = async() =>{
+    let trackDiv;
+    for( let [key, track] of Object.entries(app.music[app.user].tracks)){
+        trackDiv = addTrackRender(key, track.trackName, track.instrument);
+    }
+    app.trackSelect(trackDiv);
+    return;
+};
+
 app.addTrack = () => {
     const trackId = ++app.trackNum;
+    const trackName = "Track" + trackId;
+    const trackDiv = addTrackRender(trackId, trackName);
+    app.music[app.user].addTrack(new Track(trackId, trackName, 'piano'));
+    app.trackSelect(trackDiv);
+};
+
+const addTrackRender = (trackId, trackName, instrument="piano") => {
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId);
-    const trackName = $("<div></div>").addClass("track-name").text("Track" + trackId);
+    const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
     const region = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
 
-    const instrument = $("<select></select>").addClass("instrument-selector").attr("id", "instrumentSelector").val("piano");
+    const instrumentSelect = $("<select></select>").addClass("instrument-selector").attr("id", "instrumentSelector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
-    $(instrument).append(pianoOption, guitarOption, bassOption);
+    $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
     $("#regionContent").append(region);
     $(region).width(app.musicLength * app.regionInterval);
-    $(trackDiv).append(trackName, instrument);
+    $(trackDiv).append(trackNameDiv, instrumentSelect);
     $("#tracksContent").append(trackDiv);
-
-    app.music.user.addTrack(new Track(trackId, 'piano'));
-    app.trackSelect(trackDiv);
+    return trackDiv;
 }
 
 
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(() => {
         const selectedTrack = $(".track.selected");
-        app.music.user.deleteTrack(selectedTrack.attr('trackId'));
+        app.music[app.user].deleteTrack(selectedTrack.attr('trackId'));
         selectedTrack.remove();
         $(".region.selected").remove();
         $(".track").last().addClass("selected");
@@ -89,7 +102,7 @@ app.changeInstrumentListen = () => {
     $(".tracks-title").on("change", ".instrument-selector", function () {
         const trackId = $(this).parent().attr("trackId");
         const instrument = $(this).val();
-        app.music.user.tracks[trackId].instrument = instrument;
+        app.music[app.user].tracks[trackId].instrument = instrument;
     });
 };
 

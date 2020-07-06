@@ -28,7 +28,6 @@ module.exports = {
     getFile: async (room, user) => {
         const db = await mongoCon.connect();
         const collection = db.collection(room);
-        console.log(user);
         const result = await collection.findOne({user : { $eq : user }});
         return result;
     }

@@ -1,11 +1,10 @@
-/* global window AudioContext MidiDoc */
+/* global window AudioContext */
 const app = {};
 
 app.setConfig = () => {
     app.room = "test";
     app.scaleNumMax = 5;
     app.scaleNumMin = 1;
-    app.trackNum = 0;
     app.musicLength = 8;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
     app.regionInterval = 200;
@@ -16,18 +15,19 @@ app.setConfig = () => {
     app.isplaying = false;
     app.isMidiEditorOpen = false;
     app.instruments = {};
+    app.user = "user";
     app.music = {};
-    app.music.user = new MidiDoc(120);
+    startUserMedia();
 
 };
-app.startUserMedia = () => {
+const startUserMedia = () => {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     app.audioCtx = new AudioContext();
 };
 
 
 app.midiSvgGrid = (interval, picthHeight, keysNum, musicLength) => `
-    <svg id="svgGrids" class="svgGrids"  width="${interval * musicLength}" height="${picthHeight * keysNum}" xmlns="http://www.w3.org/2000/svg">
+    <svg id="svgGrids" class="svgGrids"  width="${interval * musicLength}" height="${picthHeight * keysNum}">
         <defs>
             <pattern id="svgSmallGrid" width="${Math.floor(interval / 4)}" height="${picthHeight}" patternUnits="userSpaceOnUse">
                 <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="gray" stroke-width="0.5" />

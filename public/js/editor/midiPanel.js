@@ -18,8 +18,8 @@ app.openMidiPanelListen = () => {
 app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
     $("#midiPanel").attr("trackId", trackId);
-    for (let [posX, notes] of Object.entries(app.music.user.tracks[trackId].notes)) {
-            app.notesRender(posX, notes);
+    for (let [posX, notes] of Object.entries(app.music[app.user].tracks[trackId].notes)) {
+        app.notesRender(posX, notes);
     }
 };
 
@@ -38,7 +38,7 @@ app.notesRender = (posX, notes) => {
 
 app.setCurrentPlayhead = (current) => {
     const intervalX = app.gridsInterval;
-    const { bpm } = app.music.user;
+    const { bpm } = app.music[app.user];
     const currentX = intervalX / 4 * bpm * current / 60 / 1000;
     $('#midiPlayhead').css('-webkit-transform', `translateX(${currentX}px)`);
 };
@@ -68,13 +68,14 @@ app.createNote = (note) => {
     $("#grids").append(noteDiv);
     app.noteIntoTrack(x, pitch);
     const trackId = $("#midiPanel").attr("trackId");
-    const { instrument } = app.music.user.tracks[trackId];
+    const { instrument } = app.music[app.user].tracks[trackId];
     app.playNote(instrument, pitch);
 };
 
 app.noteIntoTrack = (posX, pitch) => {
     const trackId = $("#midiPanel").attr("trackId");
-    app.music.user.tracks[trackId].addNote(new Note(pitch, posX, 1));
+    console.log(app.music[app.user].tracks[trackId]);
+    app.music[app.user].tracks[trackId].addNote(new Note(pitch, posX, 1));
 }
 
 app.addMidiNoteListen = () => {
@@ -91,7 +92,7 @@ app.addMidiNoteListen = () => {
 app.clickKeysListen = () => {
     $("#keys").on("click", ".key", async function () {
         const trackId = $("#midiPanel").attr("trackId");
-        const { instrument } = app.music.user.tracks[trackId];
+        const { instrument } = app.music[app.user].tracks[trackId];
         const target = this;
         const pitch = $(target).attr("pitch");
         app.playNote(instrument, pitch);
@@ -142,7 +143,7 @@ app.notOutTrack = (target) => {
     const posX = Math.floor(parseInt($(target).css("left").replace("px")) / (app.gridsInterval / 4));
     const pitch = parseInt($(target).attr("pitch"));
     const trackId = $("#midiPanel").attr("trackId");
-    app.music.user.tracks[trackId].deleteNote(new Note(pitch, posX, 1));
+    app.music[app.user].tracks[trackId].deleteNote(new Note(pitch, posX, 1));
 };
 
 app.noteDeleteListen = () => {
