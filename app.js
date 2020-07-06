@@ -25,8 +25,12 @@ app.use((req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    console.log(err);
-    res.json({ error: "Server Error" });
+    if(err.status != 404){
+        console.log(err);
+        res.json({ error: "Server Error" });
+        return;
+    }
+    res.json({ error: "Not Found" });
 });
 
 app.listen(process.env.HOST_PORT, ()=>{

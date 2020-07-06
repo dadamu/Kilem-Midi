@@ -10,5 +10,8 @@ router.route('/midi/createRoom')
 
 router.route('/midi/addUser')
     .post(midiController.addUser);
+
+router.route('/midi/getFile')
+    .get(midiController.getFile);
     
 module.exports = router;

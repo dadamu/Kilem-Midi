@@ -2,6 +2,7 @@
 const app = {};
 
 app.setConfig = () => {
+    app.room = "test";
     app.scaleNumMax = 5;
     app.scaleNumMin = 1;
     app.trackNum = 0;
