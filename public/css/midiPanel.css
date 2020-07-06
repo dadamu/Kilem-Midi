@@ -1,11 +1,18 @@
 
 .midi-header{
+    display: flex;
     height: 50px;
 }
 
 .midi-toolbox{
     padding: 10px;
     height: 50px;
+}
+
+.midi-tool{
+    padding: 10px;
+    height: 50px;
+    cursor: pointer;
 }
 
 .panel-track-name{
@@ -17,7 +24,7 @@
     flex-direction: column;
     background-color: #333940;
     height: 40%;
-    min-height: 400px;
+    min-height: 300px;
 }
 
 .panel-content{

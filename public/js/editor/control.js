@@ -9,6 +9,7 @@ app.midiPlayListen = () => {
 app.midiPlay = () => {
     if (!app.isplaying) {
         const bpm = app.music[app.user].bpm;
+        const resolution = 1 / (bpm / 60) / 16 * 1000;
         const tracks = app.music[app.user].outPutPlayMidi();
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
@@ -22,8 +23,8 @@ app.midiPlay = () => {
                 app.midiPlayheadTrans(bpm);
             }
             app.playTracks(bpm, tracks);
-            app.currentTime += 50
-        }, 50);
+            app.currentTime += resolution
+        }, resolution);
     }
 };
 
@@ -70,7 +71,8 @@ app.setPlayingTracks = () => {
 }
 
 app.playTrack = (bpm, track) => {
-    const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000));
+    const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000) * 16);
+    console.log(posX);
     if (track.notes[posX]) {
         app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
         delete track.notes[posX];

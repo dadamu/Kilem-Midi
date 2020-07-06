@@ -18,7 +18,7 @@ app.openMidiPanelListen = () => {
 app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
     $("#midiPanel").attr("trackId", trackId);
-    if(app.music[app.user].tracks[trackId]){
+    if (app.music[app.user].tracks[trackId]) {
         for (let [posX, notes] of Object.entries(app.music[app.user].tracks[trackId].notes)) {
             app.notesRender(posX, notes);
         }
@@ -28,10 +28,10 @@ app.panelLoadTrack = (trackId) => {
 app.notesRender = (posX, notes) => {
     for (let note of notes) {
         const { pitch } = note;
-        const left = Math.floor(posX * app.gridsInterval / 4);
+        const left = Math.floor(posX / 64) * (64 / app.noteGrid) * app.noteGrid * app.gridsInterval;
         const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.picthHeight;
         const noteDiv = $("<div></div>");
-        noteDiv.addClass("note").width(app.gridsInterval / 4).height(app.picthHeight);
+        noteDiv.addClass("note").width(app.gridsInterval / app.noteLength).height(app.picthHeight);
         noteDiv.css("left", left).css("bottom", bottom);
         noteDiv.attr("pitch", pitch);
         $("#grids").append(noteDiv);
@@ -48,17 +48,18 @@ app.setCurrentPlayhead = (current) => {
 app.svgToNote = (x, y) => {
     const height = app.picthHeight * app.keysNum;
     y = height - y;
-    x = Math.floor(x / app.gridsInterval * 4);
+    x = Math.floor(x / app.gridsInterval * 64);
+    console.log(x);
     y = Math.floor(y / app.picthHeight);
     return { x, y };
 };
 
 app.createNote = (note) => {
     const { x, y } = note;
-    const interval = app.gridsInterval / 4;
+    const interval = app.gridsInterval / app.noteLength;
     const picthHeight = app.picthHeight;
 
-    const left = x * interval;
+    const left = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid) * app.gridsInterval / 64;
     const bottom = y * picthHeight;
 
     const noteDiv = $("<div></div>");
@@ -68,7 +69,9 @@ app.createNote = (note) => {
     const pitch = y + 12 * (app.scaleNumMin + 1);
     noteDiv.attr("pitch", pitch);
     $("#grids").append(noteDiv);
-    app.noteIntoTrack(x, pitch);
+
+    const posX = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid);
+    app.noteIntoTrack(posX, pitch);
     const trackId = $("#midiPanel").attr("trackId");
     const { instrument } = app.music[app.user].tracks[trackId];
     app.playNote(instrument, pitch);

@@ -12,6 +12,8 @@ app.setConfig = () => {
     app.picthHeight = 11.65;
     app.playingTracks = {};
     app.currentTime = 0;
+    app.noteLength = 4;
+    app.noteGrid = 4;
     app.isplaying = false;
     app.isMidiEditorOpen = false;
     app.instruments = {};
@@ -29,8 +31,12 @@ const startUserMedia = () => {
 app.midiSvgGrid = (interval, picthHeight, keysNum, musicLength) => `
     <svg id="svgGrids" class="svgGrids"  width="${interval * musicLength}" height="${picthHeight * keysNum}">
         <defs>
+        <pattern id="svgTinyGrid" width="${Math.floor(interval / 8)}" height="${picthHeight}" patternUnits="userSpaceOnUse">
+                <path d="M ${Math.floor(interval / 8)} 0 L 0 0 0 ${Math.floor(interval / 8)}" fill="none" stroke="gray" stroke-width="0.5" />
+            </pattern>
             <pattern id="svgSmallGrid" width="${Math.floor(interval / 4)}" height="${picthHeight}" patternUnits="userSpaceOnUse">
-                <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="gray" stroke-width="0.5" />
+                <rect width="${interval/4}" height="${picthHeight}" fill="url(#svgTinyGrid)" />
+                <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="#AAAAAA" stroke-width="0.5" />
             </pattern>
             <pattern id="svgMainGrid" width="${interval}" height="${12 * picthHeight}" patternUnits="userSpaceOnUse">
                 <rect width="${interval}" height="${(keysNum) * picthHeight}" fill="url(#svgSmallGrid)" />
