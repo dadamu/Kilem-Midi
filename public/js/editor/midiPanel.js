@@ -18,8 +18,10 @@ app.openMidiPanelListen = () => {
 app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
     $("#midiPanel").attr("trackId", trackId);
-    for (let [posX, notes] of Object.entries(app.music[app.user].tracks[trackId].notes)) {
-        app.notesRender(posX, notes);
+    if(app.music[app.user].tracks[trackId]){
+        for (let [posX, notes] of Object.entries(app.music[app.user].tracks[trackId].notes)) {
+            app.notesRender(posX, notes);
+        }
     }
 };
 
@@ -74,7 +76,6 @@ app.createNote = (note) => {
 
 app.noteIntoTrack = (posX, pitch) => {
     const trackId = $("#midiPanel").attr("trackId");
-    console.log(app.music[app.user].tracks[trackId]);
     app.music[app.user].tracks[trackId].addNote(new Note(pitch, posX, 1));
 }
 

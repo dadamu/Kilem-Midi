@@ -4,10 +4,18 @@ const loadFile = async() => {
     const endpoint = `/api/1.0/midi/getFile?room=${app.room}&user=${app.user}`;
     const response = await fetch(endpoint).then(res=>res.json());
     const save = response.data.save;
-    return  new MidiDoc(save.bpm, save.tracks);
+    if(save){
+        return  new MidiDoc(save.bpm, save.tracks);
+    }
+    else{
+        return new MidiDoc(120);
+    }
 };
 
 app.setFile = async()=> {
     app.music[app.user] = await loadFile();
-    app.trackNum = Object.values(app.music[app.user].tracks).pop().trackId;
+    if(Object.keys(app.music[app.user].tracks).length > 0)
+        app.trackNum = Object.values(app.music[app.user].tracks).pop().trackId;
+    else
+        app.trackNum = 0 ;
 };
