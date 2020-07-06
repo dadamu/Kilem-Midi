@@ -72,7 +72,6 @@ app.setPlayingTracks = () => {
 
 app.playTrack = (bpm, track) => {
     const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000) * 16);
-    console.log(posX);
     if (track.notes[posX]) {
         app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
         delete track.notes[posX];
@@ -86,7 +85,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
             source.detune.value = pitchShift * 100;
-            const time = 1 / (bpm / 60);
+            const time = (1 / (bpm / 60)) * ( 4 / note.length );
             app.fadeAudio(source, time);
         }
     }

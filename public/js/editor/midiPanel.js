@@ -31,7 +31,7 @@ app.notesRender = (posX, notes) => {
         const left = posX / 64  * app.gridsInterval;
         const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.picthHeight;
         const noteDiv = $("<div></div>");
-        noteDiv.addClass("note").width(app.gridsInterval / app.noteLength).height(app.picthHeight);
+        noteDiv.addClass("note").width(app.gridsInterval / note.length).height(app.picthHeight);
         noteDiv.css("left", left).css("bottom", bottom);
         noteDiv.attr("pitch", pitch);
         $("#grids").append(noteDiv);
@@ -67,6 +67,7 @@ app.createNote = (note) => {
 
     const pitch = y + 12 * (app.scaleNumMin + 1);
     noteDiv.attr("pitch", pitch);
+    noteDiv.attr("length", app.noteLength);
     $("#grids").append(noteDiv);
 
     const posX = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid);
@@ -78,7 +79,7 @@ app.createNote = (note) => {
 
 app.noteIntoTrack = (posX, pitch) => {
     const trackId = $("#midiPanel").attr("trackId");
-    app.music[app.user].tracks[trackId].addNote(new Note(pitch, posX, 1));
+    app.music[app.user].tracks[trackId].addNote(new Note(pitch, posX, app.noteLength));
 }
 
 app.addMidiNoteListen = () => {
@@ -169,6 +170,5 @@ app.noteLengthListen = () => {
         $(".note-length.selected").removeClass("selected");
         $(this).addClass("selected");
         app.noteLength = parseInt($(this).attr("value"));
-        console.log($(this).val());
     });
 };
