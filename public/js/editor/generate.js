@@ -22,6 +22,8 @@ app.UIListen = () => {
     app.midiResetListen();
     app.changeInstrumentListen();
     app.saveFileListen();
+    app.noteLengthListen();
+    app.noteGridListen();
 };
 
 app.initRender = () => {

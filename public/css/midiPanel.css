@@ -5,14 +5,15 @@
 }
 
 .midi-toolbox{
+    display: flex;
     padding: 10px;
-    height: 50px;
+    height: 100%;
 }
 
 .midi-tool{
-    padding: 10px;
-    height: 50px;
+    padding: 5px;
     cursor: pointer;
+    flex:auto;
 }
 
 .panel-track-name{

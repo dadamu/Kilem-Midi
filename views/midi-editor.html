@@ -42,16 +42,22 @@
                         <div id="rulerControl" class="ruler-control">Control</div>
                     </div>
                     <div id="regionContent" class="region-content">
-                        <div id="regionPlayhead" class="region-playhead playhead" style="transform: translateX(0px);"></div>
+                        <div id="regionPlayhead" class="region-playhead playhead" style="transform: translateX(0px);">
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                <div class="midi-toolbox">ToolBox</div>
-                <div class="midi-tool">1/8</div>
-                <div  class="midi-tool selected">1/4</div>
+                <div class="midi-toolbox">GRID
+                    <div class="note-grid midi-tool" value="8">1/8</div>
+                    <div class="note-grid midi-tool selected" value="4">1/4</div>
+                </div>
+                <div class="midi-toolbox">Length
+                    <div class="note-length midi-tool" value="8">1/8</div>
+                    <div class="note-length midi-tool selected" value="4">1/4</div>
+                </div>
             </header>
             <div class="panel-content">
                 <div class="panel-info">

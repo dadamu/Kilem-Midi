@@ -28,7 +28,7 @@ app.panelLoadTrack = (trackId) => {
 app.notesRender = (posX, notes) => {
     for (let note of notes) {
         const { pitch } = note;
-        const left = Math.floor(posX / 64) * (64 / app.noteGrid) * app.noteGrid * app.gridsInterval;
+        const left = posX / 64  * app.gridsInterval;
         const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.picthHeight;
         const noteDiv = $("<div></div>");
         noteDiv.addClass("note").width(app.gridsInterval / app.noteLength).height(app.picthHeight);
@@ -49,7 +49,6 @@ app.svgToNote = (x, y) => {
     const height = app.picthHeight * app.keysNum;
     y = height - y;
     x = Math.floor(x / app.gridsInterval * 64);
-    console.log(x);
     y = Math.floor(y / app.picthHeight);
     return { x, y };
 };
@@ -144,7 +143,7 @@ app.initGridsRender = async () => {
 };
 
 app.notOutTrack = (target) => {
-    const posX = Math.floor(parseInt($(target).css("left").replace("px")) / (app.gridsInterval / 4));
+    const posX = Math.floor(parseInt($(target).css("left").replace("px")) / (app.gridsInterval / 64));
     const pitch = parseInt($(target).attr("pitch"));
     const trackId = $("#midiPanel").attr("trackId");
     app.music[app.user].tracks[trackId].deleteNote(new Note(pitch, posX, 1));
@@ -154,5 +153,22 @@ app.noteDeleteListen = () => {
     $("#grids").on('dblclick', '.note', function () {
         app.notOutTrack(this);
         $(this).remove();
+    });
+};
+
+app.noteGridListen = () => {
+    $(".midi-toolbox").on('click', '.note-grid', function () {
+        $(".note-grid.selected").removeClass("selected");
+        $(this).addClass("selected");
+        app.noteGrid = parseInt($(this).attr("value"));
+    });
+};
+
+app.noteLengthListen = () => {
+    $(".midi-toolbox").on('click', '.note-length', function () {
+        $(".note-length.selected").removeClass("selected");
+        $(this).addClass("selected");
+        app.noteLength = parseInt($(this).attr("value"));
+        console.log($(this).val());
     });
 };
