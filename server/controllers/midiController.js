@@ -1,11 +1,19 @@
 const midiModel = require("../Models/midiModel");
+const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
-    create : async(req, res)=>{
-        const { name } = req.query;
-        midiModel.create(name);
+    createRoom: asyncHandler(async (req, res) => {
+        await midiModel.createRoom(req.body);
         res.send("Create");
-    },
-    save : (req, res)=>{
-        res.send("Save");
-    }
+    }),
+    addUser: asyncHandler(async(req, res) => {
+        await midiModel.addUser(req.body);
+        res.json({ status: "success" });
+    }),
+    save: asyncHandler(async(req, res) => {
+        await midiModel.saveFile(req.body);
+        res.status(201).json({ status: "success" });
+    }),
+    get: asyncHandler(async(req, res) => {
+        res.sned("Get");
+    })
 };

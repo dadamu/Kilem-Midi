@@ -22,6 +22,7 @@ app.UIListen = () => {
     app.midiStopListen();
     app.midiResetListen();
     app.changeInstrumentListen();
+    app.saveFileListen();
 };
 
 app.initRender = () => {

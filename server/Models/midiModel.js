@@ -1,13 +1,28 @@
-const con = require("../../util/mongoCon");
+const mongoCon = require("../../util/mongoCon");
 module.exports = {
-    create: async (name) => {
-        try {
-            const db = await con.connect();
-
-            await db.createCollection(name);
-            return "hi";
-        }catch(e){
-            console.log("error",e);
-        }
+    createRoom: async (body) => {
+        const db = await mongoCon.connect();
+        const result = await db.createCollection(body.name);
+        console.log(result);
+        return;
+    },
+    saveFile: async (body) => {
+        const db = await mongoCon.connect();
+        const { room, user, data } = body; 
+        const collection = db.collection(room);
+        await collection.updateOne({
+            user : user
+        }, {
+            $set : {"save": data},
+            $currentDate: { lastModified: true }
+        })
+        return;
+    },
+    addUser: async (body) => {
+        const { room, user } = body;
+        const db = await mongoCon.connect();
+        const collection = db.collection(room);
+        await collection.insertOne({ user }, { ordered: false });
+        return;
     }
 }

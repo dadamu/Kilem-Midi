@@ -16,10 +16,10 @@ class MidiDoc{
 }
 
 class Track{
-    constructor(trackId, instrument) {
+    constructor(trackId, instrument, notes = {}) {
         this.trackId = trackId;
         this.instrument = instrument
-        this.notes = {};
+        this.notes = notes;
     }
     
     addNote(note){
@@ -35,14 +35,17 @@ class Track{
     deleteNote(note){
         const { posX, pitch } = note;
         const posXNotes = this.notes[posX].filter(note => note.pitch != pitch);
-        this.notes[posX] = posXNotes;
+        if(posXNotes.length===0)
+            delete this.notes[posX]
+        else
+            this.notes[posX] = posXNotes;
     }
 }
 
 class Note{
-    constructor(pitch, posX, duration){
+    constructor(pitch, posX, length){
         this.pitch = pitch;
         this.posX = posX;
-        this.duration = duration;
+        this.length = length;
     }
 }
