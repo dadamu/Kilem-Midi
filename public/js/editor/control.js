@@ -95,7 +95,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
 app.fadeAudio = function (source, time) {
     const currentTime = app.audioCtx.currentTime;
     const gain = app.audioCtx.createGain();
-    gain.gain.linearRampToValueAtTime(0, currentTime + time);
+    gain.gain.linearRampToValueAtTime(0, currentTime + time * 120/100);
 
     source.connect(gain);
     gain.connect(app.audioCtx.destination);
