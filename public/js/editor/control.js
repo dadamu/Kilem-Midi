@@ -23,7 +23,7 @@ app.midiPlay = () => {
                 app.midiPlayheadTrans(bpm);
             }
             app.playTracks(bpm, tracks);
-            app.currentTime += resolution
+            app.currentTime += resolution;
         }, resolution);
     }
 };
@@ -32,20 +32,20 @@ app.playTracks = (bpm, tracks) => {
     for (let id in tracks) {
         app.playTrack(bpm, tracks[id]);
     }
-}
+};
 
 app.regionPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.regionInterval;
     const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
-    $('#regionPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
+    $("#regionPlayhead").css("-webkit-transform", `translateX(${playOffset}px)`);
 };
 
 app.midiPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.gridsInterval;
     const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
-    $('#midiPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
+    $("#midiPlayhead").css("-webkit-transform", `translateX(${playOffset}px)`);
 };
 
 app.midiStopListen = () => {
@@ -68,7 +68,7 @@ app.midiResetListen = () => {
 
 app.setPlayingTracks = () => {
     return JSON.parse(JSON.stringify(app.tracks));
-}
+};
 
 app.playTrack = (bpm, track) => {
     const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000) * 16);

@@ -4,10 +4,10 @@ app.saveFileListen = () => {
     $("#save").click(() => {
         saveFile("user");
     });
-}
+};
 
 var saveFile = async (user) => {
-    const endpoint = '/api/1.0/midi/saveFile';
+    const endpoint = "/api/1.0/midi/saveFile";
     const data = {};
     data.user = user;
     data.room = "test";
@@ -21,11 +21,11 @@ function postData(url, data) {
     return fetch(url, {
         body: JSON.stringify(data),
         headers: {
-            'user-agent': 'Mozilla/4.0 MDN Example',
-            'content-type': 'application/json'
+            "user-agent": "Mozilla/4.0 MDN Example",
+            "content-type": "application/json"
         },
-        method: 'POST',
+        method: "POST",
 
     })
-        .then(response => response.json())
+        .then(response => response.json());
 }

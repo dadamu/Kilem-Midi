@@ -26,7 +26,7 @@ class Track{
     constructor(trackId, trackName, instrument, notes={}) {
         this.trackId = trackId;
         this.trackName = trackName;
-        this.instrument = instrument
+        this.instrument = instrument;
         this.notes = this.initNotes(notes);
     }
     
@@ -44,7 +44,7 @@ class Track{
         const { posX, pitch } = note;
         const posXNotes = this.notes[posX].filter(note => note.pitch != pitch);
         if(posXNotes.length===0)
-            delete this.notes[posX]
+            delete this.notes[posX];
         else
             this.notes[posX] = posXNotes;
     }

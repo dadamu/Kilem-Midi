@@ -5,5 +5,5 @@ module.exports = (cb) => {
         } catch (err) {
             next(err);
         }
-    }
+    };
 };

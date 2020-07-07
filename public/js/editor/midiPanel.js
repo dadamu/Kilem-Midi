@@ -42,7 +42,7 @@ app.setCurrentPlayhead = (current) => {
     const intervalX = app.gridsInterval;
     const { bpm } = app.music[app.user];
     const currentX = intervalX / 4 * bpm * current / 60 / 1000;
-    $('#midiPlayhead').css('-webkit-transform', `translateX(${currentX}px)`);
+    $("#midiPlayhead").css("-webkit-transform", `translateX(${currentX}px)`);
 };
 
 app.svgToNote = (x, y) => {
@@ -84,7 +84,7 @@ app.createNote = (note) => {
 app.noteIntoTrack = (posX, pitch) => {
     const trackId = $("#midiPanel").attr("trackId");
     app.music[app.user].tracks[trackId].addNote(new Note(pitch, posX, app.noteLength));
-}
+};
 
 app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
@@ -144,7 +144,7 @@ app.initKeysRender = () => {
 app.initGridsRender = () => {
     const gridsWidth = app.gridsInterval * app.musicLength;
     $("#grids").width(gridsWidth);
-    return
+    return;
 };
 
 app.notOutTrack = (target) => {
@@ -155,14 +155,14 @@ app.notOutTrack = (target) => {
 };
 
 app.noteDeleteListen = () => {
-    $("#grids").on('dblclick', '.note', function () {
+    $("#grids").on("dblclick", ".note", function () {
         app.notOutTrack(this);
         $(this).remove();
     });
 };
 
 app.noteGridListen = () => {
-    $(".midi-toolbox").on('click', '.note-grid', function () {
+    $(".midi-toolbox").on("click", ".note-grid", function () {
         $(".note-grid.selected").removeClass("selected");
         $(this).addClass("selected");
         app.noteGrid = parseInt($(this).attr("value"));
@@ -170,7 +170,7 @@ app.noteGridListen = () => {
 };
 
 app.noteLengthListen = () => {
-    $(".midi-toolbox").on('click', '.note-length', function () {
+    $(".midi-toolbox").on("click", ".note-length", function () {
         $(".note-length.selected").removeClass("selected");
         $(this).addClass("selected");
         app.noteLength = parseInt($(this).attr("value"));

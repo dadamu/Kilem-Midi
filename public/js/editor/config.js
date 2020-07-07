@@ -91,4 +91,4 @@ app.midiKeysTemplate = (num) => {
     <div class="black-key key" pitch="${num * 12 + 1 + offset}"></div>
     <div class="white-key key" pitch="${num * 12 + offset}">C${num}</div>
 `;
-}
+};

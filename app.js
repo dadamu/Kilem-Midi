@@ -1,24 +1,24 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const serveStatic = require('serve-static')
-require('dotenv').config();
+const serveStatic = require("serve-static");
+require("dotenv").config();
 const { API_VERSION } = process.env;
 
 app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-cache')
-    next()
+    res.set("Cache-Control", "no-cache");
+    next();
 });
 app.use(bodyParser.json());
-app.use("/public", serveStatic('./public', {
+app.use("/public", serveStatic("./public", {
     setHeaders: function (res) {
-        res.setHeader('Cache-Control', 'no-cache')
+        res.setHeader("Cache-Control", "no-cache");
     }
 }));
-app.use("/", require('./server/routes/front_route'));
-app.use('/api/' + API_VERSION, [
-    require('./server/routes/1.0/user_api'),
-    require('./server/routes/1.0/midi_api')
+app.use("/", require("./server/routes/front_route"));
+app.use("/api/" + API_VERSION, [
+    require("./server/routes/1.0/user_api"),
+    require("./server/routes/1.0/midi_api")
 ]);
 
 app.get("/", (req, res) => {

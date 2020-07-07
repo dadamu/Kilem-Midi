@@ -15,7 +15,7 @@ module.exports = {
         }, {
             $set : {"save": data},
             $currentDate: { lastModified: true }
-        })
+        });
         return;
     },
     addUser: async (body) => {
@@ -31,4 +31,4 @@ module.exports = {
         const result = await collection.findOne({user : { $eq : user }});
         return result;
     }
-}
+};

@@ -43,7 +43,7 @@ app.addTrack = () => {
     const trackId = ++app.trackNum;
     const trackName = "Track" + trackId;
     const trackDiv = addTrackRender(trackId, trackName);
-    app.music[app.user].addTrack(new Track(trackId, trackName, 'piano'));
+    app.music[app.user].addTrack(new Track(trackId, trackName, "piano"));
     app.trackSelect(trackDiv);
 };
 
@@ -62,13 +62,13 @@ const addTrackRender = (trackId, trackName, instrument="piano") => {
     $(trackDiv).append(trackNameDiv, instrumentSelect);
     $("#tracksContent").append(trackDiv);
     return trackDiv;
-}
+};
 
 
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(() => {
         const selectedTrack = $(".track.selected");
-        app.music[app.user].deleteTrack(selectedTrack.attr('trackId'));
+        app.music[app.user].deleteTrack(selectedTrack.attr("trackId"));
         selectedTrack.remove();
         $(".region.selected").remove();
         $(".track").last().addClass("selected");
@@ -78,10 +78,10 @@ app.deleteTrackListen = () => {
 };
 
 app.trackSelectListen = () => {
-    $("#tracksContent").on('click', '.track', function () {
+    $("#tracksContent").on("click", ".track", function () {
         app.trackSelect(this);
     });
-    $("#regionContent").on('click', '.region', function () {
+    $("#regionContent").on("click", ".region", function () {
         app.trackSelect(this);
     });
 };
@@ -90,7 +90,7 @@ app.trackSelect = (target) => {
     const id = $(target).attr("trackId");
     $(".track.selected").removeClass("selected");
     $(".region.selected").removeClass("selected");
-    $(`.track.track-${id}`).addClass('selected');
+    $(`.track.track-${id}`).addClass("selected");
     $(`.region.track-${id}`).addClass("selected");
 
     const trackName = $(`.track.track-${id} .track-name`).text();

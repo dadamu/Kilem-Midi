@@ -48,7 +48,7 @@ class Instrument {
                 }
                 this.audio[pitch].pitchShift = pitchShift;
                 resolve();
-            }
+            };
             asyncDo();
         });
     }
