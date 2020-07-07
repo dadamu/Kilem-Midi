@@ -2,23 +2,31 @@
 const app = {};
 
 app.setConfig = () => {
-    app.room = "test";
+    //Music config
+    app.user = "user";
+    app.roomId = "test";
+    app.music = {};
+    app.music.fileName = "test";
+    app.instruments = {};
+
+    //UI config
+    app.musicLength = 8;
     app.scaleNumMax = 5;
     app.scaleNumMin = 1;
-    app.musicLength = 8;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
     app.regionInterval = 200;
     app.gridsInterval = 200;
     app.picthHeight = 11.65;
+    
+    //Playing Config
     app.playingTracks = {};
     app.currentTime = 0;
+    app.isplaying = false;
+
+    //Control config
     app.noteLength = 4;
     app.noteGrid = 4;
-    app.isplaying = false;
     app.isMidiEditorOpen = false;
-    app.instruments = {};
-    app.user = "user";
-    app.music = {};
     startUserMedia();
 
 };
