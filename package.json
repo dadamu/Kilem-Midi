@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --ext .js ./server ./public"
+    "lint": "eslint --fix --ext .js ./server ./public ./util app.js"
   },
   "repository": {
     "type": "git",
