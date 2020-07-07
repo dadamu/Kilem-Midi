@@ -1,4 +1,4 @@
-/* global app fetch */
+/* global app */
 class Instrument {
     constructor(name, minPitch, maxPitch) {
         this.name = name;

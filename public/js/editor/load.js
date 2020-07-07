@@ -1,4 +1,4 @@
-/* global app fetch MidiFile */
+/* global app MidiFile */
 
 const loadFile = async() => {
     const endpoint = `/api/1.0/midi/getFile?room=${app.roomId}&user=${app.user}`;

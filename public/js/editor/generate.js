@@ -1,4 +1,4 @@
-/* global $ document app */
+/* global $ app */
 app.init = async () => {
     app.setConfig();
     await app.setFile();

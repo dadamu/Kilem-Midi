@@ -1,4 +1,3 @@
-/* global window AudioContext */
 const app = {};
 
 app.setConfig = () => {

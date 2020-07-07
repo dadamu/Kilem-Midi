@@ -1,4 +1,4 @@
-/* global app $ fetch */
+/* global app $ */
 
 app.saveFileListen = () => {
     $("#save").click(() => {
