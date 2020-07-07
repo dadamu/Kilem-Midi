@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const serveStatic = require('serve-static')
 require('dotenv').config();
 const { API_VERSION } = process.env;
 
@@ -9,7 +10,11 @@ app.use((req, res, next) => {
     next()
 });
 app.use(bodyParser.json());
-app.use("/public", express.static('./public'));
+app.use("/public", serveStatic('./public', {
+    setHeaders: function (res) {
+        res.setHeader('Cache-Control', 'no-cache')
+    }
+}));
 app.use("/", require('./server/routes/front_route'));
 app.use('/api/' + API_VERSION, [
     require('./server/routes/1.0/user_api'),
