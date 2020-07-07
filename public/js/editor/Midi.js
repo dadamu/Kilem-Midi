@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-class MidiDoc{
+class MidiFile{
     constructor(bpm, tracks={}) {
         this.bpm = bpm;
         this.tracks = this.initTracks(tracks);
