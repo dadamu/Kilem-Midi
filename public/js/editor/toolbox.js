@@ -19,13 +19,12 @@ var saveFile = async (user) => {
 
 function postData(url, data) {
     return fetch(url, {
-        body: JSON.stringify(data),
+        body   : JSON.stringify(data),
         headers: {
-            "user-agent": "Mozilla/4.0 MDN Example",
+            "user-agent"  : "Mozilla/4.0 MDN Example",
             "content-type": "application/json"
         },
         method: "POST",
 
-    })
-        .then(response => response.json());
+    }).then(response => response.json());
 }

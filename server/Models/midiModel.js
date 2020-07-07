@@ -8,12 +8,12 @@ module.exports = {
     },
     saveFile: async (body) => {
         const db = await mongoCon.connect();
-        const { room, user, data } = body; 
+        const { room, user, data } = body;
         const collection = db.collection(room);
         await collection.updateOne({
-            user : user
+            user: user
         }, {
-            $set : {"save": data},
+            $set: { "save": data },
             $currentDate: { lastModified: true }
         });
         return;
@@ -28,7 +28,11 @@ module.exports = {
     getFile: async (room, user) => {
         const db = await mongoCon.connect();
         const collection = db.collection(room);
-        const result = await collection.findOne({user : { $eq : user }});
+        const result = await collection.findOne({
+            user: {
+                $eq: user
+            }
+        });
         return result;
     }
 };
