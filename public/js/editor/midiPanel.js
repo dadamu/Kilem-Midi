@@ -128,7 +128,7 @@ app.initSvgGrids = async () => {
     return;
 };
 
-app.initKeysRender = async () => {
+app.initKeysRender = () => {
     let keysHtml = "";
     for (let i = app.scaleNumMax; i >= app.scaleNumMin; i--) {
         keysHtml += app.midiKeysTemplate(i);
@@ -137,7 +137,7 @@ app.initKeysRender = async () => {
     return;
 };
 
-app.initGridsRender = async () => {
+app.initGridsRender = () => {
     const gridsWidth = app.gridsInterval * app.musicLength;
     $("#grids").width(gridsWidth);
     return

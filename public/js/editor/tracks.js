@@ -1,5 +1,5 @@
 /* global $ app Track */
-app.initRulerRender = async () => {
+app.initRulerRender = () => {
     const length = app.musicLength;
     const interval = app.regionInterval;
     const rulerScale = $("#rulerScale");
@@ -15,7 +15,7 @@ app.initRulerRender = async () => {
     return;
 };
 
-app.initRegionRender = async () => {
+app.initRegionRender = () => {
     const interval = app.regionInterval;
     const length = app.musicLength;
     const width = interval * length;
@@ -30,7 +30,7 @@ app.addTrackListen = () => {
     });
 };
 
-app.initiTrackRender = async() =>{
+app.initiTrackRender = () =>{
     let trackDiv;
     for( let [key, track] of Object.entries(app.music[app.user].tracks)){
         trackDiv = addTrackRender(key, track.trackName, track.instrument);

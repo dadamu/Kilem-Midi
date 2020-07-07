@@ -2,11 +2,11 @@
 app.init = async () => {
     app.setConfig();
     await app.setFile();
-    await app.initRender();
-    app.UIListen();
     app.instruments.piano = app.setPiano();
     app.instruments.bass = app.setBass();
     app.instruments.guitar = app.setGuitar();
+    app.initRender();
+    app.UIListen();
 };
 
 app.UIListen = () => {
@@ -27,14 +27,13 @@ app.UIListen = () => {
 };
 
 app.initRender = () => {
-    const pTasks = [];
-    pTasks.push(app.initRegionRender());
-    pTasks.push(app.initRulerRender());
-    pTasks.push(app.initKeysRender());
-    pTasks.push(app.initGridsRender());
-    pTasks.push(app.initSvgGrids());
-    pTasks.push(app.initiTrackRender());
-    return Promise.all(pTasks);
+    app.initRegionRender();
+    app.initRulerRender();
+    app.initKeysRender();
+    app.initGridsRender();
+    app.initSvgGrids();
+    app.initiTrackRender();
+    return;
 };
 
 $(document).ready(app.init);
