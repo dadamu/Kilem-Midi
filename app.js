@@ -15,10 +15,10 @@ app.use("/public", serveStatic("./public", {
         res.setHeader("Cache-Control", "no-cache");
     }
 }));
-app.use("/", require("./server/routes/front_route"));
+app.use("/", require("./Server/Routes/front_route"));
 app.use("/api/" + API_VERSION, [
-    require("./server/routes/1.0/user_api"),
-    require("./server/routes/1.0/midi_api")
+    require("./Server/Routes/1.0/user_api"),
+    require("./Server/Routes/1.0/midi_api")
 ]);
 
 app.get("/", (req, res) => {
