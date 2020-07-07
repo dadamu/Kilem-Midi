@@ -60,19 +60,23 @@ app.createNote = (note) => {
 
     const left = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid) * app.gridsInterval / 64;
     const bottom = y * picthHeight;
+    const posX = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid);
+    const pitch = y + 12 * (app.scaleNumMin + 1);
+    const trackId = $("#midiPanel").attr("trackId");
 
+    //ignore duplicate not at same pos
+    if(app.music[app.user].tracks[trackId].notes[posX] && app.music[app.user].tracks[trackId].notes[posX].filter(midi=>midi.pitch === pitch).length > 0)
+        return;
+    
     const noteDiv = $("<div></div>");
     noteDiv.addClass("note").width(interval).height(picthHeight);
     noteDiv.css("left", left).css("bottom", bottom);
-
-    const pitch = y + 12 * (app.scaleNumMin + 1);
+ 
     noteDiv.attr("pitch", pitch);
     noteDiv.attr("length", app.noteLength);
     $("#grids").append(noteDiv);
 
-    const posX = Math.floor(x / (64 / app.noteGrid)) * (64 / app.noteGrid);
     app.noteIntoTrack(posX, pitch);
-    const trackId = $("#midiPanel").attr("trackId");
     const { instrument } = app.music[app.user].tracks[trackId];
     app.playNote(instrument, pitch);
 };
