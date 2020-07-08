@@ -32,7 +32,7 @@ class Instrument {
 
     getFileTask(pitch, waitQueue) {
         return new Promise((resolve) => {
-            const asyncDo = async()=>{
+            const asyncDo = async () => {
                 const pitchShift = (pitch - 1) % 3;
                 this.audio[pitch] = {};
                 if (pitchShift === 0) {

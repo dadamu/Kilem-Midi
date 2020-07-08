@@ -85,7 +85,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
             source.detune.value = pitchShift * 100;
-            const time = (1 / (bpm / 60)) * ( 4 / note.length );
+            const time = (1 / (bpm / 60)) * (4 / note.length);
             app.fadeAudio(source, time);
         }
     }
@@ -95,7 +95,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
 app.fadeAudio = function (source, time) {
     const currentTime = app.audioCtx.currentTime;
     const gain = app.audioCtx.createGain();
-    gain.gain.linearRampToValueAtTime(0, currentTime + time * 120/100);
+    gain.gain.linearRampToValueAtTime(0, currentTime + time * 120 / 100);
 
     source.connect(gain);
     gain.connect(app.audioCtx.destination);

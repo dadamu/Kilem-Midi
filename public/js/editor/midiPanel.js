@@ -28,7 +28,7 @@ app.panelLoadTrack = (trackId) => {
 app.notesRender = (posX, notes) => {
     for (let note of notes) {
         const { pitch } = note;
-        const left = posX / 64  * app.gridsInterval;
+        const left = posX / 64 * app.gridsInterval;
         const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.picthHeight;
         const noteDiv = $("<div></div>");
         noteDiv.addClass("note").width(app.gridsInterval / note.length).height(app.picthHeight);
@@ -65,13 +65,13 @@ app.createNote = (note) => {
     const trackId = $("#midiPanel").attr("trackId");
 
     //ignore duplicate not at same pos
-    if(app.music[app.user].tracks[trackId].notes[posX] && app.music[app.user].tracks[trackId].notes[posX].filter(midi=>midi.pitch === pitch).length > 0)
+    if (app.music[app.user].tracks[trackId].notes[posX] && app.music[app.user].tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0)
         return;
-    
+
     const noteDiv = $("<div></div>");
     noteDiv.addClass("note").width(interval).height(picthHeight);
     noteDiv.css("left", left).css("bottom", bottom);
- 
+
     noteDiv.attr("pitch", pitch);
     noteDiv.attr("length", app.noteLength);
     $("#grids").append(noteDiv);

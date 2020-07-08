@@ -15,8 +15,8 @@ module.exports = {
     }),
     getFile: asyncHandler(async (req, res) => {
         const { room, user } = req.query;
-        if(!room || !user){
-            res.status(400).json({error: "Invalid input"});
+        if (!room || !user) {
+            res.status(400).json({ error: "Invalid input" });
             return;
         }
         const file = await midiModel.getFile(room, user);

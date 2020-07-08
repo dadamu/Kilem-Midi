@@ -30,9 +30,9 @@ app.addTrackListen = () => {
     });
 };
 
-app.initiTrackRender = () =>{
+app.initiTrackRender = () => {
     let trackDiv;
-    for( let [key, track] of Object.entries(app.music[app.user].tracks)){
+    for (let [key, track] of Object.entries(app.music[app.user].tracks)) {
         trackDiv = addTrackRender(key, track.trackName, track.instrument);
     }
     app.trackSelect(trackDiv);
@@ -47,20 +47,24 @@ app.addTrack = () => {
     app.trackSelect(trackDiv);
 };
 
-const addTrackRender = (trackId, trackName, instrument="piano") => {
+const addTrackRender = (trackId, trackName, instrument = "piano") => {
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId);
     const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
-    const region = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
+    const regionDiv = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
 
     const instrumentSelect = $("<select></select>").addClass("instrument-selector").attr("id", "instrumentSelector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
     $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
-    $("#regionContent").append(region);
-    $(region).width(app.musicLength * app.regionInterval);
-    $(trackDiv).append(trackNameDiv, instrumentSelect);
+    $("#regionContent").append(regionDiv);
+
+    //const versionControl = app.trackVersionRender();
+    const musciControl = app.trackControlRender();
+    $(trackDiv).append(trackNameDiv, instrumentSelect, musciControl);
     $("#tracksContent").append(trackDiv);
+
+    $(regionDiv).width(app.musicLength * app.regionInterval);
     return trackDiv;
 };
 
@@ -75,6 +79,22 @@ app.deleteTrackListen = () => {
         $(".region").last().addClass("selected");
         app.panelLoadTrack($(".region").last().attr("trackId"));
     });
+};
+
+app.trackVersionRender = () => {
+    const commitButton = $("<button></button>").addClass("version-commit").text("commit");
+    const pullButton = $("<button></button>").addClass("version-pull").text("Pull");
+    const versionDiv = $("<div></div>").addClass("version-control");
+    versionDiv.append(pullButton, commitButton);
+    return versionDiv;
+};
+
+app.trackControlRender = () => {
+    const muteButton = $("<button></button>").addClass("control-mute").text("M");
+    const singleButton = $("<button></button>").addClass("control-single").text("S");
+    const controlDiv = $("<div></div>").addClass("track-control");
+    controlDiv.append(singleButton, muteButton);
+    return controlDiv;
 };
 
 app.trackSelectListen = () => {

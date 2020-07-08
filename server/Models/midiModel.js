@@ -2,8 +2,12 @@ const mongoCon = require("../../util/mongoCon");
 module.exports = {
     createRoom: async (body) => {
         const db = await mongoCon.connect();
-        const result = await db.createCollection(body.name);
-        console.log(result);
+        const collection = await db.collection(body.room);
+        await collection.insertOne({
+            user: "master",
+            fileName: "Untitled",
+            tracks: {}
+        });
         return;
     },
     saveFile: async (body) => {
@@ -14,6 +18,7 @@ module.exports = {
             user: user
         }, {
             $set: { "save": data },
+
             $currentDate: { lastModified: true }
         });
         return;
@@ -28,10 +33,18 @@ module.exports = {
     getFile: async (room, user) => {
         const db = await mongoCon.connect();
         const collection = db.collection(room);
-        const result = await collection.findOne({
-            user: {
-                $eq: user
-            }
+        const result = await collection.findMany({
+            $or: [
+                {
+                    user: {
+                        $eq: user
+                    }
+                }, {
+                    user: {
+                        $eq: "master"
+                    }
+                }
+            ]
         });
         return result;
     }

@@ -5,7 +5,8 @@ app.setConfig = () => {
     app.user = "user";
     app.roomId = "test";
     app.music = {};
-    app.music.fileName = "test";
+    app.master = {};
+    app.music.user = {};
     app.instruments = {};
 
     //UI config
@@ -16,7 +17,7 @@ app.setConfig = () => {
     app.regionInterval = 200;
     app.gridsInterval = 200;
     app.picthHeight = 11.65;
-    
+
     //Playing Config
     app.playingTracks = {};
     app.currentTime = 0;
@@ -47,26 +48,26 @@ app.midiSvgGrid = (interval, picthHeight, keysNum, musicLength) => `
                 <path d="M ${Math.floor(interval / 8)} 0 L 0 0 0 ${Math.floor(interval / 8)}" fill="none" stroke="gray" stroke-width="0.5" />
             </pattern>
             <pattern id="svgWhiteSmallGrid" width="${Math.floor(interval / 4)}" height="${picthHeight}" patternUnits="userSpaceOnUse">
-                <rect width="${interval/4}" height="${picthHeight}" fill="url(#svgWhiteTinyGrid)" />
+                <rect width="${interval / 4}" height="${picthHeight}" fill="url(#svgWhiteTinyGrid)" />
                 <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="#AAAAAA" stroke-width="0.5" />
             </pattern>
             <pattern id="svgBlackSmallGrid" width="${Math.floor(interval / 4)}" height="${picthHeight}" patternUnits="userSpaceOnUse">
-                <rect width="${interval/4}" height="${picthHeight}" fill="url(#svgBlackTinyGrid)" />
+                <rect width="${interval / 4}" height="${picthHeight}" fill="url(#svgBlackTinyGrid)" />
                 <path d="M ${Math.floor(interval / 4)} 0 L 0 0 0 ${Math.floor(interval / 4)}" fill="none" stroke="#AAAAAA" stroke-width="0.5" />
             </pattern>
             <pattern id="svgMainGrid" width="${interval}" height="${12 * picthHeight}" patternUnits="userSpaceOnUse">
-                <rect y="${picthHeight*0}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*1}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
-                <rect y="${picthHeight*2}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*3}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
-                <rect y="${picthHeight*4}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*5}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
-                <rect y="${picthHeight*6}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*7}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*8}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
-                <rect y="${picthHeight*9}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
-                <rect y="${picthHeight*10}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
-                <rect y="${picthHeight*11}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 0}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 1}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
+                <rect y="${picthHeight * 2}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 3}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
+                <rect y="${picthHeight * 4}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 5}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
+                <rect y="${picthHeight * 6}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 7}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 8}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
+                <rect y="${picthHeight * 9}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
+                <rect y="${picthHeight * 10}" width="${interval}" height="${picthHeight}" fill="url(#svgBlackSmallGrid)" />
+                <rect y="${picthHeight * 11}" width="${interval}" height="${picthHeight}" fill="url(#svgWhiteSmallGrid)" />
                 <path d="M ${interval} 0 L 0 0 0 ${interval}" fill="none" stroke="white" stroke-width="2" />
             </pattern>
         </defs>

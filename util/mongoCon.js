@@ -5,7 +5,7 @@ const { MONGO_HOST, MONGO_USER, MONGO_PASS, MONGO_PORT, MONGO_DATABASE } = proce
 module.exports = {
     connect: async () => {
         const connection = new MongoClient(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}`, {
-            useNewUrlParser   : true,
+            useNewUrlParser: true,
             useUnifiedTopology: true
         });
         const client = await connection.connect();
