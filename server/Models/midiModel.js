@@ -10,7 +10,7 @@ module.exports = {
     addUser: async (body) => {       
         return body;
     },
-    getFile: async (room, user) => {       
+    getFile: async (room, user) => {
         return [room, user];
     },
     addTrack: async (body) => {   
