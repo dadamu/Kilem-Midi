@@ -32,8 +32,8 @@ app.addTrackListen = () => {
 
 app.initiTrackRender = () => {
     let trackDiv;
-    for (let [key, track] of Object.entries(app.music[app.user].tracks)) {
-        trackDiv = addTrackRender(key, track.trackName, track.instrument);
+    for (let [key, track] of Object.entries(app.music[app.userId].tracks)) {
+        trackDiv = addTrackRender(key, track.name, track.instrument);
     }
     app.trackSelect(trackDiv);
     return;
@@ -43,7 +43,7 @@ app.addTrack = () => {
     const trackId = ++app.trackNum;
     const trackName = "Track" + trackId;
     const trackDiv = addTrackRender(trackId, trackName);
-    app.music[app.user].addTrack(new Track(trackId, trackName, "piano"));
+    app.music[app.userId].addTrack(new Track(trackId, trackName, "piano"));
     app.trackSelect(trackDiv);
 };
 
@@ -72,7 +72,7 @@ const addTrackRender = (trackId, trackName, instrument = "piano") => {
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(() => {
         const selectedTrack = $(".track.selected");
-        app.music[app.user].deleteTrack(selectedTrack.attr("trackId"));
+        app.music[app.userId].deleteTrack(selectedTrack.attr("trackId"));
         selectedTrack.remove();
         $(".region.selected").remove();
         $(".track").last().addClass("selected");
@@ -122,7 +122,7 @@ app.changeInstrumentListen = () => {
     $(".tracks-title").on("change", ".instrument-selector", function () {
         const trackId = $(this).parent().attr("trackId");
         const instrument = $(this).val();
-        app.music[app.user].tracks[trackId].instrument = instrument;
+        app.music[app.userId].tracks[trackId].instrument = instrument;
     });
 };
 

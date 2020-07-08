@@ -2,16 +2,17 @@
 
 app.saveFileListen = () => {
     $("#save").click(() => {
-        app.saveFile("user");
+        app.saveFile(app.userId, app.roomId);
     });
 };
 
-app.saveFile = async (user) => {
+app.saveFile = async (userId, roomId) => {
     const endpoint = "/api/1.0/midi/saveFile";
     const data = {};
-    data.user = user;
-    data.room = "test";
-    data.data = app.music[user];
+    data.userId = userId;
+    data.roomId = roomId;
+    data.data = app.music[userId];
+    console.log(data);
     const result = await app.postData(endpoint, data);
     console.log(result);
 };

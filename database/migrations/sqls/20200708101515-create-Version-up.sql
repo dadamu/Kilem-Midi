@@ -2,7 +2,7 @@
 CREATE TABLE `version` (
   `id` INT NOT NULL,
   `track_pid` BIGINT UNSIGNED NOT NULL,
-  `creator_id` BIGINT UNSIGNED NOT NULL,
+  `user_id` BIGINT UNSIGNED NOT NULL,
   `version` INT UNSIGNED NOT NULL,
   `notes` VARCHAR(16384) NOT NULL,
   PRIMARY KEY (`id`),
@@ -13,7 +13,7 @@ CREATE TABLE `version` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_vu_user_id`
-    FOREIGN KEY (`creator_id`)
+    FOREIGN KEY (`user_id`)
     REFERENCES `user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);

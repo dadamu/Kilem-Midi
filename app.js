@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const serveStatic = require("serve-static");
+const path = require("path");
+const viewsPath = "./views/";
 require("dotenv").config();
 const { API_VERSION } = process.env;
 
@@ -25,14 +27,18 @@ app.get("/", (req, res) => {
     res.send("Hello Kilem-Midi.");
 });
 
-app.use((req, res, next) => {
+app.use("/api", (req, res, next) => {
     const err = new Error("Not Found");
     err.status = 404;
     next(err);
 });
 
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, viewsPath, "404.html"));
+});
+
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use("/api", (err, req, res, next) => {
     res.status(err.status || 500);
     if (err.status != 404) {
         console.log(err);

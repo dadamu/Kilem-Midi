@@ -2,11 +2,10 @@ const app = {};
 
 app.setConfig = () => {
     //Music config
-    app.user = "user";
-    app.roomId = "test";
+    app.userId = 1;
+    app.roomId = parseInt(document.URL.split("/").pop());
     app.music = {};
     app.master = {};
-    app.music.user = {};
     app.instruments = {};
 
     //UI config

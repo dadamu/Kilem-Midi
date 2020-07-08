@@ -16,7 +16,7 @@ class MidiFile {
     initTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
-            newTracks[track.trackId] = new Track(track.trackId, track.trackName, track.instrument, track.notes);
+            newTracks[track.id] = new Track(track.id, track.name, track.instrument, track.notes);
         }
         return newTracks;
     }
