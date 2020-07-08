@@ -14,4 +14,7 @@ router.route("/midi/addUser")
 router.route("/midi/getFile")
     .get(midiController.getFile);
 
+router.route("/midi/commit/:type")
+    .post(midiController.commit);
+
 module.exports = router;

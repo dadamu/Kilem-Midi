@@ -21,5 +21,15 @@ module.exports = {
         }
         const file = await midiModel.getFile(room, user);
         res.status(200).json({ data: file });
+    }),
+    commit: asyncHandler(async (req, res) => {
+        const { type } = req.params;
+        let result;
+        switch (type) {
+            case "addTrack":
+                await midiModel.addTrack(req.body);
+                break;
+        }
+        res.send(result);
     })
 };

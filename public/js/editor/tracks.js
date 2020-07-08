@@ -59,9 +59,9 @@ const addTrackRender = (trackId, trackName, instrument = "piano") => {
     $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
     $("#regionContent").append(regionDiv);
 
-    //const versionControl = app.trackVersionRender();
-    const musciControl = app.trackControlRender();
-    $(trackDiv).append(trackNameDiv, instrumentSelect, musciControl);
+    const versionControl = app.trackVersionRender();
+    //const musciControl = app.trackControlRender();
+    $(trackDiv).append(trackNameDiv, instrumentSelect, versionControl);
     $("#tracksContent").append(trackDiv);
 
     $(regionDiv).width(app.musicLength * app.regionInterval);

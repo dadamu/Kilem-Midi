@@ -5,10 +5,10 @@ class MidiFile {
         this.tracks = this.initTracks(tracks);
     }
     addTrack(track) {
-        this.tracks[track.trackId] = track;
+        this.tracks[track.id] = track;
     }
-    deleteTrack(trackId) {
-        delete this.tracks[trackId];
+    deleteTrack(id) {
+        delete this.tracks[id];
     }
     outPutPlayMidi() {
         return JSON.parse(JSON.stringify(this.tracks));
@@ -30,9 +30,9 @@ class MasterMidi extends MidiFile {
 }
 
 class Track {
-    constructor(trackId, trackName, instrument, notes = {}) {
-        this.trackId = trackId;
-        this.trackName = trackName;
+    constructor(id, name, instrument, notes = {}) {
+        this.id = id;
+        this.name = name;
         this.instrument = instrument;
         this.notes = this.initNotes(notes);
     }
