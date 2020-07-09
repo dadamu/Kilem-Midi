@@ -20,7 +20,8 @@ app.use("/public", serveStatic("./public", {
 app.use("/", require("./Server/Routes/front_route"));
 app.use("/api/" + API_VERSION, [
     require("./Server/Routes/1.0/user_api"),
-    require("./Server/Routes/1.0/midi_api")
+    require("./Server/Routes/1.0/midi_api"),
+    require("./Server/Routes/1.0/room_api")
 ]);
 
 app.get("/", (req, res) => {

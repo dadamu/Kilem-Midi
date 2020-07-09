@@ -1,11 +1,11 @@
 const path = require("path");
 const viewsPath = "../../views";
-const midiModel = require("../Models/midiModel");
+const roomModel = require("../Models/roomModel");
 const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
     midiEditor: asyncHandler(async (req, res) => {
         const { id } = req.params;
-        const isRoomExisted = await midiModel.hasRoom(id);
+        const isRoomExisted = await roomModel.hasRoom(id);
         if(!isRoomExisted){
             res.sendFile(path.join(__dirname, viewsPath, "404.html"));
             return;
