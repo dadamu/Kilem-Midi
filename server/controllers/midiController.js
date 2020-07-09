@@ -23,6 +23,11 @@ module.exports = {
                 break;
             }
             case "commitTrack": {
+                const isValid = await midiModel.commitAuthorityCheck(req.body);
+                if(!isValid){
+                    res.json({ error: "It's Not Your Locked Track" });
+                    break;
+                }
                 const result = await midiModel.trackCommit(req.body);
                 if (result instanceof Error) {
                     res.json({ error: result.message });

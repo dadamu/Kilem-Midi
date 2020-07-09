@@ -64,7 +64,6 @@ module.exports = {
                 trackPid = select[0].id;
                 version = 0;
                 oldNotes = "{}";
-                console.log(trackPid);
             }
             if (newNotes === oldNotes) {
                 await trx.rollback();
@@ -92,6 +91,12 @@ module.exports = {
         const select = await knex("version AS v").select(["v.notes AS notes", "t.track_id AS trackId"]).innerJoin("track AS t", "v.track_pid", "t.id")
             .where("v.version", version).andWhere("t.track_id", trackId).andWhere("t.room_id", roomId);
         return { notes: JSON.parse(select[0].notes), trackId };
+    },
+    commitAuthorityCheck: async(body) => {
+        const { roomId, userId, trackId } = body;
+        const select = await knex("track AS t").select(["t.user_id AS creatorId"])
+            .where("t.track_id", trackId).andWhere("t.room_id", roomId);   
+        return select[0].creatorId === userId;
     }
 };
 
