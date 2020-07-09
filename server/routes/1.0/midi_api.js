@@ -8,7 +8,7 @@ router.route("/midi/saveFile")
 router.route("/midi/getFile")
     .get(midiController.getFile);
 
-router.route("/midi/commit/:type")
+router.route("/midi/commit")
     .post(midiController.commit);
 
 module.exports = router;

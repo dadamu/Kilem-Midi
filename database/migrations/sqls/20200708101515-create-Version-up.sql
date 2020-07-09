@@ -1,12 +1,10 @@
 /* Replace with your SQL commands */
 CREATE TABLE `version` (
-  `id` INT NOT NULL,
   `track_pid` BIGINT UNSIGNED NOT NULL,
-  `user_id` BIGINT UNSIGNED NOT NULL,
   `version` INT UNSIGNED NOT NULL,
+  `user_id` BIGINT UNSIGNED NOT NULL,
   `notes` VARCHAR(16384) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_vt_track_pid_idx` (`track_pid` ASC) VISIBLE,
+  PRIMARY KEY (`track_pid`, `version`),
   CONSTRAINT `fk_vt_track_pid`
     FOREIGN KEY (`track_pid`)
     REFERENCES `track` (`id`)
