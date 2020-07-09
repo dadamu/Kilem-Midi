@@ -14,6 +14,23 @@ class MidiFile {
     outPutPlayMidi() {
         return JSON.parse(JSON.stringify(this.tracks));
     }
+
+    getNotes(trackId){
+        return this.tracks[trackId].notes;
+    }
+
+    getVersions(trackId){
+        return this.tracks[trackId].versions;
+    }
+
+    getTrack(trackId){
+        return this.tracks[trackId];
+    }
+
+    setNotes(trackId, notes){
+        this.tracks[trackId].setNotes(notes);
+    }
+
     initTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
@@ -55,6 +72,12 @@ class Track {
         else
             this.notes[posX] = posXNotes;
     }
+
+    setNotes(notes){
+        const newNotes = this.initNotes(notes);
+        this.notes = newNotes; 
+    }
+
     initNotes(notes) {
         const newNotes = {};
         for (let [posX, xNotes] of Object.entries(notes)) {

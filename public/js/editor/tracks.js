@@ -33,7 +33,7 @@ app.addTrackListen = () => {
 app.initiTrackRender = () => {
     let trackDiv;
     for (let [key, track] of Object.entries(app.music[app.userId].tracks)) {
-        trackDiv = addTrackRender(key, track.name, track.instrument);
+        trackDiv = addTrackRender(key, track.name, track.instrument, track.version);
     }
     app.trackSelect(trackDiv);
     return;
@@ -51,13 +51,14 @@ app.addTrack = async () => {
         app.music[app.userId].addTrack(new Track(id, name, "piano"));
         app.trackSelect(trackDiv);
     }
-    catch(e){
+    catch (e) {
         console.log(e);
     }
 };
 
-const addTrackRender = (trackId, trackName, instrument = "piano") => {
-    const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId);
+const addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
+
+    const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
     const regionDiv = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
 
@@ -68,9 +69,21 @@ const addTrackRender = (trackId, trackName, instrument = "piano") => {
     $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
     $("#regionContent").append(regionDiv);
 
-    const versionControl = app.trackVersionRender();
+    const versionControl = app.trackVersionRender(trackId);
     //const musciControl = app.trackControlRender();
-    $(trackDiv).append(trackNameDiv, instrumentSelect, versionControl);
+
+    const track = app.music[app.userId].getTrack(trackId);
+    const { creator, lock } = track;
+    if(creator.id === app.userId){
+        const mine = $("<div></div>").addClass(".track-mine").text("自");
+        $(trackDiv).append(mine);
+    }
+    const lockDiv = $("<div></div>").addClass("track-lock").text("開");
+    if(lock){
+        $(lockDiv).text("鎖");
+    }
+
+    $(trackDiv).append(trackNameDiv, instrumentSelect, versionControl, lockDiv);
     $("#tracksContent").append(trackDiv);
 
     $(regionDiv).width(app.musicLength * app.regionInterval);
@@ -90,11 +103,24 @@ app.deleteTrackListen = () => {
     });
 };
 
-app.trackVersionRender = () => {
+app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("commit");
-    const pullButton = $("<button></button>").addClass("version-pull").text("Pull");
+    const selector = $("<select></select>").addClass("version-select");
+    const versions = app.music.master.tracks[trackId].versions;
+    for (let version of versions) {
+        const option = $("<option></option>").text(version.name).val(version.version);
+        selector.append(option);
+    }
+    if (versions.length === 0) {
+        const option = $("<option></option>").text("No Version").val(0);
+        selector.append(option);
+        $(selector).val(0);
+    }
+    else {
+        $(selector).val(versions[versions.length - 1].version);
+    }
     const versionDiv = $("<div></div>").addClass("version-control");
-    versionDiv.append(pullButton, commitButton);
+    versionDiv.append(selector, commitButton);
     return versionDiv;
 };
 

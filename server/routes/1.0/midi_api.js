@@ -11,4 +11,7 @@ router.route("/midi/getFile")
 router.route("/midi/commit")
     .post(midiController.commit);
 
+router.route("/midi/pull")
+    .get(midiController.pull);
+
 module.exports = router;

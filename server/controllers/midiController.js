@@ -18,10 +18,24 @@ module.exports = {
         const { type } = req.body;
         switch (type) {
             case "addTrack": {
-                const track = await midiModel.addTrack(req.body);
+                const track = await midiModel.trackAdd(req.body);
                 res.json({ track });
                 break;
             }
+            case "commitTrack": {
+                const result = await midiModel.trackCommit(req.body);
+                if (result instanceof Error) {
+                    res.json({ error: result.message });
+                    break;
+                }
+                res.json({ status: "success" });
+                break;
+            }
         }
+    }),
+    pull: asyncHandler(async (req, res) => {
+        const { roomId, trackId, version } = req.query;
+        const result = await midiModel.versionPull(roomId, trackId, version);
+        res.json(result);
     })
 };

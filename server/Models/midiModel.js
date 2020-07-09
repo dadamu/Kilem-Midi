@@ -11,7 +11,7 @@ module.exports = {
         const userData = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS creatorId", "u1.username AS creatorName", "u2.id AS commiterId", "u2.username AS commiterName",
-                "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.notes AS notes", "t.instrument AS instrument", "t.lock AS lock"])
+                "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument", "t.lock AS lock"])
             .innerJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_pid")
             .innerJoin("user AS u1", "u1.id", "t.user_id")
@@ -20,11 +20,11 @@ module.exports = {
         const masterData = getMasterData(selectMaster);
         return { user: JSON.parse(userData[0].data), master: masterData };
     },
-    addTrack: async (body) => {
+    trackAdd: async (body) => {
         const { roomId, userId } = body;
-        const trx = await knex.transaction();
         let id = 0;
         let name = "";
+        const trx = await knex.transaction();
         try {
             const select = await trx("track").select(["track_id"]).innerJoin("room", "track.room_id", "room.id").where("room.id", roomId).forUpdate();
             id = select.length + 1;
@@ -42,6 +42,56 @@ module.exports = {
             throw e;
         }
         return { id, name };
+    },
+    trackCommit: async (body) => {
+        const { roomId, userId, trackId, name, notes } = body;
+        const newNotes = JSON.stringify(notes);
+        const trx = await knex.transaction();
+        try {
+            const select = await trx("version AS v").select(["v.version", "v.track_pid AS trackPid", "v.notes AS notes"])
+                .innerJoin("track AS t", "v.track_pid", "t.id").where("t.track_id", trackId)
+                .andWhere("t.room_id", roomId).orderBy("v.version", "desc").limit(1).forUpdate();
+
+            let version, trackPid, oldNotes;
+            if (select.length > 0 ) {
+                const { version: sVersion, trackPid: sTrackPid, notes: sOldNotes } = select[0];
+                version = sVersion;
+                trackPid = sTrackPid;
+                oldNotes = sOldNotes;
+            }
+            else{
+                const select = await trx("track AS t").select(["t.id AS id"]).where("t.track_id", trackId).andWhere("t.room_id", roomId);
+                trackPid = select[0].id;
+                version = 0;
+                oldNotes = "{}";
+                console.log(trackPid);
+            }
+            if (newNotes === oldNotes) {
+                await trx.rollback();
+                return new Error("No Change");
+            }
+
+            const newVersion = version + 1;
+            const data = {
+                track_pid: trackPid,
+                version: newVersion,
+                user_id: userId,
+                name,
+                notes: newNotes
+            };
+            await trx("version").insert(data);
+            await trx.commit();
+            return data;
+        }
+        catch (e) {
+            await trx.rollback();
+            throw e;
+        }
+    },
+    versionPull: async(roomId, trackId, version) => {
+        const select = await knex("version AS v").select(["v.notes AS notes", "t.track_id AS trackId"]).innerJoin("track AS t", "v.track_pid", "t.id")
+            .where("v.version", version).andWhere("t.track_id", trackId).andWhere("t.room_id", roomId);
+        return { notes: JSON.parse(select[0].notes), trackId };
     }
 };
 
@@ -58,11 +108,16 @@ function getMasterData(data) {
             if (trackMap[trackId].version < track.version) {
                 trackMap[trackId] = track;
             }
-            versionsMap[trackId].push(track.version);
+            versionsMap[trackId].push({ version: track.version, name: track.versionName });
         }
         else {
             trackMap[trackId] = track;
-            versionsMap[trackId] = [track.version];
+            if (track.version) {
+                versionsMap[trackId] = [{ version: track.version, name: track.versionName }];
+            }
+            else {
+                versionsMap[trackId] = [];
+            }
         }
     });
     for (let track of Object.values(trackMap)) {
@@ -72,9 +127,9 @@ function getMasterData(data) {
         result.tracks[trackId].name = track.trackName;
 
         result.tracks[trackId].creator = { id: track.creatorId, name: track.creatorName };
-        if( result.tracks[trackId].commiter )
+        if (result.tracks[trackId].commiter)
             result.tracks[trackId].commiter = { id: track.commiterId, name: track.commiterName };
-        else{
+        else {
             result.tracks[trackId].commiter = {};
         }
 

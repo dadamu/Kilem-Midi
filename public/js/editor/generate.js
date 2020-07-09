@@ -24,6 +24,8 @@ app.UIListen = () => {
     app.saveFileListen();
     app.noteLengthListen();
     app.noteGridListen();
+    app.clickCommitListen();
+    app.versionChangeListen();
 };
 
 app.initRender = () => {
