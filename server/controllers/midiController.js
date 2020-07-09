@@ -18,8 +18,8 @@ module.exports = {
         const { type } = req.body;
         switch (type) {
             case "addTrack": {
-                const trackId = await midiModel.addTrack(req.body);
-                res.json({ trackId });
+                const track = await midiModel.addTrack(req.body);
+                res.json({ track });
                 break;
             }
         }

@@ -1,14 +1,18 @@
 const app = {};
 
 app.setConfig = () => {
-    //Music config
+    // User config
+    app.token = "";
     app.userId = 1;
+    app.username = "test1";
+
+    // Music config
     app.roomId = parseInt(document.URL.split("/").pop());
     app.music = {};
     app.master = {};
     app.instruments = {};
 
-    //UI config
+    // UI config
     app.musicLength = 8;
     app.scaleNumMax = 5;
     app.scaleNumMin = 1;
@@ -17,12 +21,12 @@ app.setConfig = () => {
     app.gridsInterval = 200;
     app.picthHeight = 11.65;
 
-    //Playing Config
+    // Playing Config
     app.playingTracks = {};
     app.currentTime = 0;
     app.isplaying = false;
 
-    //Control config
+    // Control config
     app.noteLength = 4;
     app.noteGrid = 4;
     app.isMidiEditorOpen = false;

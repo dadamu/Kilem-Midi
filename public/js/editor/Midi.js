@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+/* global app */
 class MidiFile {
     constructor(bpm, tracks = {}) {
         this.bpm = bpm;
@@ -16,24 +17,23 @@ class MidiFile {
     initTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
-            newTracks[track.id] = new Track(track.id, track.name, track.instrument, track.notes);
+            const { id, name, instrument, version, versions, creator, commiter, lock, notes } = track;
+            newTracks[track.id] = new Track(id, name, instrument, version, versions, creator, commiter, lock, notes);
         }
         return newTracks;
     }
 }
 
-class MasterMidi extends MidiFile {
-    constructor(fileName, bpm, tracks = {}) {
-        super(bpm, tracks);
-        this.fileName = fileName;
-    }
-}
-
 class Track {
-    constructor(id, name, instrument, notes = {}) {
+    constructor(id, name, instrument, version = 0, versions = [], creator = { id: app.userId, name: app.username }, commiter = {}, lock = 0, notes = {}) {
         this.id = id;
         this.name = name;
         this.instrument = instrument;
+        this.version = version;
+        this.versions = versions;
+        this.creator = creator;
+        this.commiter = commiter;
+        this.lock = lock;
         this.notes = this.initNotes(notes);
     }
 

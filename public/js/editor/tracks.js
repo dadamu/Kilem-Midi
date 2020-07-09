@@ -39,12 +39,21 @@ app.initiTrackRender = () => {
     return;
 };
 
-app.addTrack = () => {
-    const trackId = ++app.trackNum;
-    const trackName = "Track" + trackId;
-    const trackDiv = addTrackRender(trackId, trackName);
-    app.music[app.userId].addTrack(new Track(trackId, trackName, "piano"));
-    app.trackSelect(trackDiv);
+app.addTrack = async () => {
+    try {
+        const res = await app.postData("http://localhost:3000/api/1.0/midi/commit", {
+            type: "addTrack",
+            roomId: app.roomId,
+            userId: app.userId
+        });
+        const { id, name } = res.track;
+        const trackDiv = addTrackRender(id, name);
+        app.music[app.userId].addTrack(new Track(id, name, "piano"));
+        app.trackSelect(trackDiv);
+    }
+    catch(e){
+        console.log(e);
+    }
 };
 
 const addTrackRender = (trackId, trackName, instrument = "piano") => {

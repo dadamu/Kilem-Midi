@@ -10,7 +10,7 @@ module.exports = {
     getFile: async (roomId, userId) => {
         const userData = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
-            .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS creatorId", "u1.username AS creatorName", "u2.id AS commiterId", "u2.username AS commitorName",
+            .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS creatorId", "u1.username AS creatorName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.notes AS notes", "t.instrument AS instrument", "t.lock AS lock"])
             .innerJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_pid")
@@ -21,17 +21,19 @@ module.exports = {
         return { user: JSON.parse(userData[0].data), master: masterData };
     },
     addTrack: async (body) => {
-        const { roomId, userId, name } = body;
+        const { roomId, userId } = body;
         const trx = await knex.transaction();
-        let trackId = 0;
+        let id = 0;
+        let name = "";
         try {
             const select = await trx("track").select(["track_id"]).innerJoin("room", "track.room_id", "room.id").where("room.id", roomId).forUpdate();
-            trackId = select.length + 1;
+            id = select.length + 1;
+            name = `Track${id}`;
             await trx("track").insert({
-                name: name || "New Track",
+                name,
                 user_id: userId,
                 room_id: roomId,
-                track_id: trackId
+                track_id: id
             });
             await trx.commit();
         }
@@ -39,7 +41,7 @@ module.exports = {
             await trx.rollback();
             throw e;
         }
-        return trackId;
+        return { id, name };
     }
 };
 
@@ -48,31 +50,40 @@ function getMasterData(data) {
     result.bpm = data[0].bpm;
     result.fileName = data[0].fileName;
     result.tracks = {};
-    let map = {};
+    const trackMap = {};
+    const versionsMap = [];
     data.forEach(track => {
         const { trackId } = track;
-        if (map[trackId]) {
-            if (map[trackId].version < track.version) {
-                map[trackId] = track;
+        if (trackMap[trackId]) {
+            if (trackMap[trackId].version < track.version) {
+                trackMap[trackId] = track;
             }
+            versionsMap[trackId].push(track.version);
         }
         else {
-            map[trackId] = track;
+            trackMap[trackId] = track;
+            versionsMap[trackId] = [track.version];
         }
     });
-    for (let track of Object.values(map)) {
+    for (let track of Object.values(trackMap)) {
         const { trackId } = track;
         result.tracks[trackId] = {};
         result.tracks[trackId].id = track.trackId;
         result.tracks[trackId].name = track.trackName;
-        result.tracks[trackId].creatorId = track.creatorId;
-        result.tracks[trackId].creatorName = track.creatorName;
-        result.tracks[trackId].commitorId = track.commitorId;
-        result.tracks[trackId].commitorName = track.commitorName;
-        result.tracks[trackId].version = track.version;
+
+        result.tracks[trackId].creator = { id: track.creatorId, name: track.creatorName };
+        if( result.tracks[trackId].commiter )
+            result.tracks[trackId].commiter = { id: track.commiterId, name: track.commiterName };
+        else{
+            result.tracks[trackId].commiter = {};
+        }
+
         result.tracks[trackId].instrument = track.instrument;
-        result.tracks[trackId].notes = JSON.parse(track.notes);
+        result.tracks[trackId].notes = JSON.parse(track.notes) || {};
+
         result.tracks[trackId].lock = track.lock;
+        result.tracks[trackId].version = track.version || 0;
+        result.tracks[trackId].versions = versionsMap[trackId];
     }
     return result;
 }
