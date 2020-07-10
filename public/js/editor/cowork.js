@@ -11,13 +11,12 @@ app.clickCommitListen = () => {
         const name = prompt("fill version name", `version${version}`);
         try {
             const res = await app.fetchData("/api/1.0/midi/track", {
-                type: "commit",
                 roomId: app.roomId,
                 userId: app.userId,
                 name,
                 trackId,
                 notes: app.music[app.userId].getNotes(trackId)
-            }, "POST");
+            }, "PATCH");
             if (res.error) {
                 alert("Failed: " + res.error);
                 return;
@@ -48,7 +47,6 @@ app.versionChangeListen = () => {
 app.addTrack = async () => {
     try {
         await app.fetchData("http://localhost:3000/api/1.0/midi/track", {
-            type: "add",
             roomId: app.roomId,
             userId: app.userId
         }, "POST");

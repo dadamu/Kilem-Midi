@@ -1,6 +1,6 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    trackAdd: async (body) => {
+    add: async (body) => {
         const { roomId, userId } = body;
         let id = 0;
         let name = "";
@@ -37,7 +37,7 @@ module.exports = {
             throw e;
         }
     },
-    trackDelete: async (body) => {
+    delete: async (body) => {
         const { roomId, userId, trackId } = body;
         const trx = await knex.transaction();
         try {
@@ -60,7 +60,7 @@ module.exports = {
             throw e;
         }
     },
-    trackCommit: async (body) => {
+    commit: async (body) => {
         const { roomId, userId, trackId, name, notes } = body;
         const newNotes = JSON.stringify(notes);
         const trx = await knex.transaction();

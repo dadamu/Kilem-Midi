@@ -10,7 +10,10 @@ router.route("/midi/file")
     .get(fileController.getFile);
 
 router.route("/midi/track")
-    .post(trackController.commit);
+    .post(trackController.add);
+
+router.route("/midi/track")
+    .patch(trackController.commit);
 
 router.route("/midi/track")
     .get(trackController.pull);
