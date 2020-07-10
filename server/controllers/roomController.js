@@ -1,13 +1,13 @@
-const midiModel = require("../Models/roomModel");
+const roomModel = require("../Models/roomModel");
 const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
-    createRoom: asyncHandler(async (req, res) => {
-        const roomId = await midiModel.createRoom(req.body);
+    create: asyncHandler(async (req, res) => {
+        const roomId = await roomModel.create(req.body);
         res.status(201).json({ roomId });
     }),
     addUser: asyncHandler(async (req, res, next) => {
         try {
-            await midiModel.addUser(req.body);
+            await roomModel.addUser(req.body);
             res.status(201).json({ status: "success" });
         }
         catch (e) {

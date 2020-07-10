@@ -14,4 +14,7 @@ router.route("/midi/track")
 router.route("/midi/track")
     .get(midiController.pull);
 
+router.route("/midi/track")
+    .delete(midiController.delete);
+
 module.exports = router;

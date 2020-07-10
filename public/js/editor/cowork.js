@@ -1,4 +1,4 @@
-/* global app $ Track */
+/* global app $ */
 
 app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
@@ -47,15 +47,11 @@ app.versionChangeListen = () => {
 
 app.addTrack = async () => {
     try {
-        const res = await app.postData("http://localhost:3000/api/1.0/midi/track", {
+        await app.postData("http://localhost:3000/api/1.0/midi/track", {
             type: "add",
             roomId: app.roomId,
             userId: app.userId
         });
-        const { id, name } = res.track;
-        app.music[app.userId].addTrack(new Track(id, name, "piano")); 
-        const trackDiv = app.addTrackRender(id, name);
-        app.trackSelect(trackDiv);
     }
     catch (e) {
         console.log(e);

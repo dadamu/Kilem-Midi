@@ -31,11 +31,9 @@ app.addTrackListen = () => {
 };
 
 app.initiTrackRender = () => {
-    let trackDiv;
     for (let [key, track] of Object.entries(app.music[app.userId].tracks)) {
-        trackDiv = app.addTrackRender(key, track.name, track.instrument, track.version);
+        app.addTrackRender(key, track.name, track.instrument, track.version);
     }
-    app.trackSelect(trackDiv);
     return;
 };
 

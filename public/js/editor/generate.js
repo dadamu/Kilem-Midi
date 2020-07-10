@@ -6,6 +6,7 @@ app.init = async () => {
     app.instruments.bass = app.setBass();
     app.instruments.guitar = app.setGuitar();
     app.initRender();
+    await app.socketInit();
     app.UIListen();
 };
 

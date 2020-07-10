@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 const bodyParser = require("body-parser");
 const serveStatic = require("serve-static");
 const path = require("path");
 const viewsPath = "./views/";
 require("dotenv").config();
 const { API_VERSION } = process.env;
+
+app.set("io", io);
 
 app.use((req, res, next) => {
     res.set("Cache-Control", "no-cache");
@@ -49,6 +53,6 @@ app.use("/api", (err, req, res, next) => {
     res.json({ error: "Not Found" });
 });
 
-app.listen(process.env.HOST_PORT, () => {
+http.listen(process.env.HOST_PORT, () => {
     console.log("kilem-midi listening on port " + process.env.HOST_PORT);
 });

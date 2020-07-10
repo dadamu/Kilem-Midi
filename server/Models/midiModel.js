@@ -41,12 +41,21 @@ module.exports = {
                 track_id: id
             });
             await trx.commit();
+            
+            return {
+                id,
+                name,
+                instrument: "piano",
+                creator: {
+                    id: userId,
+                    name: "test" + userId
+                }
+            };
         }
         catch (e) {
             await trx.rollback();
             throw e;
         }
-        return { id, name };
     },
     trackCommit: async (body) => {
         const { roomId, userId, trackId, name, notes } = body;
@@ -97,7 +106,7 @@ module.exports = {
             .where("v.version", version).andWhere("t.track_id", trackId).andWhere("t.room_id", roomId);
         return { notes: JSON.parse(select[0].notes), trackId };
     },
-    commitAuthorityCheck: async (body) => {
+    authorityCheck: async (body) => {
         const { roomId, userId, trackId } = body;
         const select = await knex("track AS t").select(["t.user_id AS creatorId"])
             .where("t.track_id", trackId).andWhere("t.room_id", roomId);

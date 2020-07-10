@@ -15,16 +15,19 @@ module.exports = {
         res.status(200).json({ data: file });
     }),
     commit: asyncHandler(async (req, res) => {
-        const { type } = req.body;
+        const { type, roomId } = req.body;
         switch (type) {
             case "add": {
                 const track = await midiModel.trackAdd(req.body);
                 res.json({ track });
+
+                const io = req.app.get("io");
+                io.of("/room" + roomId).emit("addTrack", track);
                 break;
             }
             case "commit": {
-                const isValid = await midiModel.commitAuthorityCheck(req.body);
-                if(!isValid){
+                const isValid = await midiModel.authorityCheck(req.body);
+                if (!isValid) {
                     res.json({ error: "It's Not Your Locked Track" });
                     break;
                 }
@@ -34,6 +37,8 @@ module.exports = {
                     break;
                 }
                 res.json({ status: "success" });
+                const io = req.app.get("io");
+                io.of("/room" + roomId).emit("commit", result);
                 break;
             }
         }
@@ -42,5 +47,12 @@ module.exports = {
         const { roomId, trackId, version } = req.query;
         const result = await midiModel.versionPull(roomId, trackId, version);
         res.json(result);
+    }),
+    delete: asyncHandler(async (req, res) => {
+        const { roomId } = req.body;
+        const result = await midiModel.trackDelete(req.body);
+        res.json({ status: "success" });
+        const io = req.app.get("io");
+        io.of("/room" + roomId).emit("commit", result);
     })
 };
