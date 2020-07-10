@@ -7,7 +7,7 @@ const loadFile = async () => {
 
 app.setFile = async () => {
     const data = await loadFile();
-    let { user, master } = data;
+    const { user, master } = data;
     app.music.master = new MidiFile(master.bpm, master.tracks);
     app.fileName = master.fileName;
     if((Object.getOwnPropertyNames(user).length === 0)){

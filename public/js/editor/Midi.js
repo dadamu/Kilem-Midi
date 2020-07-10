@@ -3,7 +3,7 @@
 class MidiFile {
     constructor(bpm, tracks = {}) {
         this.bpm = bpm;
-        this.tracks = this.initTracks(tracks);
+        this.tracks = this.setTracks(tracks);
     }
     addTrack(track) {
         this.tracks[track.id] = track;
@@ -31,7 +31,7 @@ class MidiFile {
         this.tracks[trackId].setNotes(notes);
     }
 
-    initTracks(tracks) {
+    setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
             const { id, name, instrument, version, versions, creator, commiter, lock, notes } = track;
@@ -39,7 +39,7 @@ class MidiFile {
             newTrack.setVersion(version);
             newTrack.setVersions(versions);
             newTrack.setCreator(creator);
-            newTrack.setCreator(commiter);
+            newTrack.setCommiter(commiter);
             newTrack.setNotes(notes);
             newTracks[track.id] = newTrack;
         }
