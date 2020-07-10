@@ -22,7 +22,7 @@ module.exports = {
                 res.json({ track });
 
                 const io = req.app.get("io");
-                io.of("/room" + roomId).emit("addTrack", track);
+                io.of("/room" + roomId).to("editor").emit("addTrack", track);
                 break;
             }
             case "commit": {
@@ -38,7 +38,7 @@ module.exports = {
                 }
                 res.json({ status: "success" });
                 const io = req.app.get("io");
-                io.of("/room" + roomId).emit("commit", result);
+                io.of("/room" + roomId).to("editor").emit("commit", { track: result });
                 break;
             }
         }

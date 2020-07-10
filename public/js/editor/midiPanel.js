@@ -17,10 +17,12 @@ app.openMidiPanelListen = () => {
 
 app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
-    $("#midiPanel").attr("trackId", trackId);
-    if (app.music[app.userId].tracks[trackId]) {
-        for (let [posX, notes] of Object.entries(app.music[app.userId].tracks[trackId].notes)) {
-            app.notesRender(posX, notes);
+    if (!$("#midiPanel").hasClass("hidden")) {
+        $("#midiPanel").attr("trackId", trackId);
+        if (app.music[app.userId].tracks[trackId]) {
+            for (let [posX, notes] of Object.entries(app.music[app.userId].tracks[trackId].notes)) {
+                app.notesRender(posX, notes);
+            }
         }
     }
 };

@@ -27,6 +27,14 @@ class MidiFile {
         return this.tracks[trackId];
     }
 
+    setTrack(track){
+        const { id } = track;
+        this.setNotes(id, track.notes);
+        this.tracks[id].setCommiter(track.commiter);
+        this.tracks[id].addVersion(track.version);
+        this.tracks[id].setVersion(track.version);
+    }
+
     setNotes(trackId, notes){
         this.tracks[trackId].setNotes(notes);
     }
@@ -66,6 +74,10 @@ class Track {
 
     setVersion(version){
         this.version = version;
+    }
+
+    addVersion(version){
+        this.versions.push(version);
     }
 
     setVersions(versions){

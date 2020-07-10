@@ -37,6 +37,14 @@ app.initiTrackRender = () => {
     return;
 };
 
+app.addVersionOption = (track) => {
+    const { id, version } = track;
+    const option = $("<option></option>").text(version.name).val(version.version);
+    const select = $(`.track.track-${id} .version-select`);
+    select.append(option);
+    select.val(version.version);
+};
+
 app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);

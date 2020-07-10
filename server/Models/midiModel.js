@@ -94,7 +94,18 @@ module.exports = {
             };
             await trx("version").insert(data);
             await trx.commit();
-            return data;
+            return {
+                id: trackId,
+                commiter: {
+                    id: userId,
+                    name: "test" + userId
+                },
+                version: {
+                    version: newVersion,
+                    name: name
+                },
+                notes
+            };
         }
         catch (e) {
             await trx.rollback();

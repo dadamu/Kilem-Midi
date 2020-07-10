@@ -7,10 +7,11 @@ const serveStatic = require("serve-static");
 const path = require("path");
 const viewsPath = "./views/";
 require("dotenv").config();
+const ioController = require("./Server/Controllers/ioController");
 const { API_VERSION } = process.env;
 
 app.set("io", io);
-
+ioController.start(io);
 app.use((req, res, next) => {
     res.set("Cache-Control", "no-cache");
     next();
