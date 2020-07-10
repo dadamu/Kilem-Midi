@@ -17,12 +17,12 @@ module.exports = {
     commit: asyncHandler(async (req, res) => {
         const { type } = req.body;
         switch (type) {
-            case "addTrack": {
+            case "add": {
                 const track = await midiModel.trackAdd(req.body);
                 res.json({ track });
                 break;
             }
-            case "commitTrack": {
+            case "commit": {
                 const isValid = await midiModel.commitAuthorityCheck(req.body);
                 if(!isValid){
                     res.json({ error: "It's Not Your Locked Track" });

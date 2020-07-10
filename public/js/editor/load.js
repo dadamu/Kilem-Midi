@@ -1,6 +1,6 @@
 /* global app MidiFile */
 const loadFile = async () => {
-    const endpoint = `/api/1.0/midi/getFile?roomId=${app.roomId}&userId=${app.userId}`;
+    const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());
     return response.data;
 };

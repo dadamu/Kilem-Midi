@@ -7,11 +7,14 @@ app.saveFileListen = () => {
 };
 
 app.saveFile = async (userId, roomId) => {
-    const endpoint = "/api/1.0/midi/saveFile";
+    const endpoint = "/api/1.0/midi/file";
     const data = {};
     data.userId = userId;
     data.roomId = roomId;
     data.data = app.music[userId];
     const result = await app.postData(endpoint, data);
     console.log(result);
+    if(result.error){
+        alert("Save Error");
+    }
 };

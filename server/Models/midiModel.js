@@ -12,11 +12,11 @@ module.exports = {
         const selectMaster = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS creatorId", "u1.username AS creatorName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument", "t.lock AS lock"])
-            .innerJoin("track AS t", "t.room_id", "r.id")
+            .leftJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_pid")
-            .innerJoin("user AS u1", "u1.id", "t.user_id")
+            .leftJoin("user AS u1", "u1.id", "t.user_id")
             .leftJoin("user AS u2", "u2.id", "v.user_id")
-            .where("r.id", roomId).andWhere("active", 1);
+            .where("r.id", roomId);
         const masterData = getMasterData(selectMaster);
         return { user: JSON.parse(userData[0].data), master: masterData };
     },
@@ -26,8 +26,13 @@ module.exports = {
         let name = "";
         const trx = await knex.transaction();
         try {
-            const select = await trx("track").select(["track_id"]).innerJoin("room", "track.room_id", "room.id").where("room.id", roomId).forUpdate();
-            id = select.length + 1;
+            const select = await trx("track AS t").select(["t.track_id AS trackId"]).where("t.room_id", roomId).orderBy("t.track_id", "desc").forUpdate();
+            if (select.length == 0) {
+                id = 1;
+            }
+            else {
+                id = parseInt(select[0].trackId) + 1;
+            }
             name = `Track${id}`;
             await trx("track").insert({
                 name,
@@ -53,13 +58,13 @@ module.exports = {
                 .andWhere("t.room_id", roomId).orderBy("v.version", "desc").limit(1).forUpdate();
 
             let version, trackPid, oldNotes;
-            if (select.length > 0 ) {
+            if (select.length > 0) {
                 const { version: sVersion, trackPid: sTrackPid, notes: sOldNotes } = select[0];
                 version = sVersion;
                 trackPid = sTrackPid;
                 oldNotes = sOldNotes;
             }
-            else{
+            else {
                 const select = await trx("track AS t").select(["t.id AS id"]).where("t.track_id", trackId).andWhere("t.room_id", roomId);
                 trackPid = select[0].id;
                 version = 0;
@@ -87,15 +92,15 @@ module.exports = {
             throw e;
         }
     },
-    versionPull: async(roomId, trackId, version) => {
+    versionPull: async (roomId, trackId, version) => {
         const select = await knex("version AS v").select(["v.notes AS notes", "t.track_id AS trackId"]).innerJoin("track AS t", "v.track_pid", "t.id")
             .where("v.version", version).andWhere("t.track_id", trackId).andWhere("t.room_id", roomId);
         return { notes: JSON.parse(select[0].notes), trackId };
     },
-    commitAuthorityCheck: async(body) => {
+    commitAuthorityCheck: async (body) => {
         const { roomId, userId, trackId } = body;
         const select = await knex("track AS t").select(["t.user_id AS creatorId"])
-            .where("t.track_id", trackId).andWhere("t.room_id", roomId);   
+            .where("t.track_id", trackId).andWhere("t.room_id", roomId);
         return select[0].creatorId === userId;
     }
 };
@@ -107,6 +112,7 @@ function getMasterData(data) {
     result.tracks = {};
     const trackMap = {};
     const versionsMap = [];
+    // create Map
     data.forEach(track => {
         const { trackId } = track;
         if (trackMap[trackId]) {
@@ -127,6 +133,10 @@ function getMasterData(data) {
     });
     for (let track of Object.values(trackMap)) {
         const { trackId } = track;
+        if (!trackId) {
+            result.tracks = {};
+            return result;
+        }
         result.tracks[trackId] = {};
         result.tracks[trackId].id = track.trackId;
         result.tracks[trackId].name = track.trackName;

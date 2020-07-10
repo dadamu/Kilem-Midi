@@ -11,7 +11,7 @@ class MidiFile {
     deleteTrack(id) {
         delete this.tracks[id];
     }
-    outPutPlayMidi() {
+    getTracks() {
         return JSON.parse(JSON.stringify(this.tracks));
     }
 
@@ -35,23 +35,49 @@ class MidiFile {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
             const { id, name, instrument, version, versions, creator, commiter, lock, notes } = track;
-            newTracks[track.id] = new Track(id, name, instrument, version, versions, creator, commiter, lock, notes);
+            const newTrack = new Track(id, name, instrument, lock);
+            newTrack.setVersion(version);
+            newTrack.setVersions(versions);
+            newTrack.setCreator(creator);
+            newTrack.setCreator(commiter);
+            newTrack.setNotes(notes);
+            newTracks[track.id] = newTrack;
         }
         return newTracks;
     }
 }
 
 class Track {
-    constructor(id, name, instrument, version = 0, versions = [], creator = { id: app.userId, name: app.username }, commiter = {}, lock = 0, notes = {}) {
+    constructor(id, name, instrument) {
         this.id = id;
         this.name = name;
         this.instrument = instrument;
-        this.version = version;
-        this.versions = versions;
-        this.creator = creator;
-        this.commiter = commiter;
+        this.version = 0;
+        this.versions = [];
+        this.creator = {};
+        this.commiter = {};
+        this.lock = 1;
+        this.notes = {};
+    }
+
+    setLock(lock){
         this.lock = lock;
-        this.notes = this.initNotes(notes);
+    }
+
+    setVersion(version){
+        this.version = version;
+    }
+
+    setVersions(versions){
+        this.versions = versions;
+    }
+
+    setCreator(creator){
+        this.creator = creator;
+    }
+
+    setCommiter(commiter){
+        this.commiter = commiter;
     }
 
     addNote(note) {
@@ -73,17 +99,12 @@ class Track {
             this.notes[posX] = posXNotes;
     }
 
-    setNotes(notes){
-        const newNotes = this.initNotes(notes);
-        this.notes = newNotes; 
-    }
-
-    initNotes(notes) {
+    setNotes(notes) {
         const newNotes = {};
         for (let [posX, xNotes] of Object.entries(notes)) {
             newNotes[posX] = xNotes.map(note => new Note(note.pitch, note.posX, note.length));
         }
-        return newNotes;
+        this.notes = newNotes;
     }
 }
 

@@ -1,4 +1,4 @@
-/* global $ app Track */
+/* global $ app */
 app.initRulerRender = () => {
     const length = app.musicLength;
     const interval = app.regionInterval;
@@ -33,31 +33,13 @@ app.addTrackListen = () => {
 app.initiTrackRender = () => {
     let trackDiv;
     for (let [key, track] of Object.entries(app.music[app.userId].tracks)) {
-        trackDiv = addTrackRender(key, track.name, track.instrument, track.version);
+        trackDiv = app.addTrackRender(key, track.name, track.instrument, track.version);
     }
     app.trackSelect(trackDiv);
     return;
 };
 
-app.addTrack = async () => {
-    try {
-        const res = await app.postData("http://localhost:3000/api/1.0/midi/commit", {
-            type: "addTrack",
-            roomId: app.roomId,
-            userId: app.userId
-        });
-        const { id, name } = res.track;
-        const trackDiv = addTrackRender(id, name);
-        app.music[app.userId].addTrack(new Track(id, name, "piano"));
-        app.trackSelect(trackDiv);
-    }
-    catch (e) {
-        console.log(e);
-    }
-};
-
-const addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
-
+app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
     const regionDiv = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
@@ -106,7 +88,7 @@ app.deleteTrackListen = () => {
 app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("commit");
     const selector = $("<select></select>").addClass("version-select");
-    const versions = app.music.master.tracks[trackId].versions;
+    const versions = app.music[app.userId].getVersions(trackId);
     for (let version of versions) {
         const option = $("<option></option>").text(version.name).val(version.version);
         selector.append(option);

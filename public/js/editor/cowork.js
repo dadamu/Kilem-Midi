@@ -1,4 +1,4 @@
-/* global app $ */
+/* global app $ Track */
 
 app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
@@ -8,13 +8,13 @@ app.clickCommitListen = () => {
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
         }
-        const versionName = prompt("fill version name", `version${version}`);
+        const name = prompt("fill version name", `version${version}`);
         try {
-            const res = await app.postData("http://localhost:3000/api/1.0/midi/commit", {
-                type: "commitTrack",
+            const res = await app.postData("/api/1.0/midi/track", {
+                type: "commit",
                 roomId: app.roomId,
                 userId: app.userId,
-                name: versionName,
+                name,
                 trackId,
                 notes: app.music[app.userId].getNotes(trackId)
             });
@@ -35,7 +35,7 @@ app.versionChangeListen = () => {
         const version = $(this).val();
         const trackId = $(this).parent().parent().attr("trackId");
         const roomId = app.roomId;
-        const result = await fetch(`/api/1.0/midi/pull?roomId=${roomId}&trackId=${trackId}&version=${version}`).then(res => res.json());
+        const result = await fetch(`/api/1.0/midi/track?roomId=${roomId}&trackId=${trackId}&version=${version}`).then(res => res.json());
         if(!result.eror){
             app.music[app.userId].setNotes(result.trackId, result.notes);
             if(parseInt($(".track.selected").attr("trackId")) === parseInt(result.trackId)){
@@ -43,4 +43,21 @@ app.versionChangeListen = () => {
             }
         }
     });
+};
+
+app.addTrack = async () => {
+    try {
+        const res = await app.postData("http://localhost:3000/api/1.0/midi/track", {
+            type: "add",
+            roomId: app.roomId,
+            userId: app.userId
+        });
+        const { id, name } = res.track;
+        app.music[app.userId].addTrack(new Track(id, name, "piano")); 
+        const trackDiv = app.addTrackRender(id, name);
+        app.trackSelect(trackDiv);
+    }
+    catch (e) {
+        console.log(e);
+    }
 };

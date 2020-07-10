@@ -10,7 +10,7 @@ app.midiPlay = () => {
     if (!app.isplaying) {
         const bpm = app.music[app.userId].bpm;
         const resolution = 1 / (bpm / 60) / 16 * 1000;
-        const tracks = app.music[app.userId].outPutPlayMidi();
+        const tracks = app.music[app.userId].getTracks();
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
