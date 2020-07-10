@@ -12,8 +12,7 @@ app.saveFile = async (userId, roomId) => {
     data.userId = userId;
     data.roomId = roomId;
     data.data = app.music[userId];
-    const result = await app.postData(endpoint, data);
-    console.log(result);
+    const result = await app.fetchData(endpoint, data, "POST");
     if(result.error){
         alert("Save Error");
     }

@@ -78,19 +78,6 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     return trackDiv;
 };
 
-
-app.deleteTrackListen = () => {
-    $("#deleteTrack").click(() => {
-        const selectedTrack = $(".track.selected");
-        app.music[app.userId].deleteTrack(selectedTrack.attr("trackId"));
-        selectedTrack.remove();
-        $(".region.selected").remove();
-        $(".track").last().addClass("selected");
-        $(".region").last().addClass("selected");
-        app.panelLoadTrack($(".region").last().attr("trackId"));
-    });
-};
-
 app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("commit");
     const selector = $("<select></select>").addClass("version-select");

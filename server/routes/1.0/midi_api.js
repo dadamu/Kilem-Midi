@@ -1,20 +1,21 @@
 const express = require("express");
 const router = express();
-const midiController = require("../../Controllers/midiController");
+const trackController = require("../../Controllers/trackController");
+const fileController = require("../../Controllers/fileController");
 
 router.route("/midi/file")
-    .post(midiController.save);
+    .post(fileController.save);
 
 router.route("/midi/file")
-    .get(midiController.getFile);
+    .get(fileController.getFile);
 
 router.route("/midi/track")
-    .post(midiController.commit);
+    .post(trackController.commit);
 
 router.route("/midi/track")
-    .get(midiController.pull);
+    .get(trackController.pull);
 
 router.route("/midi/track")
-    .delete(midiController.delete);
+    .delete(trackController.delete);
 
 module.exports = router;

@@ -10,14 +10,14 @@ app.clickCommitListen = () => {
         }
         const name = prompt("fill version name", `version${version}`);
         try {
-            const res = await app.postData("/api/1.0/midi/track", {
+            const res = await app.fetchData("/api/1.0/midi/track", {
                 type: "commit",
                 roomId: app.roomId,
                 userId: app.userId,
                 name,
                 trackId,
                 notes: app.music[app.userId].getNotes(trackId)
-            });
+            }, "POST");
             if (res.error) {
                 alert("Failed: " + res.error);
                 return;
@@ -25,7 +25,7 @@ app.clickCommitListen = () => {
             alert("Success");
         }
         catch (e) {
-            alert("commit failed");
+            alert("Commit failed");
         }
     });
 };
@@ -47,13 +47,31 @@ app.versionChangeListen = () => {
 
 app.addTrack = async () => {
     try {
-        await app.postData("http://localhost:3000/api/1.0/midi/track", {
+        await app.fetchData("http://localhost:3000/api/1.0/midi/track", {
             type: "add",
             roomId: app.roomId,
             userId: app.userId
-        });
+        }, "POST");
     }
     catch (e) {
         console.log(e);
     }
+};
+
+
+app.deleteTrackListen = () => {
+    $("#deleteTrack").click(async() => {
+        const selectedTrack = $(".track.selected");
+        const deleteId = parseInt(selectedTrack.attr("trackId"));
+        const data = {
+            trackId: deleteId,
+            userId: app.userId,
+            roomId: app.roomId
+        };
+        const res = await app.fetchData("/api/1.0/midi/track", data, "Delete");
+        if(res.error){
+            alert(res.error);
+            return;
+        }
+    });
 };
