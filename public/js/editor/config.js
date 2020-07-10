@@ -27,8 +27,8 @@ app.setConfig = () => {
     app.isplaying = false;
 
     // Control config
-    app.noteLength = 4;
-    app.noteGrid = 4;
+    app.noteLength = 1/4;
+    app.noteGrid = 1/4;
     app.isMidiEditorOpen = false;
     startUserMedia();
 
