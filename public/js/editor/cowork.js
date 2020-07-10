@@ -8,6 +8,9 @@ app.clickCommitListen = () => {
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
         }
+        const check = confirm("Commit Check");
+        if(!check)
+            return;
         const name = prompt("fill version name", `version${version}`);
         try {
             const res = await app.fetchData("/api/1.0/midi/track", {
@@ -32,7 +35,7 @@ app.clickCommitListen = () => {
 app.versionChangeListen = () => {
     $("#tracksContent").on("change", ".version-select", async function () {
         const version = $(this).val();
-        const trackId = $(this).parent().parent().attr("trackId");
+        const trackId = $(this).closest(".track").attr("trackId");
         const roomId = app.roomId;
         const result = await fetch(`/api/1.0/midi/track?roomId=${roomId}&trackId=${trackId}&version=${version}`).then(res => res.json());
         if(!result.eror){

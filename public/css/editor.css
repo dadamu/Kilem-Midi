@@ -111,12 +111,13 @@ a{
 }
 
 .track{
-    height: 80px;
+    height: 120px;
     padding: 10px;
     border-right: #888888 solid 1px; 
     border-bottom: #888888 solid 1px;
     display: flex;
-    align-items: baseline;
+    flex-direction: column;
+    align-items: space-between;
 }
 
 .tracks-region{
@@ -127,12 +128,25 @@ a{
 }
 
 .track-lock{
-    width: 20px;
     cursor: pointer;
 }
 
+.track-info{
+    display: flex;
+    margin-left: 30px;
+}
+
+.version-control{
+    display: flex;
+    margin-top: auto;
+}
+
+.version-select{
+    flex:auto;
+}
+
 .region{
-    height: 80px;
+    height: 120px;
     border-bottom: #888888 solid 1px;
     border-right: #888888 solid 1px;
     width: 100%;

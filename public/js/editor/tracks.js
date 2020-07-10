@@ -46,32 +46,30 @@ app.addVersionOption = (track) => {
 };
 
 app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
-    const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
-    const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
     const regionDiv = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
+    $("#regionContent").append(regionDiv);
 
+    const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
+    const infoDiv = $("<div></div>").addClass("track-info");
+    const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
     const instrumentSelect = $("<select></select>").addClass("instrument-selector").attr("id", "instrumentSelector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
     $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
-    $("#regionContent").append(regionDiv);
+    infoDiv.append(trackNameDiv, instrumentSelect);
 
     const versionControl = app.trackVersionRender(trackId);
     //const musciControl = app.trackControlRender();
 
     const track = app.music[app.userId].getTrack(trackId);
-    const { creator, lock } = track;
-    if(creator.id === app.userId){
-        const mine = $("<div></div>").addClass(".track-mine").text("自");
-        $(trackDiv).append(mine);
-    }
+    const { lock } = track;
     const lockDiv = $("<div></div>").addClass("track-lock").text("開");
     if(lock){
         $(lockDiv).text("鎖");
     }
 
-    $(trackDiv).append(trackNameDiv, instrumentSelect, versionControl, lockDiv);
+    $(trackDiv).append(lockDiv, infoDiv, versionControl);
     $("#tracksContent").append(trackDiv);
 
     $(regionDiv).width(app.musicLength * app.regionInterval);
@@ -130,7 +128,7 @@ app.trackSelect = (target) => {
 
 app.changeInstrumentListen = () => {
     $(".tracks-title").on("change", ".instrument-selector", function () {
-        const trackId = $(this).parent().attr("trackId");
+        const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
         app.music[app.userId].tracks[trackId].instrument = instrument;
     });
