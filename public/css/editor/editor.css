@@ -1,6 +1,7 @@
 div,
 section,
 header,
+footer,
 a{
     box-sizing: border-box;
 }
@@ -20,6 +21,7 @@ a{
 }
 
 .main{
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -75,81 +77,11 @@ a{
 .selected{
     background-color: #444444; 
 }
+
 .editor-body{
     background-color: #333940;
     display: flex;
     flex-grow: 1;
-}   
-
-.tracks-title{
-    min-width:300px;
-    background-color: #23242d;
-}
-
-.tracks-control{
-    border-right: #888888 solid 1px; 
-    border-bottom: #888888 solid 1px; 
-    background-color: #333940;
-    padding: 5px 10px;
-    height: 50px;
-    display: flex;
-    vertical-align: middle;
-}
-
-.add-track,
-.delete-track{
-    cursor: pointer;
-    width: 30px;
-    margin-right: 5px;
-    text-align: center;
-}
-
-.tracks-content{
-    display: flex;
-    flex-direction: column;
-    width: 100%; 
-}
-
-.track{
-    height: 100px;
-    padding: 10px;
-    border-right: #888888 solid 1px; 
-    border-bottom: #888888 solid 1px;
-    display: flex;
-    flex-direction: column;
-    align-items: space-between;
-}
-
-.tracks-region{
-    overflow-x: scroll;
-    display: flex;
-    flex-direction: column;
-    margin-right : 20px;
-}
-
-.track-lock{
-    cursor: pointer;
-}
-
-.track-info{
-    display: flex;
-    margin-left: 30px;
-}
-
-.version-control{
-    display: flex;
-    margin-top: auto;
-}
-
-.version-select{
-    flex:auto;
-}
-
-.region{
-    height: 100px;
-    border-bottom: #888888 solid 1px;
-    border-right: #888888 solid 1px;
-    width: 100%;
 }
 
 .ruler{ 
@@ -173,7 +105,6 @@ a{
     position: absolute;
 }
 
-
 .control-button{
     display: inline-block;
     width: 80px;
@@ -181,17 +112,13 @@ a{
     cursor: pointer;
 }
 
-.region-content{
-    position: relative;
-    flex:auto;
-}
-
 .editor-footer{
     display: flex;
     background-color: #333940;
     margin-top: auto;
     padding: 10px;
-    height: 20px;
+    height: 45px;
+    align-items: center;
     border-top: #AAAAAA solid 1px;
 }
 

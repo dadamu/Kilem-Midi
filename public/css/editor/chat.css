@@ -1,0 +1,12 @@
+.chatroom{
+    position: absolute;
+    min-width: 300px;
+    min-height: 500px;
+    bottom: 45px;
+    right: 0px;
+    background-color: white;
+}
+
+.chat-button{
+    margin-left: auto;
+}

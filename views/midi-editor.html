@@ -6,9 +6,11 @@
         content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,viewport-fit=cover">
     <script src="/public/js/util/jquery-min-3.5.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <link href="/public/css/normalize.css" rel="stylesheet" type="text/css">
-    <link href="/public/css/editor.css" rel="stylesheet" type="text/css">
-    <link href="/public/css/midiPanel.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/normalize.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/editor.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/track.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/midiPanel.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/chat.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -75,10 +77,16 @@
         </section>
         <footer class="editor-footer">
             <div id="midiPanelButton" class="midi-panel-button control-button">Midi Editor</div>
-            <div id="playButton" class="control-play-button control-button">Start</div>
-            <div id="stopButton" class="control-stop-button control-button">Stop</div>
-            <div id="resetButton" class="control-reset-button control-button">Reset</div>
+            <div id="playButton" class="play-button control-button">Start</div>
+            <div id="stopButton" class="stop-button control-button">Stop</div>
+            <div id="resetButton" class="reset-button control-button">Reset</div>
+            <div id="chatButton" class="chat-button control-button">Chat</div>
         </footer>
+        <section class="chatroom hidden">
+            <div class="message-container">
+
+            </div>
+        </section>
     </main>
 </body>
 <script src="/public/js/editor/Midi.js"></script>
