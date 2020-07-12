@@ -37,4 +37,10 @@ app.ioListen = async () => {
         $(".region").first().addClass("selected");
         app.panelLoadTrack($(".region").last().attr("trackId"));
     });
+
+    app.on("lock", (data) => {
+        const { track } = data;
+        app.music[app.userId].changeLocker(track.id, track.locker);
+        $(`.track.track-${track.id} .track-lock`).html( app.lockerRender(track.locker).html() );
+    });
 };

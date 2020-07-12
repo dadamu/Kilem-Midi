@@ -27,6 +27,7 @@ app.UIListen = () => {
     app.noteGridListen();
     app.clickCommitListen();
     app.versionChangeListen();
+    app.lockClickListen();
 };
 
 app.initRender = () => {

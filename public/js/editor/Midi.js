@@ -39,6 +39,10 @@ class MidiFile {
         this.tracks[trackId].setNotes(notes);
     }
 
+    changeLocker(trackId, locker){
+        this.tracks[trackId].changeLocker(locker);
+    }
+
     setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
@@ -85,6 +89,10 @@ class Track {
 
     setCommiter(commiter){
         this.commiter = commiter;
+    }
+
+    changeLocker(locker){
+        this.locker = locker;
     }
 
     addNote(note) {

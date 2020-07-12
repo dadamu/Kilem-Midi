@@ -12,13 +12,16 @@ router.route("/midi/file")
 router.route("/midi/track")
     .post(trackController.add);
 
-router.route("/midi/track")
-    .patch(trackController.commit);
+router.route("/midi/track/:id")
+    .put(trackController.commit);
+
+router.route("/midi/track/:id")
+    .patch(trackController.lockSet);
 
 router.route("/midi/track")
     .get(trackController.pull);
 
-router.route("/midi/track")
+router.route("/midi/track/:id")
     .delete(trackController.delete);
 
 module.exports = router;

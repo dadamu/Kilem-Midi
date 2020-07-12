@@ -41,6 +41,7 @@ app.addVersionOption = (track) => {
     const { id, version } = track;
     const option = $("<option></option>").text(version.name).val(version.version);
     const select = $(`.track.track-${id} .version-select`);
+    $(`.track.track-${id} option[value='0']`).remove();
     select.append(option);
     select.val(version.version);
 };
@@ -64,21 +65,28 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
 
     const track = app.music[app.userId].getTrack(trackId);
     const { locker } = track;
+    const lockDiv = app.lockerRender(locker);
+    $(trackDiv).append(lockDiv, infoDiv, versionControl);
+    $("#tracksContent").append(trackDiv);
+
+    $(regionDiv).width(app.musicLength * app.regionInterval);
+    return trackDiv;
+};
+
+app.lockerRender = (locker) => {
     const lockDiv = $("<div></div>").addClass("track-lock").text("開");
     if (locker) {
-        if (locker.id === app.userId) {
+        if (!locker.id){
+            $(lockDiv).text("開");
+        }
+        else if (locker.id === app.userId) {
             $(lockDiv).text("自");
         }
         else{
             $(lockDiv).text("鎖:"+locker.name);
         }
     }
-
-    $(trackDiv).append(lockDiv, infoDiv, versionControl);
-    $("#tracksContent").append(trackDiv);
-
-    $(regionDiv).width(app.musicLength * app.regionInterval);
-    return trackDiv;
+    return lockDiv;
 };
 
 app.trackVersionRender = (trackId) => {
@@ -90,7 +98,7 @@ app.trackVersionRender = (trackId) => {
         selector.append(option);
     }
     if (versions.length === 0) {
-        const option = $("<option></option>").text("No Version").val(0);
+        const option = $("<option></option>").text("no version").val(0);
         selector.append(option);
         $(selector).val(0);
     }

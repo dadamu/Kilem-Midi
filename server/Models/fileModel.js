@@ -11,9 +11,9 @@ module.exports = {
         const userData = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
-                "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
+                "t.id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
             .leftJoin("track AS t", "t.room_id", "r.id")
-            .leftJoin("version AS v", "t.id", "v.track_pid")
+            .leftJoin("version AS v", "t.id", "v.track_id")
             .leftJoin("user AS u1", "u1.id", "t.user_id")
             .leftJoin("user AS u2", "u2.id", "v.user_id")
             .where("r.id", roomId);
