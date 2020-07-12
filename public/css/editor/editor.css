@@ -74,10 +74,6 @@ a{
     text-align: center;
 }
 
-.selected{
-    background-color: #444444; 
-}
-
 .editor-body{
     background-color: #333940;
     display: flex;

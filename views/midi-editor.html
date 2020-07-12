@@ -11,6 +11,7 @@
     <link href="/public/css/editor/track.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/midiPanel.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/chat.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/editor/status.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -82,9 +83,13 @@
             <div id="resetButton" class="reset-button control-button">Reset</div>
             <div id="chatButton" class="chat-button control-button">Chat</div>
         </footer>
-        <section class="chatroom hidden">
-            <div class="message-container">
+        <section id="chatRoom" class="chatroom hidden">
+            <div id="chatContainer" class="chat-container">
 
+            </div>
+            <div class="chat-input">
+                <input id="chatInput" class="chat-input-space" type="text"></input>
+                <button id="chatSend" class="chat-send-button">Send</button>
             </div>
         </section>
     </main>
@@ -100,6 +105,7 @@
 <script src="/public/js/editor/Instrument.js"></script>
 <script src="/public/js/editor/control.js"></script>
 <script src="/public/js/editor/toolbox.js"></script>
+<script src="/public/js/editor/chat.js"></script>
 <script src="/public/js/editor/generate.js"></script>
 
 </html>

@@ -28,6 +28,8 @@ app.UIListen = () => {
     app.clickCommitListen();
     app.versionChangeListen();
     app.lockClickListen();
+    app.chatRoomlListen();
+    app.chatSendlListen();
 };
 
 app.initRender = () => {

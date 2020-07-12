@@ -43,4 +43,18 @@ app.ioListen = async () => {
         app.music[app.userId].changeLocker(track.id, track.locker);
         $(`.track.track-${track.id} .track-lock`).html( app.lockerRender(track.locker).html() );
     });
+
+    app.on("chat", (data) => {
+        const { chat } = data;
+        const msgDiv = $("<div></div>").addClass("chat-msg");
+        const userDiv = $("<div></div>").text(chat.user+":").addClass("chat-user");
+        const contentDiv = $("<div></div>").text(chat.msg).addClass("chat-content").attr("title", chat.date);
+        msgDiv.append(userDiv, contentDiv);
+        const container = $("#chatContainer");
+        container.append(msgDiv);
+        container.animate({scrollTop: container.prop("scrollHeight")}, 100);
+        if ($("#chatRoom").hasClass("hidden")) {
+            $("#chatButton").addClass("notify");
+        }
+    });
 };

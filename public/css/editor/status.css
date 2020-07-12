@@ -1,0 +1,11 @@
+.hidden{
+    display: none;
+}
+
+.selected{
+    background-color: #444444; 
+}
+
+.notify{
+    background-color: #a1a123;
+}

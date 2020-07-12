@@ -112,10 +112,6 @@
     cursor: pointer;
 }
 
-.hidden{
-    display: none;
-}
-
 .playhead{
     will-change: transform;
     pointer-events: none;
