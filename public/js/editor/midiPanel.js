@@ -167,7 +167,7 @@ app.noteGridListen = () => {
     $(".midi-toolbox").on("click", ".note-grid", function () {
         $(".note-grid.selected").removeClass("selected");
         $(this).addClass("selected");
-        app.noteGrid = parseFloat($(this).attr("value"));
+        app.noteGrid = $(this).attr("value");
     });
 };
 
@@ -175,6 +175,6 @@ app.noteLengthListen = () => {
     $(".midi-toolbox").on("click", ".note-length", function () {
         $(".note-length.selected").removeClass("selected");
         $(this).addClass("selected");
-        app.noteLength = parseFloat($(this).attr("value"));
+        app.noteLength = $(this).attr("value");
     });
 };

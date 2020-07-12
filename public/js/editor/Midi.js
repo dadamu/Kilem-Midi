@@ -42,11 +42,11 @@ class MidiFile {
     setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
-            const { id, name, instrument, version, versions, creator, commiter, lock, notes } = track;
-            const newTrack = new Track(id, name, instrument, lock);
+            const { id, name, instrument, version, versions, locker, commiter, notes } = track;
+            const newTrack = new Track(id, name, instrument);
             newTrack.setVersion(version);
             newTrack.setVersions(versions);
-            newTrack.setCreator(creator);
+            newTrack.setLocker(locker);
             newTrack.setCommiter(commiter);
             newTrack.setNotes(notes);
             newTracks[track.id] = newTrack;
@@ -62,14 +62,9 @@ class Track {
         this.instrument = instrument;
         this.version = 0;
         this.versions = [];
-        this.creator = {};
+        this.locker = {};
         this.commiter = {};
-        this.lock = 1;
         this.notes = {};
-    }
-
-    setLock(lock){
-        this.lock = lock;
     }
 
     setVersion(version){
@@ -84,8 +79,8 @@ class Track {
         this.versions = versions;
     }
 
-    setCreator(creator){
-        this.creator = creator;
+    setLocker(locker){
+        this.locker = locker;
     }
 
     setCommiter(commiter){

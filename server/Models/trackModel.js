@@ -26,7 +26,7 @@ module.exports = {
                 id,
                 name,
                 instrument: "piano",
-                creator: {
+                locker: {
                     id: userId,
                     name: "test" + userId
                 }
@@ -123,8 +123,8 @@ module.exports = {
     },
     authorityCheck: async (body) => {
         const { roomId, userId, trackId } = body;
-        const select = await knex("track AS t").select(["t.user_id AS creatorId"])
+        const select = await knex("track AS t").select(["t.user_id AS lockerId"])
             .where("t.track_id", trackId).andWhere("t.room_id", roomId);
-        return select[0].creatorId === userId;
+        return select[0].lockerId === userId;
     }
 };

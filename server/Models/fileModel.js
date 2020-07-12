@@ -10,8 +10,8 @@ module.exports = {
     getFile: async (roomId, userId) => {
         const userData = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
-            .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS creatorId", "u1.username AS creatorName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
-                "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument", "t.lock AS lock"])
+            .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
+                "t.track_id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
             .leftJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_pid")
             .leftJoin("user AS u1", "u1.id", "t.user_id")
@@ -61,7 +61,7 @@ function getMasterData(data) {
         result.tracks[trackId].id = track.trackId;
         result.tracks[trackId].name = track.trackName;
 
-        result.tracks[trackId].creator = { id: track.creatorId, name: track.creatorName };
+        result.tracks[trackId].locker = { id: track.lockerId, name: track.lockerName };
         if (result.tracks[trackId].commiter)
             result.tracks[trackId].commiter = { id: track.commiterId, name: track.commiterName };
         else {
@@ -71,7 +71,6 @@ function getMasterData(data) {
         result.tracks[trackId].instrument = track.instrument;
         result.tracks[trackId].notes = JSON.parse(track.notes) || {};
 
-        result.tracks[trackId].lock = track.lock;
         result.tracks[trackId].version = track.version || 0;
         result.tracks[trackId].versions = versionsMap[trackId];
     }

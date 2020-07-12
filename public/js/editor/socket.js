@@ -14,9 +14,9 @@ app.socketInit = async () => {
 
 app.ioListen = async () => {
     app.on("addTrack", (track) => {
-        const { id, name, instrument, creator } = track;
+        const { id, name, instrument, locker } = track;
         app.music[app.userId].addTrack(new Track(id, name, instrument));
-        app.music[app.userId].getTrack(id).setCreator(creator);
+        app.music[app.userId].getTrack(id).setLocker(locker);
         app.addTrackRender(id, name);
     });
     app.on("commit", (data) => {

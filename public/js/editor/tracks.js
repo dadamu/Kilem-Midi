@@ -63,10 +63,15 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     //const musciControl = app.trackControlRender();
 
     const track = app.music[app.userId].getTrack(trackId);
-    const { lock } = track;
+    const { locker } = track;
     const lockDiv = $("<div></div>").addClass("track-lock").text("開");
-    if(lock){
-        $(lockDiv).text("鎖");
+    if (locker) {
+        if (locker.id === app.userId) {
+            $(lockDiv).text("自");
+        }
+        else{
+            $(lockDiv).text("鎖:"+locker.name);
+        }
     }
 
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
