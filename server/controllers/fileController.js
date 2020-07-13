@@ -1,4 +1,4 @@
-const fileModel = require("../Models/fileModel");
+const fileModel = require("../models/fileModel");
 const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
     save: asyncHandler(async (req, res) => {

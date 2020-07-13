@@ -1,5 +1,5 @@
 const asyncHandler = require("../../util/asyncHandler");
-const chatModel = require("../Models/chatModel");
+const chatModel = require("../models/chatModel");
 module.exports = {
     init: asyncHandler(async (req, res) => {
         let { roomId, paging }  = req.query;

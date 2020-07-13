@@ -7,7 +7,7 @@ const serveStatic = require("serve-static");
 const path = require("path");
 const viewsPath = "./views/";
 require("dotenv").config();
-const ioController = require("./Server/Controllers/ioController");
+const ioController = require("./server/controllers/ioController");
 const { API_VERSION } = process.env;
 
 app.set("io", io);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express();
-const trackController = require("../../Controllers/trackController");
-const fileController = require("../../Controllers/fileController");
+const trackController = require("../../controllers/trackController");
+const fileController = require("../../controllers/fileController");
 
 router.route("/midi/file")
     .post(fileController.save);

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express();
-const frontController = require("../Controllers/frontController");
+const frontController = require("../controllers/frontController");
 
 router.route("/midi-editor/:id")
     .get(frontController.midiEditor);

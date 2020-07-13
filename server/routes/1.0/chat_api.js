@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express();
-const chatController = require("../../Controllers/chatController");
+const chatController = require("../../controllers/chatController");
 
 router.route("/room/chat")
     .get(chatController.init);

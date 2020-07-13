@@ -1,4 +1,4 @@
-const roomModel = require("../Models/roomModel");
+const roomModel = require("../models/roomModel");
 const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
     create: asyncHandler(async (req, res) => {

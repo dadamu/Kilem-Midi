@@ -1,6 +1,6 @@
 const path = require("path");
 const viewsPath = "../../views";
-const roomModel = require("../Models/roomModel");
+const roomModel = require("../models/roomModel");
 const asyncHandler = require("../../util/asyncHandler");
 module.exports = {
     midiEditor: asyncHandler(async (req, res) => {
