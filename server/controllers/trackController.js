@@ -34,14 +34,15 @@ module.exports = {
     }),
     delete: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
-        const result = await trackModel.delete(req.body);
+        const { id } = req.params;
+        const result = await trackModel.delete(id, req.body);
         if (result instanceof Error) {
             res.json({ error: result.message });
             return;
         }
         res.json({ status: "success" });
         const io = req.app.get("io");
-        io.of("/room" + roomId).emit("delete", { track: result });
+        io.of("/room" + roomId).emit("deleteTrack", { track: result });
     }),
     lockSet: asyncHandler(async (req, res) => {
         const { id } = req.params;

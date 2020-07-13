@@ -73,22 +73,6 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     return trackDiv;
 };
 
-app.lockerRender = (locker) => {
-    const lockDiv = $("<div></div>").addClass("track-lock").text("開");
-    if (locker) {
-        if (!locker.id){
-            $(lockDiv).text("開");
-        }
-        else if (locker.id === app.userId) {
-            $(lockDiv).text("自");
-        }
-        else{
-            $(lockDiv).text("鎖:"+locker.name);
-        }
-    }
-    return lockDiv;
-};
-
 app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("commit");
     const selector = $("<select></select>").addClass("version-select");
@@ -137,7 +121,7 @@ app.trackSelect = (target) => {
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
     app.panelLoadTrack($(".track.selected").attr("trackId"));
-    app.saveFile();
+    
 };
 
 app.changeInstrumentListen = () => {
@@ -145,7 +129,7 @@ app.changeInstrumentListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
         app.music.tracks[trackId].instrument = instrument;
-        app.saveFile();
+        
     });
 };
 

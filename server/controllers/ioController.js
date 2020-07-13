@@ -5,6 +5,10 @@ module.exports = {
         }).on("connection", (socket) => {
             socket.join("editor");
             socket.join("chat");
+
+            socket.on("init", (data) => {
+                socket.join("editor"+data.userId);
+            });
         });
     }
 };

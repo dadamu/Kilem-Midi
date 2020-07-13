@@ -12,7 +12,7 @@ module.exports = {
                 name,
                 user_id: userId,
                 room_id: roomId,
-            }).returning("id");
+            });
             id = ids[0];
             await trx.commit();
             return {
@@ -60,7 +60,7 @@ module.exports = {
         try {
             const select = await trx("version AS v")
                 .select(["v.version", "v.track_id AS track_id", "v.notes AS notes"])
-                .orderBy("v.version", "desc").limit(1).forUpdate();
+                .where("v.track_id", trackId).orderBy("v.version", "desc").limit(1).forUpdate();
 
             let version, oldNotes;
             if (select.length > 0) {

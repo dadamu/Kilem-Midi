@@ -9,6 +9,7 @@ app.emit = async (event, Obj) => {
 
 app.socketInit = async () => {
     app.socket = io("/room" + app.roomId, { query: "user=" + app.userId });
+    app.emit("init", { userId: app.userId });
     await app.ioListen();
 };
 
@@ -29,7 +30,7 @@ app.ioListen = async () => {
         }
         app.saveFile();
     });
-    app.on("delete", (data) => {
+    app.on("deleteTrack", (data) => {
         const { track } = data;
         const selectedTrack = $(`.track.track-${track.id}`);
         app.music.deleteTrack(track.id);
@@ -45,10 +46,16 @@ app.ioListen = async () => {
         const { track } = data;
         app.music.changeLocker(track.id, track.locker);
         $(`.track.track-${track.id} .track-lock`).html( app.lockerRender(track.locker).html() );
+        app.saveFile();
     });
 
     app.on("chat", (data) => {
         const { chat } = data;
         app.chatRender(chat);
+    });
+
+    app.on("createNote", (data) => {
+        const { note } = data;
+        app.createNoteRender(note);
     });
 };

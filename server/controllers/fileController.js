@@ -14,4 +14,13 @@ module.exports = {
         const file = await fileModel.getFile(roomId, userId);
         res.status(200).json({ data: file });
     }),
+    update: asyncHandler(async (req, res)=>{
+        const { id } = req.params;
+        const { roomId, userId, type } = req.body;
+        const note = await fileModel.update(id, req.body);
+        res.json({ status: "success" });
+
+        const io = req.app.get("io");
+        io.of("/room" + roomId).to("editor" + userId).emit(type, { note });
+    })
 };

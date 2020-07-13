@@ -11,7 +11,6 @@ app.openMidiPanelListen = () => {
         else {
             $("#midiPanel").addClass("hidden");
             app.isMidiEditorOpen = false;
-            app.saveFile();
         }
     });
 };
@@ -56,32 +55,20 @@ app.svgToNote = (x, y) => {
     return { x, y };
 };
 
-app.createNote = (note) => {
-    const { x, y } = note;
-    const interval = app.gridsInterval * app.noteLength;
+app.createNoteRender = (note) => {
+    const interval = app.gridsInterval * note.length;
     const picthHeight = app.picthHeight;
-
-    const left = Math.floor(x / (64 * app.noteGrid)) * (64 * app.noteGrid) * app.gridsInterval / 64;
-    const bottom = y * picthHeight;
-    const posX = Math.floor(x / (64 * app.noteGrid)) * (64 * app.noteGrid);
-    const pitch = y + 12 * (app.scaleNumMin + 1);
-    const trackId = $("#midiPanel").attr("trackId");
-
-    //ignore duplicate not at same pos
-    if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0)
-        return;
-
+    const left = note.posX * app.gridsInterval / 64;
+    const bottom = (note.pitch - 24) * picthHeight;
     const noteDiv = $("<div></div>");
     noteDiv.addClass("note").width(interval).height(picthHeight);
     noteDiv.css("left", left).css("bottom", bottom);
 
-    noteDiv.attr("pitch", pitch);
+    noteDiv.attr("pitch", note.pitch);
     noteDiv.attr("length", app.noteLength);
     $("#grids").append(noteDiv);
 
-    app.noteIntoTrack(posX, pitch);
-    const { instrument } = app.music.tracks[trackId];
-    app.playNote(instrument, pitch);
+    app.noteIntoTrack(note.posX, note.pitch);
 };
 
 app.noteIntoTrack = (posX, pitch) => {
@@ -92,7 +79,7 @@ app.noteIntoTrack = (posX, pitch) => {
 app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
         const trackId = parseInt($("#midiPanel").attr("trackId"));
-        if(parseInt(app.userId) != app.music.getLocker(trackId).id){
+        if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
             alert("It's not your locked track");
             return;
         }

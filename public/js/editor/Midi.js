@@ -23,6 +23,10 @@ class MidiFile {
         return this.tracks[trackId].versions;
     }
 
+    getVersion(trackId){
+        return this.tracks[trackId].version;
+    }
+
     getTrack(trackId){
         return this.tracks[trackId];
     }
@@ -44,7 +48,7 @@ class MidiFile {
     }
 
     getLocker(trackId){
-        return this.tracks[trackId].getLocker();
+        return this.tracks[trackId].locker;
     }
 
     setTracks(tracks) {
@@ -97,10 +101,6 @@ class Track {
 
     changeLocker(locker){
         this.locker = locker;
-    }
-
-    getLocker(){
-        return this.locker;
     }
 
     addNote(note) {

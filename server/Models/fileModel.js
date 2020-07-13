@@ -21,12 +21,37 @@ module.exports = {
         const masterData = getMasterData(selectMaster);
         const data = merge(userData, masterData);
         return data;
+    },
+    update: async (trackId, body) => {
+        const { type, roomId, userId, note } = body;
+        const trx = await knex.transaction();
+        try {
+            const select = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
+            const { data } = select[0];
+            const tracks = JSON.parse(data);
+            if (type === "createNote") {
+                if (tracks[trackId].notes[note.posX]) {
+                    tracks[trackId].notes[note.posX].push(note);
+                }
+                else{
+                    tracks[trackId].notes[note.posX] = [ note ];
+                }
+            }
+            await trx("save").update({
+                data: JSON.stringify(tracks)
+            }).where("room_id", roomId).andWhere("user_id", userId);
+            await trx.commit();
+            return note;
+        }
+        catch (e) {
+            await trx.rollback();
+            throw e;
+        }
     }
 };
 
 
 function merge(user, master) {
-    console.log(user, master);
     if (Object.keys(master.tracks).length > 0) {
         for (let track of Object.values(user)) {
             const { id, version, notes, commiter, instrument } = track;
