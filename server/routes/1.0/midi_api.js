@@ -6,9 +6,6 @@ const fileController = require("../../controllers/fileController");
 router.route("/midi/file")
     .post(fileController.save);
 
-router.route("/midi/file/:id")
-    .patch(fileController.update);
-
 router.route("/midi/file")
     .get(fileController.getFile);
 

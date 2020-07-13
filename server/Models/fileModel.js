@@ -26,8 +26,8 @@ module.exports = {
         const data = merge(userData, masterData);
         return data;
     },
-    update: async (trackId, body) => {
-        const { type, roomId, userId, note } = body;
+    update: async (info) => {
+        const { trackId, type, roomId, userId, note } = info;
         const trx = await knex.transaction();
         try {
             const select = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();

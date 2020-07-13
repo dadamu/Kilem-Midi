@@ -1,3 +1,4 @@
+const noteSocket = require("./noteSocket");
 module.exports = {
     start: (io) => {
         io.of((nsp, query, next) => {
@@ -9,6 +10,8 @@ module.exports = {
             socket.on("init", (data) => {
                 socket.join("editor"+data.userId);
             });
+
+            noteSocket.noteListen(socket);
         });
     }
 };

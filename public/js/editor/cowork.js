@@ -116,12 +116,12 @@ app.createNote = async (note) => {
         type: "createNote",
         userId: app.userId,
         roomId: app.roomId,
+        trackId,
         note: { posX, pitch, length: app.noteLength }
     };
-    const res = await app.fetchData(`/api/1.0/midi/file/${trackId}`, data, "PATCH");
-    if (res.error) {
-        alert("update failed");
-    }
+    app.emit("noteUpdate", data);
+    app.createNoteRender(trackId, { posX, pitch, length: app.noteLength });
+    app.noteIntoTrack(trackId, { posX, pitch, length: app.noteLength });
 };
 
 app.noteDeleteListen = () => {
@@ -129,16 +129,17 @@ app.noteDeleteListen = () => {
         const trackId = $("#midiPanel").attr("trackId");
         const posX = $(this).attr("posX");
         const pitch = $(this).attr("pitch");
+        const note = { posX, pitch };
         const data = {
             type: "deleteNote",
             userId: app.userId,
             roomId: app.roomId,
-            note: { posX, pitch }
+            note,
+            trackId
         };
-        const res = await app.fetchData(`/api/1.0/midi/file/${trackId}`, data, "PATCH");
-        if (res.error) {
-            alert("update failed");
-        }
+        app.emit("noteUpdate", data);
+        app.deleteNoteRender(trackId, note);
+        app.noteOutTrack(trackId, note);
     });
 };
 
