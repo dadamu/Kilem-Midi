@@ -17,7 +17,11 @@ module.exports = {
             .leftJoin("user AS u1", "u1.id", "t.user_id")
             .leftJoin("user AS u2", "u2.id", "v.user_id")
             .where("r.id", roomId);
-        const userData = JSON.parse(selectUser[0].data);
+        let userData;
+        if(selectUser[0].data)
+            userData = JSON.parse(selectUser[0].data);
+        else
+            userData = {};
         const masterData = getMasterData(selectMaster);
         const data = merge(userData, masterData);
         return data;
