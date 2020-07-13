@@ -1,5 +1,11 @@
 /* global app $ */
 
+app.initChatRender = async () => {
+    const res = await app.fetchData(`/api/1.0/room/chat?roomId=${app.roomId}`);
+    const { data } = res;
+    data.forEach(chat => app.chatRender(chat));
+};
+
 app.chatRoomlListen = () => {
     $("#chatButton").click(() => {
         if ($("#chatRoom").hasClass("hidden")) {
@@ -38,5 +44,26 @@ app.chatSendlListen = () => {
             return;
         }
         $("#chatInput").val("");
+    }
+};
+
+
+app.chatRender = (chat) => {
+    const msgDiv = $("<div></div>").addClass("chat-msg");
+    const userDiv = $("<div></div>").text(chat.user + ":").addClass("chat-user");
+    const contentDiv = $("<div></div>").text(chat.msg).addClass("chat-content").attr("title", chat.date);
+    msgDiv.append(userDiv, contentDiv);
+    const container = $("#chatContainer");
+    const pos = container.scrollTop()  + container.height() + 40;
+    const max = container.prop("scrollHeight");
+    if ( pos < max) {
+        container.append(msgDiv);
+    }
+    else {
+        container.append(msgDiv);
+        container.animate({ scrollTop: container.prop("scrollHeight") }, 0);
+    }
+    if ($("#chatRoom").hasClass("hidden")) {
+        $("#chatButton").addClass("notify");
     }
 };

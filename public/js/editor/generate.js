@@ -39,6 +39,7 @@ app.initRender = () => {
     app.initGridsRender();
     app.initSvgGrids();
     app.initiTrackRender();
+    app.initChatRender();
     return;
 };
 

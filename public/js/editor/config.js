@@ -9,7 +9,6 @@ app.setConfig = () => {
     // Music config
     app.roomId = parseInt(document.URL.split("/").pop());
     app.music = {};
-    app.master = {};
     app.instruments = {};
 
     // UI config
