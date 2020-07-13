@@ -22,7 +22,7 @@ app.use("/public", serveStatic("./public", {
         res.setHeader("Cache-Control", "no-cache");
     }
 }));
-app.use("/", require("./Server/Routes/front_route"));
+app.use("/", require("./server/routes/front_route"));
 app.use("/api/" + API_VERSION, [
     require("./Server/Routes/1.0/user_api"),
     require("./Server/Routes/1.0/midi_api"),
