@@ -109,7 +109,12 @@ module.exports = {
     versionPull: async (trackId, version) => {
         const select = await knex("version AS v").select(["v.notes AS notes", "v.track_id AS trackId"])
             .where("v.version", version).andWhere("v.track_id", trackId);
-        return { notes: JSON.parse(select[0].notes), trackId };
+        if (select.length > 0) {
+            return { notes: JSON.parse(select[0].notes), trackId };
+        }
+        else {
+            return {};
+        }
     },
     authorityCheck: async (trackId, body) => {
         const { userId } = body;
@@ -121,10 +126,10 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId } = body;
         try {
-            const select = await knex("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId).forUpdate();
-            if(!select[0].lockerId){
-                await knex("track AS t").update("t.user_id", userId).where("t.id", trackId);
-                const nameSelect = await knex("user AS u").select(["u.username AS name"]).where("u.id", userId).forUpdate();
+            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId).forUpdate();
+            if (!select[0].lockerId) {
+                await trx("track AS t").update("t.user_id", userId).where("t.id", trackId);
+                const nameSelect = await trx("user AS u").select(["u.username AS name"]).where("u.id", userId);
                 await trx.commit();
                 return {
                     id: trackId,
@@ -135,7 +140,7 @@ module.exports = {
                 };
             }
             else if (parseInt(select[0].lockerId) === parseInt(userId)) {
-                await knex("track AS t").update("t.user_id", null).where("t.id", trackId);
+                await trx("track AS t").update("t.user_id", null).where("t.id", trackId);
                 await trx.commit();
                 return {
                     id: trackId,
@@ -145,7 +150,29 @@ module.exports = {
                     }
                 };
             }
-            else{
+            else {
+                return new Error("It's not your locked track");
+            }
+        }
+        catch (e) {
+            await trx.rollback();
+            throw e;
+        }
+    },
+    instrumentSet: async(trackId, body) => {
+        const trx = await knex.transaction();
+        const { userId, instrument } = body;
+        try {
+            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId).forUpdate();
+            if (parseInt(select[0].lockerId) === parseInt(userId)) {
+                await trx("track AS t").update("t.instrument", instrument).where("t.id", trackId);
+                await trx.commit();
+                return {
+                    id: trackId,
+                    instrument
+                };
+            }
+            else {
                 return new Error("It's not your locked track");
             }
         }

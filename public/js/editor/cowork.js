@@ -4,7 +4,6 @@ app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
         const trackId = parseInt($(this).parent().parent().attr("trackId"));
         const versions = app.music.getVersions(trackId);
-        console.log(versions);
         let version = 1;
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
@@ -30,22 +29,6 @@ app.clickCommitListen = () => {
             alert("Commit failed");
         }
     });
-};
-
-app.lockerRender = (locker) => {
-    const lockDiv = $("<div></div>").addClass("track-lock").text("開");
-    if (locker) {
-        if (!locker.id){
-            $(lockDiv).text("開");
-        }
-        else if (locker.id === app.userId) {
-            $(lockDiv).text("自");
-        }
-        else{
-            $(lockDiv).text("鎖:"+locker.name);
-        }
-    }
-    return lockDiv;
 };
 
 app.versionChangeListen = () => {
@@ -101,18 +84,15 @@ app.lockClickListen = () => {
         const current = app.music.tracks[trackId].notes;
         const version = app.music.getVersion(trackId).version;
         let previous;
-        if (version === 0) {
-            previous = {};
-        }
-        else {
+        if (version) {
             const get = await fetch(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`).then(res => res.json());
             previous = get.notes;
+            if (JSON.stringify(current) !== JSON.stringify(previous)) {
+                alert("Please commit change first");
+                return;
+            }
         }
-        if (JSON.stringify(current) !== JSON.stringify(previous)) {
-            alert("Please commit change first");
-            return;
-        }
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}`, data, "PATCH");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
         if (res.error) {
             alert(res.error);
             return;
@@ -121,7 +101,7 @@ app.lockClickListen = () => {
 };
 
 
-app.createNote = async(note) => {
+app.createNote = async (note) => {
     const { x, y } = note;
     const posX = Math.floor(x / (64 * app.noteGrid)) * (64 * app.noteGrid);
     const pitch = y + 12 * (app.scaleNumMin + 1);
@@ -138,5 +118,46 @@ app.createNote = async(note) => {
         roomId: app.roomId,
         note: { posX, pitch, length: app.noteLength }
     };
-    await app.fetchData(`/api/1.0/midi/file/${trackId}`, data, "PATCH");
+    const res = await app.fetchData(`/api/1.0/midi/file/${trackId}`, data, "PATCH");
+    if (res.error) {
+        alert("update failed");
+    }
+};
+
+app.noteDeleteListen = () => {
+    $("#grids").on("dblclick", ".note", async function () {
+        const trackId = $("#midiPanel").attr("trackId");
+        const posX = $(this).attr("posX");
+        const pitch = $(this).attr("pitch");
+        const data = {
+            type: "deleteNote",
+            userId: app.userId,
+            roomId: app.roomId,
+            note: { posX, pitch }
+        };
+        const res = await app.fetchData(`/api/1.0/midi/file/${trackId}`, data, "PATCH");
+        if (res.error) {
+            alert("update failed");
+        }
+    });
+};
+
+app.changeInstrumentListen = () => {
+    $(".tracks-title").on("change", ".instrument-selector", async function () {
+        const trackId = $(this).closest(".track").attr("trackId");
+        const instrument = $(this).val();
+        const roomId = app.roomId;
+        const userId = app.userId;
+        const data = {
+            roomId,
+            userId,
+            instrument
+        };
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
+        if (res.error) {
+            alert(res.error);
+            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
+            return;
+        }
+    });
 };

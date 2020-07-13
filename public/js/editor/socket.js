@@ -35,7 +35,7 @@ app.ioListen = async () => {
         const selectedTrack = $(`.track.track-${track.id}`);
         app.music.deleteTrack(track.id);
         selectedTrack.remove();
-        $(".region.selected").remove();
+        $(`.region.track-${track.id}`).remove();
         $(".track").first().addClass("selected");
         $(".region").first().addClass("selected");
         app.panelLoadTrack($(".region").last().attr("trackId"));
@@ -55,7 +55,20 @@ app.ioListen = async () => {
     });
 
     app.on("createNote", (data) => {
-        const { note } = data;
-        app.createNoteRender(note);
+        const { note, trackId } = data;
+        app.createNoteRender(trackId, note);
+        app.noteIntoTrack(trackId, note);
+    });
+
+    app.on("deleteNote", (data) => {
+        const { note, trackId } = data;
+        app.deleteNoteRender(trackId, note);
+        app.noteOutTrack(trackId, note);
+    });
+
+    app.on("instrumentSet", (data) => {
+        const { track } = data;
+        app.music.tracks[track.id].instrument = track.instrument;
+        $(`.track.track-${track.id} .instrument-selector`).val(track.instrument);
     });
 };

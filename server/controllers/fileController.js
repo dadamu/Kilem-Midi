@@ -21,6 +21,6 @@ module.exports = {
         res.json({ status: "success" });
 
         const io = req.app.get("io");
-        io.of("/room" + roomId).to("editor" + userId).emit(type, { note });
+        io.of("/room" + roomId).to("editor" + userId).emit(type, { trackId: id, note });
     })
 };

@@ -18,8 +18,11 @@ router.route("/midi/track")
 router.route("/midi/track/:id")
     .put(trackController.commit);
 
-router.route("/midi/track/:id")
+router.route("/midi/track/:id/lock")
     .patch(trackController.lockSet);
+
+router.route("/midi/track/:id/instrument")
+    .patch(trackController.instrumentSet);
 
 router.route("/midi/track")
     .get(trackController.pull);

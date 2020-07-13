@@ -33,9 +33,16 @@ module.exports = {
                 if (tracks[trackId].notes[note.posX]) {
                     tracks[trackId].notes[note.posX].push(note);
                 }
-                else{
-                    tracks[trackId].notes[note.posX] = [ note ];
+                else {
+                    tracks[trackId].notes[note.posX] = [note];
                 }
+            }
+            else if (type === "deleteNote") {
+                const posXNotes = tracks[trackId].notes[note.posX].filter(old => old.pitch != note.pitch);
+                if (posXNotes.length === 0)
+                    delete tracks[trackId].notes[note.posX];
+                else
+                    tracks[trackId].notes[note.posX] = posXNotes;
             }
             await trx("save").update({
                 data: JSON.stringify(tracks)
@@ -54,12 +61,13 @@ module.exports = {
 function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {
         for (let track of Object.values(user)) {
-            const { id, version, notes, commiter, instrument } = track;
-            const masterTrack = master.tracks[id];
-            masterTrack.instrument = instrument;
-            masterTrack.version = version;
-            masterTrack.commiter = commiter;
-            masterTrack.notes = notes;
+            const { id, version, notes, commiter } = track;
+            if (master.tracks[id]) {
+                const masterTrack = master.tracks[id];
+                masterTrack.version = version;
+                masterTrack.commiter = commiter;
+                masterTrack.notes = notes;
+            }
         }
     }
     return master;

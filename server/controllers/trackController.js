@@ -22,8 +22,7 @@ module.exports = {
     add: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const track = await trackModel.add(req.body);
-        res.json({ track });
-
+        res.json({ status: "success" });
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
     }),
@@ -55,5 +54,17 @@ module.exports = {
         res.json({status: "success"});
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("lock", { track: result });
+    }),
+    instrumentSet: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { roomId } = req.body;
+        const result = await trackModel.instrumentSet(id, req.body);
+        if(result instanceof Error){
+            res.json({error: result.message});
+            return;
+        }
+        res.json({status: "success"});
+        const io = req.app.get("io");
+        io.of("/room" + roomId).emit("instrumentSet", { track: result });
     })
 };

@@ -36,6 +36,7 @@ app.notesRender = (posX, notes) => {
         noteDiv.addClass("note").width(app.gridsInterval * note.length).height(app.picthHeight);
         noteDiv.css("left", left).css("bottom", bottom);
         noteDiv.attr("pitch", pitch);
+        noteDiv.attr("posX", posX);
         $("#grids").append(noteDiv);
     }
 };
@@ -55,25 +56,33 @@ app.svgToNote = (x, y) => {
     return { x, y };
 };
 
-app.createNoteRender = (note) => {
-    const interval = app.gridsInterval * note.length;
-    const picthHeight = app.picthHeight;
-    const left = note.posX * app.gridsInterval / 64;
-    const bottom = (note.pitch - 24) * picthHeight;
-    const noteDiv = $("<div></div>");
-    noteDiv.addClass("note").width(interval).height(picthHeight);
-    noteDiv.css("left", left).css("bottom", bottom);
+app.createNoteRender = (trackId, note) => {
+    const panelId = parseInt($("#midiPanel").attr("trackId"));
+    if (panelId === parseInt(trackId)) {
+        const interval = app.gridsInterval * note.length;
+        const picthHeight = app.picthHeight;
+        const left = note.posX * app.gridsInterval / 64;
+        const bottom = (note.pitch - 24) * picthHeight;
+        const noteDiv = $("<div></div>");
+        noteDiv.addClass("note").width(interval).height(picthHeight);
+        noteDiv.css("left", left).css("bottom", bottom);
 
-    noteDiv.attr("pitch", note.pitch);
-    noteDiv.attr("length", app.noteLength);
-    $("#grids").append(noteDiv);
-
-    app.noteIntoTrack(note.posX, note.pitch);
+        noteDiv.attr("pitch", note.pitch);
+        noteDiv.attr("length", note.length);
+        noteDiv.attr("posX", note.posX);
+        $("#grids").append(noteDiv);
+    }
 };
 
-app.noteIntoTrack = (posX, pitch) => {
-    const trackId = $("#midiPanel").attr("trackId");
-    app.music.tracks[trackId].addNote(new Note(pitch, posX, app.noteLength));
+app.deleteNoteRender = (trackId, note) => {
+    const panelId = parseInt($("#midiPanel").attr("trackId"));
+    if (panelId === parseInt(trackId)) {
+        $(`div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
+    }
+};
+
+app.noteIntoTrack = (trackId, note) => {
+    app.music.tracks[trackId].addNote(new Note(note.pitch, note.posX, note.length));
 };
 
 app.addMidiNoteListen = () => {
@@ -142,18 +151,8 @@ app.initGridsRender = () => {
     return;
 };
 
-app.notOutTrack = (target) => {
-    const posX = Math.floor(parseInt($(target).css("left").replace("px")) / (app.gridsInterval / 64));
-    const pitch = parseInt($(target).attr("pitch"));
-    const trackId = $("#midiPanel").attr("trackId");
-    app.music.tracks[trackId].deleteNote(new Note(pitch, posX, 1));
-};
-
-app.noteDeleteListen = () => {
-    $("#grids").on("dblclick", ".note", function () {
-        app.notOutTrack(this);
-        $(this).remove();
-    });
+app.noteOutTrack = (trackId, note) => {
+    app.music.tracks[trackId].deleteNote(new Note(note.pitch, note.posX, 1));
 };
 
 app.noteGridListen = () => {

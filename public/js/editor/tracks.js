@@ -32,9 +32,25 @@ app.addTrackListen = () => {
 
 app.initiTrackRender = () => {
     for (let [key, track] of Object.entries(app.music.tracks)) {
-        app.addTrackRender(key, track.name, track.instrument, track.version);
+        app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
     return;
+};
+
+app.lockerRender = (locker) => {
+    const lockDiv = $("<div></div>").addClass("track-lock").text("開");
+    if (locker) {
+        if (!locker.id){
+            $(lockDiv).text("開");
+        }
+        else if (locker.id === app.userId) {
+            $(lockDiv).text("自");
+        }
+        else{
+            $(lockDiv).text("鎖:"+locker.name);
+        }
+    }
+    return lockDiv;
 };
 
 app.addVersionOption = (track) => {
@@ -53,7 +69,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const infoDiv = $("<div></div>").addClass("track-info");
     const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
-    const instrumentSelect = $("<select></select>").addClass("instrument-selector").attr("id", "instrumentSelector");
+    const instrumentSelect = $("<select></select>").addClass("instrument-selector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
@@ -120,16 +136,7 @@ app.trackSelect = (target) => {
 
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
-    app.panelLoadTrack($(".track.selected").attr("trackId"));
-    
+    app.panelLoadTrack($(".track.selected").attr("trackId"));  
 };
 
-app.changeInstrumentListen = () => {
-    $(".tracks-title").on("change", ".instrument-selector", function () {
-        const trackId = $(this).closest(".track").attr("trackId");
-        const instrument = $(this).val();
-        app.music.tracks[trackId].instrument = instrument;
-        
-    });
-};
 
