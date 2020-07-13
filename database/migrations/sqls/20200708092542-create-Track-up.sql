@@ -17,5 +17,5 @@ CREATE TABLE `track` (
   CONSTRAINT `fk_tu_user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
