@@ -9,5 +9,5 @@ CREATE TABLE `room` (
   CONSTRAINT `fk_ru_user_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);

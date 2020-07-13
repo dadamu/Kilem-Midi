@@ -2,7 +2,7 @@
 CREATE TABLE `save` (
   `user_id` BIGINT UNSIGNED NOT NULL,
   `room_id` BIGINT UNSIGNED NOT NULL,
-  `data` VARCHAR(16383) NOT NULL DEFAULT '{}',
+  `data` TEXT NULL,
   PRIMARY KEY (`user_id`, `room_id`),
   CONSTRAINT `fk_su_user_id`
     FOREIGN KEY (`user_id`)

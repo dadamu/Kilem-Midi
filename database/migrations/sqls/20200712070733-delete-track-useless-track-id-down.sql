@@ -1,6 +1,6 @@
 /* Replace with your SQL commands */
 ALTER TABLE `track` 
-ADD COLUMN `track_id` INT NOT NULL AFTER `id`;
+ADD COLUMN `track_id` INT AFTER `id`;
 ALTER TABLE `version` 
 DROP FOREIGN KEY `fk_vt_track_pid`;
 ALTER TABLE `version` 

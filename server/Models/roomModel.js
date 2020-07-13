@@ -2,7 +2,7 @@ const knex = require("../../util/mysqlCon").knex;
 module.exports = {
     create: async (body) => {
         const { roomName, userId } = body;
-        const roomId = await knex("room").insert({ name: roomName, user_id: userId }).returning("id");
+        const roomId = await knex("room").insert({ name: roomName, user_id: userId });
         return roomId[0];
     },
     hasRoom: async (id) => {
