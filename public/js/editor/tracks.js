@@ -31,7 +31,7 @@ app.addTrackListen = () => {
 };
 
 app.initiTrackRender = () => {
-    for (let [key, track] of Object.entries(app.music[app.userId].tracks)) {
+    for (let [key, track] of Object.entries(app.music.tracks)) {
         app.addTrackRender(key, track.name, track.instrument, track.version);
     }
     return;
@@ -63,7 +63,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const versionControl = app.trackVersionRender(trackId);
     //const musciControl = app.trackControlRender();
 
-    const track = app.music[app.userId].getTrack(trackId);
+    const track = app.music.getTrack(trackId);
     const { locker } = track;
     const lockDiv = app.lockerRender(locker);
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
@@ -92,7 +92,7 @@ app.lockerRender = (locker) => {
 app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("commit");
     const selector = $("<select></select>").addClass("version-select");
-    const versions = app.music[app.userId].getVersions(trackId);
+    const versions = app.music.getVersions(trackId);
     for (let version of versions) {
         const option = $("<option></option>").text(version.name).val(version.version);
         selector.append(option);
@@ -143,7 +143,7 @@ app.changeInstrumentListen = () => {
     $(".tracks-title").on("change", ".instrument-selector", function () {
         const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
-        app.music[app.userId].tracks[trackId].instrument = instrument;
+        app.music.tracks[trackId].instrument = instrument;
     });
 };
 

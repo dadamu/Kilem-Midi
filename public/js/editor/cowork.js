@@ -3,7 +3,7 @@
 app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
         const trackId = parseInt($(this).parent().parent().attr("trackId"));
-        const versions = app.music[app.userId].getVersions(trackId);
+        const versions = app.music.getVersions(trackId);
         let version = 1;
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
@@ -17,7 +17,7 @@ app.clickCommitListen = () => {
                 roomId: app.roomId,
                 userId: app.userId,
                 name,
-                notes: app.music[app.userId].getNotes(trackId)
+                notes: app.music.getNotes(trackId)
             }, "PUT");
             if (res.error) {
                 alert("Failed: " + res.error);
@@ -37,7 +37,7 @@ app.versionChangeListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         const result = await fetch(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`).then(res => res.json());
         if(!result.eror){
-            app.music[app.userId].setNotes(result.trackId, result.notes);
+            app.music.setNotes(result.trackId, result.notes);
             if(parseInt($(".track.selected").attr("trackId")) === parseInt(result.trackId)){
                 app.panelLoadTrack(result.trackId);
             }
