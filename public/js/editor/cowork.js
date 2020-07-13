@@ -47,7 +47,7 @@ app.versionChangeListen = () => {
 
 app.addTrack = async () => {
     try {
-        await app.fetchData("http://localhost:3000/api/1.0/midi/track", {
+        await app.fetchData("/api/1.0/midi/track", {
             roomId: app.roomId,
             userId: app.userId
         }, "POST");
