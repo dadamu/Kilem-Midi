@@ -43,6 +43,10 @@ class MidiFile {
         this.tracks[trackId].changeLocker(locker);
     }
 
+    getLocker(trackId){
+        return this.tracks[trackId].getLocker();
+    }
+
     setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
@@ -93,6 +97,10 @@ class Track {
 
     changeLocker(locker){
         this.locker = locker;
+    }
+
+    getLocker(){
+        return this.locker;
     }
 
     addNote(note) {

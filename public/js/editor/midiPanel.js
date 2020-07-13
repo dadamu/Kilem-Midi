@@ -11,6 +11,7 @@ app.openMidiPanelListen = () => {
         else {
             $("#midiPanel").addClass("hidden");
             app.isMidiEditorOpen = false;
+            app.saveFile();
         }
     });
 };
@@ -90,6 +91,11 @@ app.noteIntoTrack = (posX, pitch) => {
 
 app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
+        const trackId = parseInt($("#midiPanel").attr("trackId"));
+        if(parseInt(app.userId) != app.music.getLocker(trackId).id){
+            alert("It's not your locked track");
+            return;
+        }
         const target = evt.target;
         const dim = target.getBoundingClientRect();
         const x = evt.clientX - dim.left;

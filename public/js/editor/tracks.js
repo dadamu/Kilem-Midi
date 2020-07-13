@@ -137,6 +137,7 @@ app.trackSelect = (target) => {
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
     app.panelLoadTrack($(".track.selected").attr("trackId"));
+    app.saveFile();
 };
 
 app.changeInstrumentListen = () => {
@@ -144,6 +145,7 @@ app.changeInstrumentListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
         app.music.tracks[trackId].instrument = instrument;
+        app.saveFile();
     });
 };
 

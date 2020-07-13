@@ -1,12 +1,12 @@
 /* global app MidiFile $ */
-const loadFile = async () => {
+app.loadFile = async () => {
     const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());
     return response.data;
 };
 
 app.setFile = async () => {
-    const music = await loadFile();
+    const music = await app.loadFile();
     app.fileName = music.fileName;
     app.music = new MidiFile(music.bpm, music.tracks);
 };

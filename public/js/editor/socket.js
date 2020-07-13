@@ -18,6 +18,7 @@ app.ioListen = async () => {
         app.music.addTrack(new Track(id, name, instrument));
         app.music.getTrack(id).setLocker(locker);
         app.addTrackRender(id, name);
+        app.saveFile();
     });
     app.on("commit", (data) => {
         const { track } = data;
@@ -26,6 +27,7 @@ app.ioListen = async () => {
         if (parseInt($(".track.selected").attr("trackId")) === parseInt(track.id)) {
             app.panelLoadTrack(track.id);
         }
+        app.saveFile();
     });
     app.on("delete", (data) => {
         const { track } = data;
@@ -36,6 +38,7 @@ app.ioListen = async () => {
         $(".track").first().addClass("selected");
         $(".region").first().addClass("selected");
         app.panelLoadTrack($(".region").last().attr("trackId"));
+        app.saveFile();
     });
 
     app.on("lock", (data) => {
