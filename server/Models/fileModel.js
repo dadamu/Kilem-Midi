@@ -8,7 +8,7 @@ module.exports = {
         return;
     },
     getFile: async (roomId, userId) => {
-        const userData = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
+        const selectUser = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
                 "t.id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
@@ -17,11 +17,28 @@ module.exports = {
             .leftJoin("user AS u1", "u1.id", "t.user_id")
             .leftJoin("user AS u2", "u2.id", "v.user_id")
             .where("r.id", roomId);
+        const userData = JSON.parse(selectUser[0].data);
         const masterData = getMasterData(selectMaster);
-        return { user: JSON.parse(userData[0].data), master: masterData };
+        const data = merge(userData, masterData);
+        return data;
     }
 };
 
+
+function merge(user, master) {
+    console.log(user, master);
+    if (Object.keys(master.tracks).length > 0) {
+        for (let track of Object.values(user)) {
+            const { id, version, notes, commiter, instrument } = track;
+            const masterTrack = master.tracks[id];
+            masterTrack.instrument = instrument;
+            masterTrack.version = version;
+            masterTrack.commiter = commiter;
+            masterTrack.notes = notes;
+        }
+    }
+    return master;
+}
 
 function getMasterData(data) {
     const result = {};
@@ -55,7 +72,7 @@ function getMasterData(data) {
             result.tracks = {};
             return result;
         }
-        if(!track.active)
+        if (!track.active)
             continue;
         result.tracks[trackId] = {};
         result.tracks[trackId].id = track.trackId;
