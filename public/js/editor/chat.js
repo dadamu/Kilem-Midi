@@ -54,9 +54,9 @@ app.chatRender = (chat) => {
     const contentDiv = $("<div></div>").text(chat.msg).addClass("chat-content").attr("title", chat.date);
     msgDiv.append(userDiv, contentDiv);
     const container = $("#chatContainer");
-    const pos = container.scrollTop()  + container.height() + 40;
-    const max = container.prop("scrollHeight");
-    if ( pos < max) {
+    const pos = container.scrollTop()  + container.height();
+    const max = container.prop("scrollHeight") - 100;
+    if ( pos < max ) {
         container.append(msgDiv);
     }
     else {
