@@ -132,7 +132,7 @@ app.noteDeleteListen = () => {
         const trackId = $("#midiPanel").attr("trackId");
         const posX = $(this).attr("posX");
         const pitch = $(this).attr("pitch");
-        const note = { posX, pitch };
+        const note = { posX, pitch, length: 1 };
         const data = {
             type: "deleteNote",
             userId: app.userId,

@@ -16,7 +16,7 @@ app.regionNoteRender = (trackId, note) => {
 };
 
 app.regionNoteDelete = (trackId, note) => {
-    $(`.region.track${trackId} div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
+    $(`.region.track-${trackId} div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
 };
 
 app.initRegionNoteRender = () => {

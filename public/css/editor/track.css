@@ -81,5 +81,6 @@
     position: absolute;
     z-index: 5;
     background-color: #FFFFFF; 
-    border: #FFFFFF solid 1px;
+    border-right: #000000 solid 1px;
+    border-left: #000000 solid 1px;
 }

@@ -64,6 +64,7 @@ app.ioListen = async () => {
 
     app.on("deleteNote", (data) => {
         const { note, trackId } = data;
+        console.log(note);
         app.deleteNoteRender(trackId, note);
         app.regionNoteDelete(trackId, note);
         app.noteOutTrack(trackId, note);
