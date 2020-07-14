@@ -41,6 +41,7 @@ app.versionChangeListen = () => {
             if (parseInt($(".track.selected").attr("trackId")) === parseInt(result.trackId)) {
                 app.panelLoadTrack(result.trackId);
             }
+            app.loadRegionNotesRender(result.trackId);
         }
     });
 };
@@ -120,8 +121,10 @@ app.createNote = async (note) => {
         note: { posX, pitch, length: app.noteLength }
     };
     app.emit("noteUpdate", data);
-    app.createNoteRender(trackId, { posX, pitch, length: app.noteLength });
-    app.noteIntoTrack(trackId, { posX, pitch, length: app.noteLength });
+    const newNote = { posX, pitch, length: app.noteLength };
+    app.createNoteRender(trackId, newNote);
+    app.regionNoteRender(trackId, newNote);
+    app.noteIntoTrack(trackId, newNote);
 };
 
 app.noteDeleteListen = () => {

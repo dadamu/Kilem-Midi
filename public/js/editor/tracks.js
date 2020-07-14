@@ -34,6 +34,7 @@ app.initiTrackRender = () => {
     for (let [key, track] of Object.entries(app.music.tracks)) {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
+    app.trackSelect($(".track").first());
     return;
 };
 
@@ -86,7 +87,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     $("#tracksContent").append(trackDiv);
 
     $(regionDiv).width(app.musicLength * app.regionInterval);
-    return trackDiv;
+    return;
 };
 
 app.trackVersionRender = (trackId) => {

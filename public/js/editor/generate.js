@@ -40,6 +40,7 @@ app.initRender = () => {
     app.initSvgGrids();
     app.initiTrackRender();
     app.initChatRender();
+    app.initRegionNoteRender();
     return;
 };
 

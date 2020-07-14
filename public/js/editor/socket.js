@@ -28,6 +28,7 @@ app.ioListen = async () => {
         if (parseInt($(".track.selected").attr("trackId")) === parseInt(track.id)) {
             app.panelLoadTrack(track.id);
         }
+        app.loadRegionNotesRender(track.id);
         app.saveFile();
     });
     app.on("deleteTrack", (data) => {
@@ -57,12 +58,14 @@ app.ioListen = async () => {
     app.on("createNote", (data) => {
         const { note, trackId } = data;
         app.createNoteRender(trackId, note);
+        app.regionNoteRender(trackId, note);
         app.noteIntoTrack(trackId, note);
     });
 
     app.on("deleteNote", (data) => {
         const { note, trackId } = data;
         app.deleteNoteRender(trackId, note);
+        app.regionNoteDelete(trackId, note);
         app.noteOutTrack(trackId, note);
     });
 

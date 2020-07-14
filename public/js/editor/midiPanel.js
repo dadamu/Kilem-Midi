@@ -60,11 +60,11 @@ app.createNoteRender = (trackId, note) => {
     const panelId = parseInt($("#midiPanel").attr("trackId"));
     if (panelId === parseInt(trackId)) {
         const interval = app.gridsInterval * note.length;
-        const picthHeight = app.picthHeight;
+        const pitchHeight = app.picthHeight;
         const left = note.posX * app.gridsInterval / 64;
-        const bottom = (note.pitch - 24) * picthHeight;
+        const bottom = (note.pitch - 24) * pitchHeight;
         const noteDiv = $("<div></div>");
-        noteDiv.addClass("note").width(interval).height(picthHeight);
+        noteDiv.addClass("note").width(interval).height(pitchHeight);
         noteDiv.css("left", left).css("bottom", bottom);
 
         noteDiv.attr("pitch", note.pitch);
