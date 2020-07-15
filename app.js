@@ -23,16 +23,13 @@ app.use("/public", serveStatic("./public", {
     }
 }));
 app.use("/", require("./server/routes/front_route"));
+
 app.use("/api/" + API_VERSION, [
     require("./server/routes/1.0/user_api"),
     require("./server/routes/1.0/midi_api"),
     require("./server/routes/1.0/room_api"),
     require("./server/routes/1.0/chat_api")
 ]);
-
-app.get("/", (req, res) => {
-    res.send("Hello Kilem-Midi.");
-});
 
 app.use("/api", (req, res, next) => {
     const err = new Error("Not Found");
