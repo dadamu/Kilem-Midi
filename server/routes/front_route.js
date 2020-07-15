@@ -14,4 +14,7 @@ router.route("/sign")
 router.route("/room")
     .get(frontController.room);
 
+router.route("/profile")
+    .get(frontController.profile);
+
 module.exports = router;

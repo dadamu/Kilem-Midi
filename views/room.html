@@ -13,37 +13,89 @@
 
 <body>
     <nav class="top-nav">
-        <div class="nav-logo">
+        <div id="navLogo" class="nav-logo">
             <img src="/public/logo/logo.png" />
             <span>Kilem Midi</span>
         </div>
         <div class="nav-tool">
-            <div class="nav-user">User</div>
+            <div id="navProfile" class="nav-profile">Hello User</div>
         </div>
     </nav>
     <main class="wrapper">
-        <div class="main-content container">
-            <section class="rooms">
-                <div class="room">
-                    <div class="room-inner">
-                        <i class="fa fa-folder-o"></i>
-                        <span>Room</span>
+        <header class="main-header">
+
+        </header>
+        <main class="main-content container">
+                <section id="myRooms">
+                        <h3>My Room</h3>
+                        <div class="rooms">
+                            <div class="room">
+                                <div class="room-inner">
+                                    <i class="fa fa-folder-o"></i>
+                                    <span>Room</span>
+                                </div>
+                            </div>
+                            <div class="room">
+                                <div class="room-inner">
+                                    <i class="fa fa-folder-o"></i>
+                                    <span>Room</span>
+                                </div>
+                            </div>
+                            <div class="room">
+                                <div class="room-inner">
+                                    <i class="fa fa-folder-o"></i>
+                                    <span>Room</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="inRooms">
+                            <h3>In Room</h3>
+                            <div class="rooms">
+                                <div class="room">
+                                    <div class="room-inner">
+                                        <i class="fa fa-folder-o"></i>
+                                        <span>Room</span>
+                                    </div>
+                                </div>
+                                <div class="room">
+                                    <div class="room-inner">
+                                        <i class="fa fa-folder-o"></i>
+                                        <span>Room</span>
+                                    </div>
+                                </div>
+                                <div class="room">
+                                    <div class="room-inner">
+                                        <i class="fa fa-folder-o"></i>
+                                        <span>Room</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+            <section id="publicRooms">
+                <h3>Public</h3>
+                <div class="rooms">
+                    <div class="room">
+                        <div class="room-inner">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Room</span>
+                        </div>
                     </div>
-                </div>
-                <div class="room">
-                    <div class="room-inner">
-                        <i class="fa fa-folder-o"></i>
-                        <span>Room</span>
+                    <div class="room">
+                        <div class="room-inner">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Room</span>
+                        </div>
                     </div>
-                </div>
-                <div class="room">
-                    <div class="room-inner">
-                        <i class="fa fa-folder-o"></i>
-                        <span>Room</span>
+                    <div class="room">
+                        <div class="room-inner">
+                            <i class="fa fa-folder-o"></i>
+                            <span>Room</span>
+                        </div>
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
     </main>
 </body>
 <script src="/public/js/room/room.js"></script>

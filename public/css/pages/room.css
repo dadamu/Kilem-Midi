@@ -1,6 +1,12 @@
 .wrapper{
     padding-top: 3.5em;
-    color: black; 
+    color: black;
+}
+
+.main-header{
+    height: calc(60vh - 3.5em);
+    max-height: 700px;
+    background-color: #37393A;
 }
 
 .rooms {
@@ -24,7 +30,7 @@
 
 .room-inner {
     width: 100%;
-    padding: 30px;
+    padding: 1.5em;
     position: relative;
     cursor: pointer;
     background-color: #949fb0;

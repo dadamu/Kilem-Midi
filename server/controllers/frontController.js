@@ -20,5 +20,8 @@ module.exports = {
     }),
     room: asyncHandler(async (req, res) => {
         res.sendFile(path.join(__dirname, viewsPath, "room.html"));
+    }),
+    profile: asyncHandler(async (req, res)=>{
+        res.sendFile(path.join(__dirname, viewsPath, "profile.html"));
     })
 };

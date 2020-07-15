@@ -10,9 +10,16 @@ body{
 .wrapper{
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-header{
+    width: 100%;
 }
 
 .container{
+    padding-right: 1em;
+    padding-left: 1em; 
     width: 90%;
     margin: 0 auto;
     max-width: 1200px;
@@ -23,9 +30,7 @@ body{
 }
 
 .main-content{
-    flex: auto;
     width: 100%;
-    flex: auto;
 }
 
 /* top nav */
@@ -63,7 +68,7 @@ body{
     justify-content: center;
 }
 
-.nav-user{
+.nav-profile{
     font-size: 1.1em;
     cursor: pointer;
 }

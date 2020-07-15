@@ -2,3 +2,4 @@ node_modules
 .*
 database/config/config.json
 public/instruments
+public/js/img
