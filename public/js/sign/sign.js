@@ -3,6 +3,16 @@ const app = {};
 
 app.init = () => {
     app.selectTabListen();
+    app.signListen();
+};
+
+app.signListen = () => {
+    $("#signin button").click(()=>{
+        window.location.href="/room";
+    });
+    $("#signup button").click(()=>{
+        window.location.href="/room";
+    });
 };
 
 app.selectTabListen = () => {
@@ -15,7 +25,7 @@ app.selectTabListen = () => {
 
         const target = $(this).attr("href");
 
-        $(".tab-content > div").not(target).hide();
+        $(".tab-content > section").not(target).hide();
 
         $(target).fadeIn(600);
 

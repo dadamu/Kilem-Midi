@@ -2,6 +2,7 @@
 
 <head>
     <title>Kilem Midi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/public/logo/favicon.png" type="image/x-icon">
     <link href="/public/css/util/normalize.css" rel="stylesheet" type="text/css">
     <link href="/public/css/pages/default.css" rel="stylesheet" type="text/css">
@@ -12,27 +13,27 @@
 <body>
     <main class="wrapper">
         <header class="main-header">
-            <img class="logo-img" src="/public/logo/favicon.png" />
-            <div class="form">
-                <ul class="tab-group">
-                    <li class="tab active"><a href="#signup">Sign Up</a></li>
-                    <li class="tab"><a href="#signin">Sign In</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="signup">
-                        <h1>Sign Up</h1>
-                        <input type="email" placeholder="Email Address" required autocomplete="off" />
-                        <input type="text" placeholder="Username" required autocomplete="off" />
-                        <input type="password" placeholder="Set A Password" required autocomplete="off" />
-                        <button type="submit" class="button button-block">Get Started</button>
+            <section class="container">
+                <img class="logo-img" src="/public/logo/favicon.png" />
+                <div class="form">
+                    <ul class="tab-group">
+                        <li class="tab active"><a href="#signup">Sign Up</a></li>
+                        <li class="tab"><a href="#signin">Sign In</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <section id="signup">
+                            <input type="email" placeholder="Email Address" required autocomplete="off" />
+                            <input type="text" placeholder="Username" required autocomplete="off" />
+                            <input type="password" placeholder="Set A Password" required autocomplete="off" />
+                            <button type="submit" class="button button-block">Get Started</button>
+                        </section>
+                        <section id="signin">
+                            <input type="email" placeholder="Email Address" required autocomplete="off" />
+                            <input type="password" placeholder="Set A Password" required autocomplete="off" />
+                            <button type="submit" class="button button-block">Sign In</button>
+                        </section>
                     </div>
-                    <div id="signin">
-                        <h1>Sign In</h1>
-                        <input type="email" placeholder="Email Address" required autocomplete="off" />
-                        <input type="password" placeholder="Set A Password" required autocomplete="off" />
-                        <button type="submit" class="button button-block">Sign In</button>
-                    </div>
-                </div>
+                </section>
         </header>
     </main>
 </body>

@@ -2,29 +2,36 @@
     box-sizing: border-box;
 }
 
+.wrapper{
+    color: #FFFFFF;
+    background-color: #37393A;
+}
+
 .main-header{
-    padding-top: 200px;
+    min-height: 100vh;
+    padding-top: 5%;
 }
 
 .welcome{
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
 }
 
 .welcome-logo{
-    width: 200px;
-    height: 200px;
+    width: 13em;
+    height: 13em;
 }
 
 .welcome-title{
-    font-size: 5em;
+    font-size: 3em;
 }
 
 .start{
     font-size: 1.5em;
-    margin-top: 50px;
-    width: 300px;
+    margin-top: 2.5em;
+    width: 30%;
     height: 80px;
     border-radius: 20px;
     cursor: pointer;

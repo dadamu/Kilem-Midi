@@ -12,10 +12,13 @@ module.exports = {
         }
         res.sendFile(path.join(__dirname, viewsPath, "editor.html"));
     }),
-    index: asyncHandler(async (req, res) => {
+    welcome: asyncHandler(async (req, res) => {
         res.sendFile(path.join(__dirname, viewsPath, "welcome.html"));
     }),
     sign: asyncHandler(async (req, res) => {
         res.sendFile(path.join(__dirname, viewsPath, "sign.html"));
+    }),
+    room: asyncHandler(async (req, res) => {
+        res.sendFile(path.join(__dirname, viewsPath, "room.html"));
     })
 };

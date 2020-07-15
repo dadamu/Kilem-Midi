@@ -1,0 +1,43 @@
+.wrapper{
+    padding-top: 3.5em;
+    color: black; 
+}
+
+.rooms {
+    padding: 15px;
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+.room {
+    margin: 15px; 
+    min-width: 150px;
+    width: calc((100% / 5) - 30px);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.room:hover .room-inner {
+    background-color: #1abc9c;
+    transform: scale(1.05);
+}
+
+.room-inner {
+    width: 100%;
+    padding: 30px;
+    position: relative;
+    cursor: pointer;
+    background-color: #949fb0;
+    color: #eceef1;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+}
+.room-inner:after {
+    transition: all 0.3s ease-in-out;
+}
+.room-inner .fa {
+    width: 100%;
+    margin-top: 0.25em;
+}

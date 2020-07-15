@@ -10,17 +10,12 @@ body{
 .wrapper{
     display: flex;
     flex-direction: column;
-    color: #FFFFFF;
 }
 
 .container{
     width: 90%;
     margin: 0 auto;
-}
-
-.main-header{
-    height: 100vh;
-    background-color: #37393A;
+    max-width: 1200px;
 }
 
 .main-footer{
@@ -31,4 +26,44 @@ body{
     flex: auto;
     width: 100%;
     flex: auto;
+}
+
+/* top nav */
+.top-nav{
+    background-color: rgb(27, 27, 29); 
+    display: flex;
+    align-items: center;
+    height: 3.5em;
+    width: 100%;
+    padding: 0 1.2em;
+    position: fixed;
+    top: 0;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.nav-logo{
+    height: 2em;
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+}
+
+.nav-logo span{
+    margin-left: 10px;
+    font-size: 1.3em;
+}
+
+.nav-logo img{
+    height: 100%;
+}
+
+.nav-tool{
+    display: flex;
+    justify-content: center;
+}
+
+.nav-user{
+    font-size: 1.1em;
+    cursor: pointer;
 }
