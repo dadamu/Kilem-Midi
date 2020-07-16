@@ -66,7 +66,7 @@ function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {
         for (let track of Object.values(user)) {
             const { id, version, notes, commiter } = track;
-            if (master.tracks[id]) {
+            if (master.tracks[id] && version >= master.tracks[id].version ) {
                 const masterTrack = master.tracks[id];
                 masterTrack.version = version;
                 masterTrack.commiter = commiter;
