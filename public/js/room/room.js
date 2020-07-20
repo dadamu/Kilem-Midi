@@ -1,18 +1,11 @@
 /* global $ */
 const app = {};
 
-app.init = () => {
+app.init = async() => {
+    await app.checkToken();
+    app.renderUser();
     app.selectTabListen();
     app.topNavListen();
-};
-
-app.topNavListen = () => {
-    $("#navLogo").click(() => {
-        window.location.href = "/room";
-    });
-    $("#navProfile").click(() => {
-        window.location.href = "/profile";
-    });
 };
 
 app.selectTabListen = () => {

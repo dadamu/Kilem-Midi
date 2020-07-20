@@ -1,6 +1,7 @@
 /* global $ app */
 app.init = async () => {
     app.setConfig();
+    await app.checkToken();
     await app.setFile();
     app.instruments.piano = app.setPiano();
     app.instruments.bass = app.setBass();

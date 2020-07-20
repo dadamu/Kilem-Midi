@@ -3,8 +3,6 @@ const app = {};
 app.setConfig = () => {
     // User config
     app.token = "";
-    app.userId = parseInt(prompt("userId", "1"));
-    app.username = "test" + app.userId;
 
     // Music config
     app.roomId = parseInt(document.URL.split("/").pop());

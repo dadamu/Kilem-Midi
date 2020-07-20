@@ -18,7 +18,6 @@ app.signListen = () => {
         else {
             alert("SignIn Success");
             window.localStorage.setItem("token", res.accessToken);
-            window.localStorage.setItem("username", res.user.username);
             window.location.href = "/room";
         }
     });
@@ -34,7 +33,6 @@ app.signListen = () => {
         else {
             alert("Signup Success");
             window.localStorage.setItem("token", res.accessToken);
-            window.localStorage.setItem("username", res.user.username);
             window.location.href = "/room";
         }
     });
