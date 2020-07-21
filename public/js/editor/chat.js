@@ -1,7 +1,7 @@
 /* global app $ */
 
 app.initChatRender = async () => {
-    const res = await app.fetchData(`/api/1.0/room/chat?roomId=${app.roomId}`);
+    const res = await fetch(`/api/1.0/chat?roomId=${app.roomId}`).then(res => res.json());
     const { data } = res;
     data.forEach(chat => app.chatRender(chat));
 };
@@ -38,7 +38,7 @@ app.chatSendlListen = () => {
             userId: app.userId,
             roomId: app.roomId
         };
-        const result = await app.fetchData("/api/1.0/room/chat", data, "POST");
+        const result = await app.fetchData("/api/1.0/chat", data, "POST");
         if (result.error) {
             alert("message send failed");
             return;
