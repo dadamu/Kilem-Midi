@@ -1,3 +1,8 @@
+a{
+    text-decoration: none;
+    color:inherit;
+}
+
 .wrapper{
     padding-top: 3.5em;
     color: black;
@@ -18,17 +23,17 @@
 .room {
     margin: 15px; 
     min-width: 150px;
-    width: calc((100% / 5) - 30px);
+    width: calc((100% / 4) - 30px);
     transition: all 0.2s ease-in-out;
     cursor: pointer;
 }
 
-.room:hover .room-inner {
+.room:hover .room__inner {
     background-color: #1abc9c;
     transform: scale(1.05);
 }
 
-.room-inner {
+.room__inner {
     width: 100%;
     padding: 1.5em;
     position: relative;
@@ -40,10 +45,119 @@
     text-align: center;
     transition: all 0.2s ease-in-out;
 }
-.room-inner:after {
+.room__inner:after {
     transition: all 0.3s ease-in-out;
 }
-.room-inner .fa {
+.room__inner .fa {
     width: 100%;
     margin-top: 0.25em;
+}
+
+.room__expander {
+    transition: all 0.2s ease-in-out;
+    background-color: #333a45;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    color: #eceef1;
+    font-size: 1.1em;
+    padding: 10px;
+}
+
+.line{
+    display: flex;
+    margin-bottom: 10px; 
+}
+
+.line-first{
+    text-align: right;
+    display: block;
+    width: 50%;
+    margin-right: 15px
+}
+.line-second{
+    flex: auto;
+}
+
+.intro{
+    width: 100%;
+    min-height: 100px;
+    border: 1px white solid;
+    word-break: break-all;
+    padding: 10px;
+}
+
+.room__expander .fa {
+    font-size: 0.75em;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.join{
+    display: block;
+    margin-left: auto;
+}
+
+.room__expander .fa:hover {
+    opacity: 0.9;
+}
+.room.is-collapsed .room__inner:after {
+    content: "";
+    opacity: 0;
+}
+.room.is-collapsed .room__expander {
+    max-height: 0;
+    min-height: 0;
+    overflow: hidden;
+    margin-top: 0;
+    opacity: 0;
+}
+.room.is-expanded .room__inner {
+    background-color: #1abc9c;
+}
+.room.is-expanded .room__inner:after {
+    content: "";
+    opacity: 1;
+    display: block;
+    height: 0;
+    width: 0;
+    position: absolute;
+    bottom: -30px;
+    left: calc(50% - 15px);
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 15px solid #333a45;
+}
+.room.is-expanded .room__inner .fa:before {
+    content: "\f115";
+}
+.room.is-expanded .room__expander {
+    max-height: 1000px;
+    min-height: 200px;
+    overflow: visible;
+    margin-top: 30px;
+    opacity: 1;
+}
+.room.is-expanded:hover .room__inner {
+    transform: scale(1);
+}
+.room.is-inactive .room__inner {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.room.is-inactive:hover .room__inner {
+    background-color: #949fb0;
+    transform: scale(1);
+}
+
+footer{
+    margin-top: auto;
+    height: 300px;
+    padding: 20px 0;
+    background: #333a45;
 }

@@ -94,7 +94,6 @@ async function profileGet(req, res) {
         catch(e){
             res.status(403).json({ error: "Invalid Access" });
         }
-
     }
     else {
         res.status(403).json({ error: "Forbidden" });
