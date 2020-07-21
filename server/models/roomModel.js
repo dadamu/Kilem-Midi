@@ -4,7 +4,7 @@ module.exports = {
         console.log(type);
         let sql = knex("room AS r")
             .select(["r.id AS id", "r.name As name", "r.file_name AS fileName", "u.username AS username"])
-            .innerJoin("user AS u", "r.user_id", "u.id");
+            .innerJoin("user AS u", "r.user_id", "u.id").limit(16).orderBy("r.id", "desc");
         const data = await sql;
         return data;
     },

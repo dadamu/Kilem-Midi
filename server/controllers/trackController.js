@@ -1,5 +1,7 @@
 const trackModel = require("../models/trackModel");
 const asyncHandler = require("../../util/asyncHandler");
+const trackDebug = require("debug")("track");
+
 module.exports = {
     commit: asyncHandler(async (req, res) => {
         const { id } = req.params;
@@ -15,6 +17,7 @@ module.exports = {
             return;
         }
         res.json({ status: "success" });
+        trackDebug("Commit Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("commit", { track: result });
         return;
@@ -23,6 +26,7 @@ module.exports = {
         const { roomId } = req.body;
         const track = await trackModel.add(req.body);
         res.json({ status: "success" });
+        trackDebug("Add Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
     }),
@@ -40,6 +44,7 @@ module.exports = {
             return;
         }
         res.json({ status: "success" });
+        trackDebug("Delete Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
     }),
@@ -52,6 +57,7 @@ module.exports = {
             return;
         }
         res.json({status: "success"});
+        trackDebug("Lock Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("lock", { track: result });
     }),
@@ -64,6 +70,7 @@ module.exports = {
             return;
         }
         res.json({status: "success"});
+        trackDebug("Change Track Instrument Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("instrumentSet", { track: result });
     })

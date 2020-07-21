@@ -1,9 +1,11 @@
 const noteSocket = require("./noteSocket");
+const ioDebug = require("debug")("io");
 module.exports = {
     start: (io) => {
         io.of((nsp, query, next) => {
             next(null, true);
         }).on("connection", (socket) => {
+            ioDebug("Socket Connection");
             socket.join("editor");
             socket.join("chat");
 
