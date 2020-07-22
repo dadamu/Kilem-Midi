@@ -40,7 +40,7 @@ app.chatSendlListen = () => {
         };
         const result = await app.fetchData("/api/1.0/chat", data, "POST");
         if (result.error) {
-            alert("message send failed");
+            app.errorShow("message send failed");
             return;
         }
         $("#chatInput").val("");

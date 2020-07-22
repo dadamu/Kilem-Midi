@@ -12,6 +12,7 @@ app.init = async () => {
 };
 
 app.UIListen = () => {
+    app.exitListen();
     app.addTrackListen();
     app.deleteTrackListen();
     app.trackSelectListen();

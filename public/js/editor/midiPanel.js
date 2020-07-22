@@ -89,7 +89,7 @@ app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
         const trackId = parseInt($("#midiPanel").attr("trackId"));
         if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
-            alert("It's not your locked track");
+            app.errorShow("It's not your locked track");
             return;
         }
         const target = evt.target;

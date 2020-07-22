@@ -3,7 +3,7 @@ app.loadFile = async () => {
     const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());
     if(response.error){
-        alert(response.error);
+        app.errorShow(response.error);
         window.location.href = "/room";
         return;
     }
@@ -19,7 +19,7 @@ app.setFile = async () => {
 app.saveFileListen = () => {
     $("#save").click(() => {
         app.saveFile();
-        alert("Save Success");
+        app.successShow("Save Success");
     });
 };
 
@@ -31,7 +31,7 @@ app.saveFile = async () => {
     data.data = app.music.tracks;
     const result = await app.fetchData(endpoint, data, "POST");
     if(result.error){
-        alert("Save Error");
+        app.errorShow("Save Error");
         return;
     }
 };

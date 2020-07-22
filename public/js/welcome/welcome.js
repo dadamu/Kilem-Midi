@@ -8,8 +8,7 @@ app.init = () => {
 app.getStartListen = () => {
     $("#start").click(() => {
         const token = window.localStorage.getItem("token");
-        const username = window.localStorage.getItem("username");
-        if (!token || !username) {
+        if (!token) {
             window.location.href = "/sign";
         }
         else {

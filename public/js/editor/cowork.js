@@ -20,13 +20,13 @@ app.clickCommitListen = () => {
                 notes: app.music.getNotes(trackId)
             }, "PUT");
             if (res.error) {
-                alert("Failed: " + res.error);
+                app.errorShow(res.error);
                 return;
             }
-            alert("Success");
+            app.successShow("Commited");
         }
         catch (e) {
-            alert("Commit failed");
+            app.errorShow("Commit failed");
         }
     });
 };
@@ -69,7 +69,7 @@ app.deleteTrackListen = () => {
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, data, "Delete");
         if (res.error) {
-            alert(res.error);
+            app.errorShow(res.error);
             return;
         }
     });
@@ -89,13 +89,13 @@ app.lockClickListen = () => {
             const get = await fetch(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`).then(res => res.json());
             previous = get.notes;
             if (JSON.stringify(current) !== JSON.stringify(previous)) {
-                alert("Please commit change first");
+                app.errorShow("Please commit change first");
                 return;
             }
         }
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
         if (res.error) {
-            alert(res.error);
+            app.errorShow(res.error);
             return;
         }
     });
@@ -159,7 +159,7 @@ app.changeInstrumentListen = () => {
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
         if (res.error) {
-            alert(res.error);
+            app.errorShow(res.error);
             $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
             return;
         }
