@@ -46,7 +46,7 @@ app.createRoomListen = () => {
         createData.token = window.localStorage.getItem("token");
         const createRes = await app.fetchData("/api/1.0/room", createData, "POST");
         if (createRes.error) {
-            app.errorshow(createRes.error);
+            app.errorShow(createRes.error);
             return;
         }
         const addData = {};
@@ -54,7 +54,7 @@ app.createRoomListen = () => {
         addData.roomId = createRes.roomId;
         const addRes = await app.fetchData("/api/1.0/room/user", addData, "POST");
         if (addRes.error) {
-            app.errorshow(addRes.error);
+            app.errorShow(addRes.error);
             return;
         }
         window.location.href = "/editor/" + createRes.roomId;
@@ -110,7 +110,7 @@ app.roomListen = () => {
         };
         const res = await app.fetchData("/api/1.0/room", data, "DELETE");
         if (res.error) {
-            app.errorshow(res.error);
+            app.errorShow(res.error);
             return;
         }
         $(this).closest(".room").remove();
@@ -131,7 +131,7 @@ app.roomListen = () => {
         };
         const res = await app.fetchData("/api/1.0/room/user", data, "DELETE");
         if (res.error) {
-            app.errorshow(res.error);
+            app.errorShow(res.error);
             return;
         }
         $(this).closest(".room").remove();
@@ -154,7 +154,7 @@ app.inviteCheck = async () => {
         method: "GET"
     }).then(res => res.json());
     if (getRes.error) {
-        app.errorshow(getRes.error);
+        app.errorShow(getRes.error);
         window.history.replaceState(null, null, window.location.pathname);
         return;
     }
@@ -172,7 +172,7 @@ app.inviteCheck = async () => {
     }
     const res = await app.fetchData("/api/1.0/room/user", data, "POST");
     if (res.error) {
-        app.errorshow(res.error);
+        app.errorShow(res.error);
         return;
     }
     window.location.href = "/editor/" + id;
