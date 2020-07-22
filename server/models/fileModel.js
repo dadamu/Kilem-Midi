@@ -10,7 +10,7 @@ module.exports = {
     getFile: async (roomId, userId) => {
         const selectUser = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
-            .select(["r.bpm AS bpm", "r.file_name AS fileName", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
+            .select(["r.bpm AS bpm", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
                 "t.id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
             .leftJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_id")
@@ -18,6 +18,9 @@ module.exports = {
             .leftJoin("user AS u2", "u2.id", "v.user_id")
             .where("r.id", roomId);
         let userData;
+        if(selectUser.length === 0){
+            return new Error("You are not in this room");
+        }
         if(selectUser[0].data)
             userData = JSON.parse(selectUser[0].data);
         else
@@ -80,7 +83,7 @@ function merge(user, master) {
 function getMasterData(data) {
     const result = {};
     result.bpm = data[0].bpm;
-    result.fileName = data[0].fileName;
+    result.filename = data[0].filename;
     result.tracks = {};
     const trackMap = {};
     const versionsMap = [];

@@ -11,7 +11,11 @@ module.exports = {
             res.status(400).json({ error: "Invalid input" });
             return;
         }
-        const file = await fileModel.getFile(roomId, userId);
-        res.status(200).json({ data: file });
+        const result = await fileModel.getFile(roomId, userId);
+        if(result instanceof Error){
+            res.status(403).json({error: result.message});
+            return;
+        }
+        res.status(200).json({ data: result });
     })
 };

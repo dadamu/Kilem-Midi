@@ -1,14 +1,6 @@
 /* global app $ */
 
-app.clickLogoListen = () => {
-    window.location.href = "/room";
-};
-
-app.clickUserListen = () => {
-    window.location.href = "/profile";
-};
-
-app.renderUser = () => {
+app.topNavRender = () => {
     $("#navProfile span").html(app.username);
 };
 

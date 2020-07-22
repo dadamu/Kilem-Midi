@@ -1,16 +1,10 @@
 /* global $ */
 const app = {};
 
-app.init = () => {
+app.init = async() => {
+    await app.checkToken();
+    app.topNavRender();
     app.topNavListen();
 };
 
-app.topNavListen = () => {
-    $("#navLogo").click(() => {
-        window.location.href = "/room";
-    });
-    $("#navProfile").click(() => {
-        window.location.href = "/profile";
-    });
-};
 $(document).ready(app.init);

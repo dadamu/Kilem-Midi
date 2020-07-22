@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/public/logo/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3/dark.css" rel="stylesheet">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
     <link href="/public/css/util/normalize.css" rel="stylesheet" type="text/css">
     <link href="/public/css/pages/default.css" rel="stylesheet" type="text/css">
     <link href="/public/css/pages/room.css" rel="stylesheet" type="text/css">
@@ -23,10 +25,56 @@
     </nav>
     <main class="wrapper">
         <header class="main-header">
+            <div class="container header-content">
+                <div class="intro">
+                    <p>hi</p>
+                </div>
+                <div class="create-room">
+                    <div class="line">
+                        <label>name</label><input name="name"></input>
+                    </div>
+                    <div class="line">
+                        <label>filename</label><input name="filename"></input>
+                    </div>
+                    <div class="line">
+                        <input type="checkbox" name="is_private" checked value="true"></input><label>private</label>
+                    </div>
+                    <div class="line">
+                        <label>password</label><input name="password"></input>
+                    </div>
+                    <label>intro</label>
+                    <div class="line">
+                        <textarea name="intro"></textarea>
+                    </div>
+                    <button id="createRoomButton">Start a Room</button>
+                </div>
+            </div>
         </header>
         <main class="main-content container">
             <section id="publicRooms">
                 <h3>Public Room</h3>
+                <div class="paging">
+                    <button class="previous"><i class="fa fa-angle-double-left"></i></button>
+                    <button class="next"><i class="fa fa-angle-double-right"></i></button>
+                </div>
+                <div class="rooms">
+                </div>
+            </section>
+            <section id="myRooms">
+                <h3>My Room</h3>
+                <div class="paging">
+                    <button class="previous"><i class="fa fa-angle-double-left"></i></button>
+                    <button class="next"><i class="fa fa-angle-double-right"></i></button>
+                </div>
+                <div class="rooms">
+                </div>
+            </section>
+            <section id="inRooms">
+                <h3>In Room</h3>
+                <div class="paging">
+                    <button class="previous"><i class="fa fa-angle-double-left"></i></button>
+                    <button class="next"><i class="fa fa-angle-double-right"></i></button>
+                </div>
                 <div class="rooms">
                 </div>
             </section>

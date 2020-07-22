@@ -9,9 +9,25 @@ a{
 }
 
 .main-header{
-    height: calc(60vh - 3.5em);
+    height: calc(55vh - 3.5em);
     max-height: 700px;
     background-color: #37393A;
+    min-height: 250px;
+}
+
+.header-content{
+    display: flex;
+    color: white;
+}
+
+.main-header .intro{
+    width: 50%;
+}
+
+.main-header .create-room{
+    height: 100%;
+    padding: 20px;
+    width: 50%;
 }
 
 .rooms {
@@ -82,7 +98,7 @@ a{
     flex: auto;
 }
 
-.intro{
+.room .intro{
     width: 100%;
     min-height: 100px;
     border: 1px white solid;
@@ -98,9 +114,22 @@ a{
     cursor: pointer;
 }
 
-.join{
+.room .control{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control .button{
     display: block;
-    margin-left: auto;
+    width: 30%;
+}
+
+
+.control .button:only-child{
+    margin: 0 auto;
+    width: 100%;
 }
 
 .room__expander .fa:hover {
@@ -147,7 +176,7 @@ a{
     transform: scale(1);
 }
 .room.is-inactive .room__inner {
-    pointer-events: none;
+   
     opacity: 0.5;
 }
 .room.is-inactive:hover .room__inner {
@@ -160,4 +189,26 @@ footer{
     height: 300px;
     padding: 20px 0;
     background: #333a45;
+}
+
+.paging{
+    position: relative;
+    justify-content: center;
+    height: 30px;
+}
+
+.previous{
+    position: absolute;
+    left: 25%;
+    top: 50%;
+}
+
+.next{
+    position: absolute;
+    right: 25%;
+    top: 50%;
+}
+
+.hidden{
+    display: none;
 }
