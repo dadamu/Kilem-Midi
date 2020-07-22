@@ -16,11 +16,11 @@ module.exports = {
                 const user = jwt.verify(token, JWT_KEY);
                 const requirement = { user, paging };
                 const result = await roomModel.get(type, requirement);
-                if(result instanceof Error){
+                if (result instanceof Error) {
                     res.status(404).json({ error: result.message });
                     return;
                 }
-                res.json( result );
+                res.json(result);
             }
             catch (e) {
                 res.status(403).json({ error: "Invalid Access" });
@@ -31,17 +31,27 @@ module.exports = {
         }
     }),
     create: asyncHandler(async (req, res) => {
-        const user = jwt.verify( req.body.token, JWT_KEY);
-        const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
-        const bcryptPass = bcrypt.hashSync(req.body.room.password, salt);
-        req.body.room.password = bcryptPass;
+        const user = jwt.verify(req.body.token, JWT_KEY);
+        if (Object.hasOwnProperty.call(req.body.room, "password")) {
+            const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
+            const bcryptPass = bcrypt.hashSync(req.body.room.password, salt);
+            req.body.room.password = bcryptPass;
+        }
         const roomId = await roomModel.create(req.body, user);
         res.status(201).json({ roomId });
+    }),
+    put: asyncHandler(async (req, res) => {
+        const result = await roomModel.update(req.body);
+        if(result instanceof Error){
+            res.json({ error: result.message });
+            return;
+        }
+        res.json({ status: "success" });
     }),
     delete: asyncHandler(async (req, res) => {
         const user = jwt.verify(req.body.token, JWT_KEY);
         const result = await roomModel.delete(req.body, user);
-        if(result instanceof Error){
+        if (result instanceof Error) {
             res.status(403).json({ error: result.message });
             return;
         }
@@ -52,15 +62,15 @@ module.exports = {
             const { token, roomId } = req.body;
             const user = jwt.verify(token, JWT_KEY);
             const check = await roomModel.checkUser(roomId, user);
-            if(check){
+            if (check) {
                 res.status(201).json({ status: "success" });
                 return;
             }
             const roomPass = await roomModel.getPassword(roomId);
-            if(roomPass){
+            if (roomPass) {
                 const password = req.body.password || "";
                 const passCheck = bcrypt.compareSync(password, roomPass);
-                if(!passCheck){
+                if (!passCheck) {
                     res.status(403).json({ error: "Wrong password" });
                     return;
                 }

@@ -1,4 +1,4 @@
-/* global $ */
+/* global $ Swal */
 const app = {};
 
 app.init = async () => {
@@ -28,6 +28,7 @@ app.UIListen = () => {
     app.roomListen();
     app.pagingListen();
     app.createRoomListen();
+    app.editRoomListen();
 };
 
 app.createRoomListen = () => {
@@ -98,7 +99,7 @@ app.roomListen = () => {
 
     rooms.on("click", ".delete", async function () {
         const deleteCheck = confirm("delete confirm");
-        if(!deleteCheck){
+        if (!deleteCheck) {
             return;
         }
         const id = $(this).closest(".room").attr("id");
@@ -108,7 +109,7 @@ app.roomListen = () => {
             token
         };
         const res = await app.fetchData("/api/1.0/room", data, "DELETE");
-        if(res.error){
+        if (res.error) {
             alert(res.error);
             return;
         }
@@ -119,7 +120,7 @@ app.roomListen = () => {
 
     rooms.on("click", ".exit", async function () {
         const exitCheck = confirm("exit confirm");
-        if(!exitCheck){
+        if (!exitCheck) {
             return;
         }
         const id = $(this).closest(".room").attr("id");
@@ -129,7 +130,7 @@ app.roomListen = () => {
             token
         };
         const res = await app.fetchData("/api/1.0/room/user", data, "DELETE");
-        if(res.error){
+        if (res.error) {
             alert(res.error);
             return;
         }
@@ -148,11 +149,11 @@ app.inviteCheck = async () => {
     const headers = {
         authorization: "Bearer " + token,
     };
-    const getRes = await fetch("/api/1.0/room/"+id, {
+    const getRes = await fetch("/api/1.0/room/" + id, {
         headers,
         method: "GET"
     }).then(res => res.json());
-    if(getRes.error){
+    if (getRes.error) {
         alert(getRes.error);
         window.history.replaceState(null, null, window.location.pathname);
         return;
@@ -166,7 +167,7 @@ app.inviteCheck = async () => {
         roomId: id,
         token
     };
-    if(getRes.data[0].password){
+    if (getRes.data[0].password) {
         data.password = prompt("input password");
     }
     const res = await app.fetchData("/api/1.0/room/user", data, "POST");
@@ -178,34 +179,77 @@ app.inviteCheck = async () => {
 };
 
 app.pagingListen = () => {
-    const section = $("section");
-    section.on("click", ".next", function () {
+    const rooms = $(".rooms");
+    rooms.on("click", ".next", function () {
         const id = $(this).closest("section").attr("id");
         let type = "";
         if (id === "publicRooms") {
             type = "public";
         }
-        else if(id === "myRooms"){
+        else if (id === "myRooms") {
             type = "my";
         }
-        else{
+        else {
             type = "in";
         }
         app.renderRoom(type, ++app.paging.public);
     });
-    section.on("click", ".previous", function () {
+    rooms.on("click", ".previous", function () {
         const id = $(this).closest("section").attr("id");
         let type = "";
         if (id === "publicRooms") {
             type = "public";
         }
-        else if(id === "myRooms"){
+        else if (id === "myRooms") {
             type = "my";
         }
-        else{
+        else {
             type = "in";
         }
         app.renderRoom(type, --app.paging.public);
+    });
+};
+
+app.editRoomListen = () => {
+    $("#myRooms").on("dblclick", ".room__expander", async function () {
+        const id = $(this).closest(".room").attr("id");
+        let username = $(this).find(".line-username").text();
+        let name = $(this).find(".line-name").text();
+        let filename = $(this).find(".line-filename").text();
+        let intro = $(this).find(".line-intro").html();
+        const res = await Swal.fire({
+            title: "Edit Room Info",
+            html: `<input type='text' id='name' class='swal2-input' value='${name}'></input>
+                    <input type='text' id='filename' class='swal2-input' value='${filename}'></input>
+                    <textarea id='intro' class='swal2-textarea'>${intro.split("<br>").join("\n")}</textarea>`,
+            showCancelButton: true,
+            confirmButtonText: "Edit",
+            preConfirm: () => {
+                name = Swal.getPopup().querySelector("#name").value;
+                filename = Swal.getPopup().querySelector("#filename").value;
+                intro = Swal.getPopup().querySelector("#intro").value;
+                const data = {
+                    id,
+                    name,
+                    filename,
+                    intro
+                };
+                return app.fetchData("/api/1.0/room", data, "PUT");
+            }
+        });
+
+        if (res.error) {
+            app.errorShow(res.error);
+        }
+        app.successShow("Edited");
+        const newRoom = app.roomTempGen({
+            id,
+            filename,
+            name,
+            username,
+            intro
+        });
+        $(this).closest(".room").replaceWith(newRoom);
     });
 };
 
@@ -218,20 +262,20 @@ app.roomTempGen = (room) => {
         <div class="room__expander">
             <div class="line">
                 <label class="line-first">name: </label>
-                <span class="line-second">${room.name}</span>
+                <span class="line-second line-name">${room.name}</span>
             </div>
             <div class="line">
                 <label class="line-first">filename: </label>
-                <span class="line-second">${room.filename}</span>
+                <span class="line-second line-filename">${room.filename}</span>
             </div>
             <div class="line">
                 <label class="line-first">creator: </label>
-                <span class="line-second">${room.username}</span>
+                <span class="line-second line-username">${room.username}</span>
             </div>
             <div class="line">
                 <label class="line-first">intro: </label>
             </div>
-            <div class="line intro">${room.intro}</div>
+            <div class="line intro line-intro">${room.intro.split("\n").join("<br>")}</div>
             <div class="control">
                 <button class="button join">join</button>
             </div>
@@ -255,11 +299,11 @@ app.renderRoom = async (type, paging) => {
     }
     for (let room of rooms) {
         const roomDiv = $(app.roomTempGen(room));
-        if(type === "my"){
+        if (type === "my") {
             const deleteButton = $("<button></button>").addClass("button").addClass("delete").text("delete");
             roomDiv.find(".control").append(deleteButton);
         }
-        if(type === "in"){
+        if (type === "in") {
             const exitButton = $("<button></button>").addClass("button").addClass("exit").text("exit");
             roomDiv.find(".control").append(exitButton);
         }

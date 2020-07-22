@@ -76,6 +76,16 @@ module.exports = {
         }
         return;
     },
+    update: async(body) => {
+        const id = body.id;
+        const newContent = body;
+        delete newContent.id;
+        const result = await knex("room").update(newContent).where("id", id);
+        if(result.length === 0){
+            return new Error("Failed to Update");
+        }
+        return;
+    },
     hasRoom: async (id) => {
         const room = await knex("room").where({ id });
         return room.length > 0;

@@ -6,6 +6,9 @@ router.route("/room")
     .post(roomController.create);
 
 router.route("/room")
+    .put(roomController.put);
+
+router.route("/room")
     .delete(roomController.delete);
 
 router.route("/room/:type")

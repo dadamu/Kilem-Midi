@@ -1,4 +1,4 @@
-/* global app */
+/* global app Swal */
 app.fetchData = (url, data, method, headers = {
     "user-agent": "Mozilla/4.0 MDN Example",
     "content-type": "application/json"
@@ -11,21 +11,49 @@ app.fetchData = (url, data, method, headers = {
     }).then(response => response.json());
 };
 
-app.checkToken = async() => {
+app.checkToken = async () => {
     const token = window.localStorage.getItem("token");
-    if(!token){
+    if (!token) {
         window.location.href = "/sign";
     }
     const headers = {
         authorization: "Bearer " + token,
     };
-    const res = await fetch("/api/1.0/user/profile", {headers, method: "GET"}).then(res => res.json());
-    if(res.error){
+    const res = await fetch("/api/1.0/user/profile", { headers, method: "GET" }).then(res => res.json());
+    if (res.error) {
         alert(res.error);
         window.location.href = "/sign";
     }
-    else{
+    else {
         app.userId = res.id;
         app.username = res.username;
     }
+};
+
+app.errorShow = (text) => {
+    Swal.fire({
+        icon: "error",
+        title: "Error",
+        text
+    });
+};
+
+app.successShow = (text) => {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+        background: "#666",
+        onOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+        }
+    });
+
+    Toast.fire({
+        icon: "success",
+        title: text
+    });
 };
