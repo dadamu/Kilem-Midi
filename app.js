@@ -5,6 +5,7 @@ const io = require("socket.io")(http);
 const bodyParser = require("body-parser");
 const serveStatic = require("serve-static");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 const viewsPath = "./views/";
 require("dotenv").config();
 const ioController = require("./server/controllers/ioController");
@@ -43,6 +44,11 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use("/api", (err, req, res, next) => {
+    if (err instanceof jwt.JsonWebTokenError) {
+        res.status(403).json({ error: "Invalid Access" });
+        return;
+    }
+
     res.status(err.status || 500);
     if (err.status != 404) {
         console.log(err);

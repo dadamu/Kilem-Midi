@@ -30,27 +30,25 @@ async function nativSignUp(req, res) {
     const isEmail = validator.isEmail(email);
     const userValid = !validator.isEmpty(username);
     const passValid = !validator.isEmpty(password);
-    if (isEmail && userValid && passValid) {
-        const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
-        const bcryptPass = bcrypt.hashSync(password, salt);
-        username = validator.escape(username);
-        const data = { email, username, password: bcryptPass, provider };
-        const result = await userModel.signup(data);
-
-        if (result instanceof Error) {
-            res.status(400).json({ error: result.message });
-        }
-        else {
-            const accessToken = jwt.sign(payloadGen(result), JWT_KEY);
-            res.json({
-                accessToken,
-                user: result
-            });
-        }
-    }
-    else {
+    if (!isEmail || !userValid || !passValid) {
         res.status(400).json({ error: "Invalid Input" });
+        return;
     }
+    const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
+    const bcryptPass = bcrypt.hashSync(password, salt);
+    username = validator.escape(username);
+    const data = { email, username, password: bcryptPass, provider };
+    const result = await userModel.signup(data);
+
+    if (result instanceof Error) {
+        res.status(400).json({ error: result.message });
+        return;
+    }
+    const accessToken = jwt.sign(payloadGen(result), JWT_KEY);
+    res.json({
+        accessToken,
+        user: result
+    });
 }
 
 
@@ -58,46 +56,39 @@ async function nativSignIn(req, res) {
     let { email, password } = req.body;
     const isEmail = validator.isEmail(email);
     const passValid = !validator.isEmpty(password);
-    if (isEmail && passValid) {
-        const select = await userModel.get(email);
-        if (select.length === 0) {
-            res.status(400).json({ error: "Wrong Email or Password" });
-            return;
-        }
-        const user = select[0];
-        const passCheck = bcrypt.compareSync(password, user.password);
-        if (passCheck) {
-            const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
-            res.json({
-                accessToken,
-                user
-            });
-        }
-        else {
-            res.status(400).json({ error: "Wrong Email or Password" });
-        }
-    }
-    else {
+    if (!isEmail || !passValid) {
         res.status(400).json({ error: "Invalid Input" });
     }
+    const select = await userModel.get(email);
+    if (select.length === 0) {
+        res.status(400).json({ error: "Wrong Email or Password" });
+        return;
+    }
+    const user = select[0];
+    const passCheck = bcrypt.compareSync(password, user.password);
+    if (!passCheck) {
+        res.status(400).json({ error: "Wrong Email or Password" });
+        return;
+    }
+    const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
+    res.json({
+        accessToken,
+        user
+    });
 }
 
 async function profileGet(req, res) {
     const { headers } = req;
     const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
-    if (isAuth) {
-        const token = headers["authorization"].split(" ")[1];
-        try{
-            const data = jwt.verify(token, JWT_KEY);
-            res.json(data);
-        }
-        catch(e){
-            res.status(403).json({ error: "Invalid Access" });
-        }
-    }
-    else {
+    if (!isAuth) {
         res.status(403).json({ error: "Forbidden" });
+        return;
     }
+    const token = headers["authorization"].split(" ")[1];
+    const data = jwt.verify(token, JWT_KEY);
+    res.json(data);
+
+
 }
 
 
@@ -105,6 +96,6 @@ function payloadGen(user) {
     return {
         id: user.id,
         username: user.username,
-        exp: Math.floor( ( Date.now() + expire * 1000 ) / 1000 )
+        exp: Math.floor((Date.now() + expire * 1000) / 1000)
     };
 }
