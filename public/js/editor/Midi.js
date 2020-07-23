@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* global app */
+/* global app Midi */
 class MidiFile {
     constructor(bpm, tracks = {}) {
         this.bpm = bpm;
@@ -15,23 +15,23 @@ class MidiFile {
         return JSON.parse(JSON.stringify(this.tracks));
     }
 
-    getNotes(trackId){
+    getNotes(trackId) {
         return this.tracks[trackId].notes;
     }
 
-    getVersions(trackId){
+    getVersions(trackId) {
         return this.tracks[trackId].versions;
     }
 
-    getVersion(trackId){
+    getVersion(trackId) {
         return this.tracks[trackId].version;
     }
 
-    getTrack(trackId){
+    getTrack(trackId) {
         return this.tracks[trackId];
     }
 
-    setTrack(track){
+    setTrack(track) {
         const { id } = track;
         this.setNotes(id, track.notes);
         this.tracks[id].setCommiter(track.commiter);
@@ -39,15 +39,15 @@ class MidiFile {
         this.tracks[id].setVersion(track.version);
     }
 
-    setNotes(trackId, notes){
+    setNotes(trackId, notes) {
         this.tracks[trackId].setNotes(notes);
     }
 
-    changeLocker(trackId, locker){
+    changeLocker(trackId, locker) {
         this.tracks[trackId].changeLocker(locker);
     }
 
-    getLocker(trackId){
+    getLocker(trackId) {
         return this.tracks[trackId].locker;
     }
 
@@ -65,6 +65,27 @@ class MidiFile {
         }
         return newTracks;
     }
+
+    export() {
+        const bpm = this.bpm;
+        const midi = new Midi();
+        midi.header.setTempo(bpm);
+        for (let track of Object.values(this.tracks)) {
+            const exTrack = midi.addTrack();
+            exTrack.name = track.name;
+            for (let notes of Object.values(track.notes)) {
+                notes.forEach(note => {
+                    const midiNote = {
+                        midi: note.pitch,
+                        time: note.posX * (60 / bpm) / 16,
+                        duration: note.length * (60 / bpm) * 4
+                    };
+                    exTrack.addNote(midiNote);
+                });
+            }
+        }
+        return new Blob([midi.toArray()], { type: "audio/x-midi" });
+    }
 }
 
 class Track {
@@ -79,27 +100,27 @@ class Track {
         this.notes = {};
     }
 
-    setVersion(version){
+    setVersion(version) {
         this.version = version;
     }
 
-    addVersion(version){
+    addVersion(version) {
         this.versions.push(version);
     }
 
-    setVersions(versions){
+    setVersions(versions) {
         this.versions = versions;
     }
 
-    setLocker(locker){
+    setLocker(locker) {
         this.locker = locker;
     }
 
-    setCommiter(commiter){
+    setCommiter(commiter) {
         this.commiter = commiter;
     }
 
-    changeLocker(locker){
+    changeLocker(locker) {
         this.locker = locker;
     }
 
