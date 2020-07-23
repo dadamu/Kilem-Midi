@@ -29,6 +29,7 @@ app.UIListen = () => {
     app.pagingListen();
     app.createRoomListen();
     app.editRoomListen();
+    app.searchListen();
 };
 
 app.createRoomListen = () => {
@@ -237,7 +238,7 @@ app.editRoomListen = () => {
                 return app.fetchData("/api/1.0/room", data, "PUT");
             }
         });
-        if(res.isDismissed){
+        if (res.isDismissed) {
             return;
         }
         if (res.error) {
@@ -286,19 +287,27 @@ app.roomTempGen = (room) => {
 };
 
 app.renderRoom = async (type, paging) => {
+    const keyword = $("#search").val();
     const token = window.localStorage.getItem("token");
     const headers = {
         authorization: "Bearer " + token,
     };
-    const res = await fetch(`/api/1.0/room/${type}?paging=${paging}`, { headers, method: "GET" }).then(res => res.json());
+    let endpoint = `/api/1.0/room/${type}?paging=${paging}`;
+    if (type === "public" && keyword !== "") {
+        endpoint = `/api/1.0/room/search?paging=${paging}&keyword=${keyword}`;
+    }
+    const res = await fetch(endpoint, { headers, method: "GET" }).then(res => res.json());
     const { data: rooms, next, previous } = res;
     $(`#${type}Rooms .rooms .room`).remove();
     if (rooms.length === 0) {
-        $(`#${type}Rooms .rooms`).html("No Content");
         $(`#${type}Rooms .next`).addClass("hidden");
         $(`#${type}Rooms .previous`).addClass("hidden");
+        $(`#${type}Rooms .rooms`).append("<div class='no-content'>No Content</div>");
         return;
     }
+    $(`#${type}Rooms .rooms .no-content`).remove();
+    $(`#${type}Rooms .next`).removeClass("hidden");
+    $(`#${type}Rooms .previous`).removeClass("hidden");
     for (let room of rooms) {
         const roomDiv = $(app.roomTempGen(room));
         if (type === "my") {
@@ -324,6 +333,13 @@ app.renderRoom = async (type, paging) => {
     else {
         $(`#${type}Rooms .next`).removeClass("hidden");
     }
+    app.paging.type = paging;
+};
+
+app.searchListen = () => {
+    $("#search").change(function () {
+        app.renderRoom("public", 0);
+    });
 };
 
 $(document).ready(app.init);

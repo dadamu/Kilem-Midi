@@ -32,6 +32,17 @@ module.exports = {
             const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
             result.data = data;
         }
+        else if (type === "search"){
+            let { keyword } = requirement;
+            keyword = `%${keyword}%`;
+            query = query.clone().where("r.is_private", 0).andWhere(function(){
+                this.where("r.name", "like", keyword).orWhere("r.filename", "like", keyword);
+            });
+            const count = await query.clone().count("* AS total");
+            maxPaging = Math.ceil(count[0].total / 4);
+            const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
+            result.data = data;
+        }
         else {
             const roomId = type;
             const { user } = requirement;
