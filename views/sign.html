@@ -10,6 +10,7 @@
     <script src="/public/js/util/jquery-min-3.5.1.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-wordpress-admin/wordpress-admin.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
+    <script src="https://apis.google.com/js/api:client.js"></script>
 </head>
 
 <body>
@@ -19,26 +20,33 @@
                 <img class="logo-img" src="/public/logo/favicon.png" />
                 <div class="form">
                     <ul class="tab-group">
-                        <li class="tab active"><a href="#signup">Sign Up</a></li>
-                        <li class="tab"><a href="#signin">Sign In</a></li>
+                        <li class="tab active"><a href="#signin">Sign In</a></li>
+                        <li class="tab"><a href="#signup">Sign Up</a></li>
                     </ul>
                     <div class="tab-content">
+                        <section id="signin">
+                            <input type="email" class="email" placeholder="Email Address" required autocomplete="off" />
+                            <input type="password" class="password" placeholder="Set A Password" required
+                                autocomplete="off" />
+                            <button id="nativeSignin" type="submit" class="button button-block">Sign In</button>
+                            <button id="googleSignin" class="google-button button-block"><img
+                                    src="/public/img/signlogo/g-logo.png"><span>Sign In with Google</span></button>
+                        </section>
                         <section id="signup">
                             <input type="email" class="email" placeholder="Email Address" required autocomplete="off" />
                             <input type="text" class="username" placeholder="Username" required autocomplete="off" />
-                            <input type="password" class="password" placeholder="Set A Password" required autocomplete="off" />
-                            <button type="submit" class="button button-block">Get Started</button>
-                        </section>
-                        <section id="signin">
-                            <input type="email" class="email" placeholder="Email Address" required autocomplete="off" />
-                            <input type="password" class="password" placeholder="Set A Password" required autocomplete="off" />
-                            <button type="submit" class="button button-block">Sign In</button>
+                            <input type="password" class="password" placeholder="Set A Password" required
+                                autocomplete="off" />
+                            <button id="nativeSignup" type="submit" class="button button-block">Get Started</button>
+                            <button id="googleSignup" class="google-button button-block"><img
+                                    src="/public/img/signlogo/g-logo.png"><span>Continue with Google</span></button>
                         </section>
                     </div>
-                </section>
+            </section>
         </header>
     </main>
 </body>
 <script src="/public/js/sign/sign.js"></script>
 <script src="/public/js/util/lib.js"></script>
+
 </html>

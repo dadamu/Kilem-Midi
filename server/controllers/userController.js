@@ -5,19 +5,26 @@ const { BCRYPT_SALT, JWT_KEY } = process.env;
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fetch = require("node-fetch");
 const expire = process.env.TOKEN_EXPIRE; // 30 days by seconds
 
 module.exports = {
     signup: asyncHandler(async (req, res) => {
         const { provider } = req.body;
         if (provider === "native") {
-            await nativSignUp(req, res);
+            await nativeSignUp(req, res);
+        }
+        else if (provider === "google") {
+            await googleSignUp(req, res);
         }
     }),
     signin: asyncHandler(async (req, res) => {
         const { provider } = req.body;
         if (provider === "native") {
-            await nativSignIn(req, res);
+            await nativeSignIn(req, res);
+        }
+        else if(provider === "google"){
+            await googleSignIn(req, res);
         }
     }),
     profileGet: (async (req, res) => {
@@ -25,7 +32,7 @@ module.exports = {
     })
 };
 
-async function nativSignUp(req, res) {
+async function nativeSignUp(req, res) {
     let { email, username, password, provider } = req.body;
     const isEmail = validator.isEmail(email);
     const userValid = !validator.isEmpty(username);
@@ -51,13 +58,62 @@ async function nativSignUp(req, res) {
     });
 }
 
+async function googleSignUp(req, res) {
+    let { accessToken } = req.body;
+    const data = await getGoogleProfie(accessToken);
+    if(data instanceof Error){
+        res.status(400).json({error: data.message});
+        return;
+    }
+    const result = await userModel.signup(data);
+    const token = jwt.sign(payloadGen(result), JWT_KEY);
+    res.json({
+        accessToken: token,
+        user: result
+    });
+}
 
-async function nativSignIn(req, res) {
+async function googleSignIn(req, res) {
+    let { accessToken } = req.body;
+    const data = await getGoogleProfie(accessToken);
+    if(data instanceof Error){
+        res.status(400).json({error: data.message});
+        return;
+    }
+    const select = await userModel.get(data.email);
+    if (select.length === 0) {
+        res.status(400).json({ error: "User not Exist" });
+        return;
+    }
+    const user = select[0];
+    const token = jwt.sign(payloadGen(user), JWT_KEY);
+    res.json({
+        accessToken: token,
+        user
+    });
+}
+
+async function getGoogleProfie(accessToken){
+    try{
+        const googleUser = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`).then(res => res.json());
+        return {
+            email: googleUser.email,
+            username: googleUser.name,
+            provider: "google"
+        };
+    }
+    catch(e){
+        return new Error("Google Invalid Token");
+    }
+}
+
+async function nativeSignIn(req, res) {
     let { email, password } = req.body;
     const isEmail = validator.isEmail(email);
     const passValid = !validator.isEmpty(password);
     if (!isEmail || !passValid) {
         res.status(400).json({ error: "Invalid Input" });
+        return;
     }
     const select = await userModel.get(email);
     if (select.length === 0) {
@@ -87,8 +143,6 @@ async function profileGet(req, res) {
     const token = headers["authorization"].split(" ")[1];
     const data = jwt.verify(token, JWT_KEY);
     res.json(data);
-
-
 }
 
 

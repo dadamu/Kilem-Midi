@@ -1,8 +1,8 @@
-/* global app MidiFile $ */
+/* global app MidiFile $ Swal*/
 app.loadFile = async () => {
     const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());
-    if(response.error){
+    if (response.error) {
         app.errorShow(response.error);
         window.location.href = "/room";
         return;
@@ -23,6 +23,21 @@ app.saveFileListen = () => {
     });
 };
 
+app.exportFileListen = () => {
+    $("#export").click(() => {
+        const file = app.music.export();
+        const downloadUrl = URL.createObjectURL(file);
+        const a = $("<a></a>").attr("href", downloadUrl).addClass("download").attr("download", app.filename);
+        const span = $("<span></span>").text("download");
+        a.append(span);
+        Swal.fire({
+            icon: "success",
+            title: "Exported",
+            footer: a
+        });
+    });
+};
+
 app.saveFile = async () => {
     const endpoint = "/api/1.0/midi/file";
     const data = {};
@@ -30,7 +45,7 @@ app.saveFile = async () => {
     data.roomId = app.roomId;
     data.data = app.music.tracks;
     const result = await app.fetchData(endpoint, data, "POST");
-    if(result.error){
+    if (result.error) {
         app.errorShow("Save Error");
         return;
     }

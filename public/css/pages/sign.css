@@ -111,7 +111,42 @@ input:focus{
 .button:hover, .button:focus {
     background: #179b77;
 }
+
+.google-button{
+    position: relative;
+    border: 0;
+    outline: none;
+    border-radius: 0;
+    padding: 3% 0;
+    font-size: 1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: #4285F4;
+    color: #fff;
+    transition: all 0.5s ease;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.google-button img{
+    position: absolute;
+    top:0;
+    left:0;
+    height: 100%;
+    border: #4285F4 1px solid;
+}
+
+.google-button span{
+    margin-left: 5%; 
+}
+
 .button-block {
     display: block;
     width: 100%;
+    margin-bottom: 20px;
+}
+
+.button-block:last-child{
+    margin-bottom: 10px;
 }

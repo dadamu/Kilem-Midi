@@ -32,6 +32,7 @@ app.UIListen = () => {
     app.lockClickListen();
     app.chatRoomlListen();
     app.chatSendlListen();
+    app.exportFileListen();
 };
 
 app.initRender = () => {

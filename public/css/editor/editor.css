@@ -6,6 +6,11 @@ a{
     box-sizing: border-box;
 }
 
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
 body{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
@@ -122,8 +127,26 @@ body{
     border-top: #AAAAAA solid 1px;
 }
 
-.region-playhead{
+.playhead{
     left: 0px;
-    height: 100%;
     z-index: 100;
+}
+
+.playhead .body{
+    height: 100%;
+}
+
+.download{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #888888;
+    width: 80px;
+    height: 30px;
+    border: 1px solid #FFF;
+    border-radius: 3px;
+}
+
+.download span{
+    display: block;
 }
