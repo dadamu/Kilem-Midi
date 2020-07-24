@@ -33,8 +33,8 @@ app.setNoteDrag = (noteDiv) => {
         cursor: "move",
         start: (evt) => {
             const trackId = $("#midiPanel").attr("trackId");
-            const posX = $(evt.target).attr("posX");
-            const pitch = $(evt.target).attr("pitch");
+            const posX = parseInt($(evt.target).attr("posX"));
+            const pitch = parseInt($(evt.target).attr("pitch"));
             const note = { posX, pitch };
             const data = {
                 type: "deleteNote",
@@ -55,15 +55,74 @@ app.setNoteDrag = (noteDiv) => {
             const newLeft = Math.round(endLeft / resolution) * resolution;
 
             const newNote = app.svgToNote(newLeft, newTop + 1);
-            const {posX, pitch} = newNote;
+            const { posX, pitch } = newNote;
             const length = parseFloat($(evt.target).attr("length"));
+            newNote.length = length;
             $(evt.target).css("top", newTop).css("left", newLeft)
                 .attr("posX", newNote.posX).attr("pitch", newNote.pitch);
 
             const trackId = $("#midiPanel").attr("trackId");
 
             //ignore duplicate not at same pos
-            if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0){
+            if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0) {
+                $(evt.target).remove();
+                return;
+            }
+            const { instrument } = app.music.tracks[trackId];
+            app.playNote(instrument, pitch);
+            const data = {
+                type: "createNote",
+                userId: app.userId,
+                roomId: app.roomId,
+                trackId,
+                note: { posX, pitch, length }
+            };
+            app.emit("noteUpdate", data);
+            app.regionNoteRender(trackId, newNote);
+            app.noteIntoTrack(trackId, newNote);
+        }
+    });
+};
+
+
+app.setNoteEditWidth = (tailDiv) => {
+    tailDiv.draggable({
+        start: (evt) => {
+            const trackId = $("#midiPanel").attr("trackId");
+            const posX = parseInt($(evt.target).parent().attr("posX"));
+            const pitch = parseInt($(evt.target).parent().attr("pitch"));
+            const note = { posX, pitch };
+            const data = {
+                type: "deleteNote",
+                userId: app.userId,
+                roomId: app.roomId,
+                note,
+                trackId
+            };
+            app.emit("noteUpdate", data);
+            app.noteOutTrack(trackId, note);
+            app.dragNoteDeleteRender(trackId, note);
+        },
+        drag: (evt, ui) => {
+            const { left } = ui.position;
+            const resolution = app.gridsInterval * app.noteGrid;
+            const change = parseInt(Math.round((left + 5) / resolution)) * resolution;
+            $(evt.target).parent().width(change);
+        },
+        stop: (evt) => {
+            const noteDiv = $(evt.target).parent();
+            const width = noteDiv.width();
+            $(evt.target).css("left", width - 10).css("top", 0);
+            const length = width / app.gridsInterval;
+            noteDiv.attr("length", length);
+
+            const posX = noteDiv.attr("posX");
+            const pitch = noteDiv.attr("pitch");
+            const newNote = { posX, pitch, length };
+            const trackId = $("#midiPanel").attr("trackId");
+
+            //ignore duplicate not at same pos
+            if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0) {
                 $(evt.target).remove();
                 return;
             }
@@ -85,7 +144,7 @@ app.setNoteDrag = (noteDiv) => {
 
 app.notesRender = (posX, notes) => {
     for (let note of notes) {
-        const { pitch } = note;
+        const { pitch, length } = note;
         const left = posX / 64 * app.gridsInterval;
         const bottom = (pitch - 12 * (app.scaleNumMin + 1)) * app.pitchHeight;
         const noteDiv = $("<div></div>");
@@ -93,8 +152,12 @@ app.notesRender = (posX, notes) => {
         noteDiv.css("left", left).css("bottom", bottom);
         noteDiv.attr("pitch", pitch);
         noteDiv.attr("posX", posX);
+        noteDiv.attr("length", length);
+        const tailDiv = $("<div></div>").addClass("tail");
+        noteDiv.append(tailDiv);
         $("#grids").append(noteDiv);
         app.setNoteDrag(noteDiv);
+        app.setNoteEditWidth(tailDiv);
     }
 };
 
@@ -129,15 +192,21 @@ app.createNoteRender = (trackId, note) => {
         noteDiv.attr("pitch", note.pitch);
         noteDiv.attr("length", note.length);
         noteDiv.attr("posX", note.posX);
+
+        const tailDiv = $("<div></div>").addClass("tail");
+        noteDiv.append(tailDiv);
+
         $("#grids").append(noteDiv);
         app.setNoteDrag(noteDiv);
+        app.setNoteEditWidth(tailDiv);
     }
 };
 
 app.deleteNoteRender = (trackId, note) => {
     const panelId = parseInt($("#midiPanel").attr("trackId"));
+    $(`.region[trackId=${trackId}] div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
     if (panelId === parseInt(trackId)) {
-        $(`div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
+        $(`#midiPanel div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
     }
 };
 

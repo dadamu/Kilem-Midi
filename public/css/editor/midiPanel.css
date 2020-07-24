@@ -109,7 +109,15 @@
     z-index: 5;
     background-color: steelblue; 
     border: #123123 solid 1px;
-    cursor: pointer;
+}
+
+.note .tail{
+    cursor: col-resize;
+    position: absolute;
+    top: 0;
+    left: calc(100% - 10px);
+    width: 10px;
+    height: 100%;
 }
 
 .playhead{
