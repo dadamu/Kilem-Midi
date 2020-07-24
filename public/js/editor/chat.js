@@ -1,5 +1,10 @@
 /* global app $ */
 
+app.chatListen = () => {
+    app.chatRoomlListen();
+    app.chatSendlListen();
+};
+
 app.initChatRender = async () => {
     const res = await fetch(`/api/1.0/chat?roomId=${app.roomId}`).then(res => res.json());
     const { data } = res;

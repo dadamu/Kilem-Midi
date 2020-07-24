@@ -1,5 +1,12 @@
 /* global app $ */
 
+app.controlListen = () => {
+    app.exitListen();
+    app.midiPlayListen();
+    app.midiStopListen();
+    app.midiResetListen();
+};
+
 app.exitListen = () => {
     $("#exit").click(()=>{
         window.location.href = "/room";

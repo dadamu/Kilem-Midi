@@ -1,5 +1,5 @@
 const noteSocket = require("./noteSocket");
-const ioDebug = require("debug")("io");
+const ioDebug = require("debug")("app");
 module.exports = {
     start: (io) => {
         io.of((nsp, query, next) => {

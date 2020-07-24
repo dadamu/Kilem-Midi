@@ -1,4 +1,10 @@
 /* global app MidiFile $ Swal*/
+
+app.loadListen = () => {
+    app.saveFileListen();
+    app.exportFileListen();
+};
+
 app.loadFile = async () => {
     const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());

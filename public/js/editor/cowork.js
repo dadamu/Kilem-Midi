@@ -58,6 +58,11 @@ app.addTrack = async () => {
     }
 };
 
+app.addTrackListen = () => {
+    $("#addTrack").click(() => {
+        app.addTrack();
+    });
+};
 
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(async () => {
@@ -101,51 +106,6 @@ app.lockClickListen = () => {
     });
 };
 
-
-app.createNote = async (note) => {
-    const { x, y } = note;
-    const posX = Math.floor(x / (64 * app.noteGrid)) * (64 * app.noteGrid);
-    const pitch = y + 12 * (app.scaleNumMin + 1);
-    const trackId = $("#midiPanel").attr("trackId");
-
-    //ignore duplicate not at same pos
-    if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0)
-        return;
-    const { instrument } = app.music.tracks[trackId];
-    app.playNote(instrument, pitch);
-    const data = {
-        type: "createNote",
-        userId: app.userId,
-        roomId: app.roomId,
-        trackId,
-        note: { posX, pitch, length: app.noteLength }
-    };
-    app.emit("noteUpdate", data);
-    const newNote = { posX, pitch, length: app.noteLength };
-    app.createNoteRender(trackId, newNote);
-    app.regionNoteRender(trackId, newNote);
-    app.noteIntoTrack(trackId, newNote);
-};
-
-app.noteDeleteListen = () => {
-    $("#grids").on("dblclick", ".note", async function () {
-        const trackId = $("#midiPanel").attr("trackId");
-        const posX = $(this).attr("posX");
-        const pitch = $(this).attr("pitch");
-        const note = { posX, pitch, length: 1 };
-        const data = {
-            type: "deleteNote",
-            userId: app.userId,
-            roomId: app.roomId,
-            note,
-            trackId
-        };
-        app.emit("noteUpdate", data);
-        app.deleteNoteRender(trackId, note);
-        app.noteOutTrack(trackId, note);
-    });
-};
-
 app.changeInstrumentListen = () => {
     $(".tracks-title").on("change", ".instrument-selector", async function () {
         const trackId = $(this).closest(".track").attr("trackId");
@@ -164,4 +124,13 @@ app.changeInstrumentListen = () => {
             return;
         }
     });
+};
+
+app.coworkListen = () => {
+    app.addTrackListen();
+    app.changeInstrumentListen();
+    app.lockClickListen();
+    app.deleteTrackListen();
+    app.clickCommitListen();
+    app.versionChangeListen();
 };

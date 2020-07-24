@@ -23,13 +23,6 @@ app.initRegionRender = () => {
     return;
 };
 
-
-app.addTrackListen = () => {
-    $("#addTrack").click(() => {
-        app.addTrack();
-    });
-};
-
 app.initiTrackRender = () => {
     for (let [key, track] of Object.entries(app.music.tracks)) {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);

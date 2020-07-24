@@ -21,10 +21,11 @@ module.exports = {
         if(selectUser.length === 0){
             return new Error("You are not in this room");
         }
-        if(selectUser[0].data)
+        else if(selectUser[0].data)
             userData = JSON.parse(selectUser[0].data);
         else
             userData = {};
+
         const masterData = getMasterData(selectMaster);
         const data = merge(userData, masterData);
         return data;
@@ -68,7 +69,8 @@ module.exports = {
 function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {
         for (let track of Object.values(user)) {
-            const { id, version, notes, commiter } = track;
+            let { id, version, notes, commiter } = track;
+            version = version.version || 0;
             if (master.tracks[id] && version >= master.tracks[id].version ) {
                 const masterTrack = master.tracks[id];
                 masterTrack.version = version;

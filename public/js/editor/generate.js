@@ -12,27 +12,15 @@ app.init = async () => {
 };
 
 app.UIListen = () => {
-    app.exitListen();
-    app.addTrackListen();
-    app.deleteTrackListen();
     app.trackSelectListen();
     app.openMidiPanelListen();
-    app.addMidiNoteListen();
-    app.noteDeleteListen();
     app.clickKeysListen();
-    app.midiPlayListen();
-    app.midiStopListen();
-    app.midiResetListen();
-    app.changeInstrumentListen();
-    app.saveFileListen();
-    app.noteLengthListen();
-    app.noteGridListen();
-    app.clickCommitListen();
-    app.versionChangeListen();
-    app.lockClickListen();
-    app.chatRoomlListen();
-    app.chatSendlListen();
-    app.exportFileListen();
+
+    app.chatListen();
+    app.loadListen();
+    app.noteListen();
+    app.controlListen();
+    app.coworkListen();
 };
 
 app.initRender = () => {

@@ -1,6 +1,6 @@
 const trackModel = require("../models/trackModel");
 const asyncHandler = require("../../util/asyncHandler");
-const trackDebug = require("debug")("track");
+const trackDebug = require("debug")("app");
 
 module.exports = {
     commit: asyncHandler(async (req, res) => {
