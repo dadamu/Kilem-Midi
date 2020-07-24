@@ -97,7 +97,9 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             const source = app.audioCtx.createBufferSource();
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
-            source.detune.value = pitchShift * 100;
+            if(pitchShift){
+                source.detune.value = pitchShift * 100;
+            }
             const time = (1 / (bpm / 60)) * (4 * note.length);
             app.fadeAudio(source, time);
         }

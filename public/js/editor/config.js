@@ -15,7 +15,7 @@ app.setConfig = () => {
     app.scaleNumMin = 1;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
     app.regionInterval = 200;
-    app.gridsInterval = 200;
+    app.gridsInterval = 300;
     app.pitchHeight = 11.65;
 
     // Playing Config
@@ -24,8 +24,8 @@ app.setConfig = () => {
     app.isplaying = false;
 
     // Control config
-    app.noteLength = 1/4;
-    app.noteGrid = 1/4;
+    app.noteLength = 1/8;
+    app.noteGrid = 1/8;
     app.isMidiEditorOpen = false;
     startUserMedia();
 

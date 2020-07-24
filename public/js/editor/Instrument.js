@@ -29,7 +29,6 @@ class Instrument {
         }
         return;
     }
-
     getFileTask(pitch, waitQueue) {
         return new Promise((resolve) => {
             const asyncDo = async () => {
@@ -73,3 +72,41 @@ app.setGuitar = () => {
 app.setBass = () => {
     return new Instrument("DubBass", 25, 60);
 };
+
+app.setDrums = () => {
+    return new Drums("ClassicRock", 36, 56);
+};
+
+class Drums extends Instrument{
+    constructor(name, minPitch, maxPitch) {
+        super(name, minPitch, maxPitch);
+    }
+
+    async getFiles() {
+        const pTask = [];
+        const start = this.minPitch;
+        for (let pitch = start; pitch <= this.maxPitch; pitch++) {
+            const task = this.getFileTask(pitch);
+            pTask.push(task);
+        }
+        await Promise.all(pTask);
+    }
+    getFileTask(pitch) {
+        return new Promise((resolve) => {
+            const asyncDo = async () => {
+                try{       
+                    this.audio[pitch] = {};             
+                    const fileNum = this.getFileNum(pitch);
+                    const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
+                    const blob = await getData.blob();
+                    const buffer = await blob.arrayBuffer();
+                    this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
+                }catch(e){
+                    console.log(e);
+                }   
+                resolve();
+            };
+            asyncDo();
+        });
+    }
+}

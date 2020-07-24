@@ -53,6 +53,7 @@
                     </div>
                     <div id="regionContent" class="region-content">
                         <div id="regionPlayhead" class="playhead body" style="transform: translateX(0px);">
+                            <div class="drag"></div>
                         </div>
                     </div>
                 </div>
@@ -62,23 +63,27 @@
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
                 <div class="midi-toolbox">GRID
-                    <div class="note-grid midi-tool" value="0.125">1/8</div>
-                    <div class="note-grid midi-tool selected" value="0.25">1/4</div>
+                    <div class="note-grid midi-tool" value="0.0625">1/16</div>
+                    <div class="note-grid midi-tool selected" value="0.125">1/8</div>
+                    <div class="note-grid midi-tool" value="0.25">1/4</div>
+                    <div class="note-grid midi-tool" value="0.5">1/2</div>
+                    <div class="note-grid midi-tool" value="1">1</div>
                 </div>
                 <div class="midi-toolbox">Length
-                    <div class="note-length midi-tool" value="0.125">1/8</div>
-                    <div class="note-length midi-tool selected" value="0.25">1/4</div>
+                    <div class="note-length midi-tool" value="0.0625">1/16</div>
+                    <div class="note-length midi-tool selected" value="0.125">1/8</div>
+                    <div class="note-length midi-tool" value="0.25">1/4</div>
+                    <div class="note-length midi-tool" value="0.5">1/2</div>
+                    <div class="note-length midi-tool" value="1">1</div>
                 </div>
             </header>
             <div class="panel-content">
-                <div class="panel-info">
-                    <div id="trackName" class="panel-track-name"></div>
-                </div>
                 <div class="keys-and-grid">
                     <div id="keys" class="keys"></div>
                     <div id="grids" class="grids">
                     </div>
                     <div id="midiPlayhead" class="midi-playhead playhead" style="transform: translateX(0px);">
+                        <div class="drag"></div>
                     </div>
                 </div>
             </div>
@@ -113,6 +118,7 @@
 <script src="/public/js/editor/Instrument.js"></script>
 <script src="/public/js/editor/control.js"></script>
 <script src="/public/js/editor/chat.js"></script>
+<script src="/public/js/editor/note.js"></script>
 <script src="/public/js/editor/generate.js"></script>
 
 </html>

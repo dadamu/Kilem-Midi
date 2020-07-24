@@ -6,6 +6,7 @@ app.init = async () => {
     app.instruments.piano = app.setPiano();
     app.instruments.bass = app.setBass();
     app.instruments.guitar = app.setGuitar();
+    app.instruments.drums = app.setDrums();
     app.initRender();
     await app.socketInit();
     app.UIListen();
@@ -13,9 +14,7 @@ app.init = async () => {
 
 app.UIListen = () => {
     app.trackSelectListen();
-    app.openMidiPanelListen();
-    app.clickKeysListen();
-
+    app.midiPanelListen();
     app.chatListen();
     app.loadListen();
     app.noteListen();

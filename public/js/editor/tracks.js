@@ -58,6 +58,7 @@ app.addVersionOption = (track) => {
 
 app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => {
     const regionDiv = $("<div></div>").addClass(`region track-${trackId}`).attr("trackId", trackId);
+    $(regionDiv).width(app.musicLength * app.regionInterval);
     $("#regionContent").append(regionDiv);
 
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
@@ -67,7 +68,8 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
-    $(instrumentSelect).append(pianoOption, guitarOption, bassOption).val(instrument);
+    const drumsOption = $("<option>Drums</option>").val("drums");
+    $(instrumentSelect).append(pianoOption, guitarOption, bassOption, drumsOption).val(instrument);
     infoDiv.append(trackNameDiv, instrumentSelect);
 
     const versionControl = app.trackVersionRender(trackId);
@@ -78,8 +80,6 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const lockDiv = app.lockerRender(locker);
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
     $("#tracksContent").append(trackDiv);
-
-    $(regionDiv).width(app.musicLength * app.regionInterval);
     return;
 };
 
