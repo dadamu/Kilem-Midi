@@ -29,27 +29,22 @@ class Instrument {
         }
         return;
     }
-    getFileTask(pitch, waitQueue) {
-        return new Promise((resolve) => {
-            const asyncDo = async () => {
-                const pitchShift = (pitch - 1) % 3;
-                this.audio[pitch] = {};
-                if (pitchShift === 0) {
-                    const fileNum = this.getFileNum(pitch);
-                    const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
-                    const blob = await getData.blob();
-                    const buffer = await blob.arrayBuffer();
-                    this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
-                }
-                else {
-                    //queue that wait to async parts ends
-                    waitQueue.push(pitch);
-                }
-                this.audio[pitch].pitchShift = pitchShift;
-                resolve();
-            };
-            asyncDo();
-        });
+    async getFileTask(pitch, waitQueue) {
+        const pitchShift = (pitch - 1) % 3;
+        this.audio[pitch] = {};
+        if (pitchShift === 0) {
+            const fileNum = this.getFileNum(pitch);
+            const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
+            const blob = await getData.blob();
+            const buffer = await blob.arrayBuffer();
+            this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
+        }
+        else {
+            //queue that wait to async parts ends
+            waitQueue.push(pitch);
+        }
+        this.audio[pitch].pitchShift = pitchShift;
+        return;
     }
 
     getFileNum(pitch) {
@@ -77,7 +72,7 @@ app.setDrums = () => {
     return new Drums("ClassicRock", 36, 56);
 };
 
-class Drums extends Instrument{
+class Drums extends Instrument {
     constructor(name, minPitch, maxPitch) {
         super(name, minPitch, maxPitch);
     }
@@ -91,22 +86,19 @@ class Drums extends Instrument{
         }
         await Promise.all(pTask);
     }
-    getFileTask(pitch) {
-        return new Promise((resolve) => {
-            const asyncDo = async () => {
-                try{       
-                    this.audio[pitch] = {};             
-                    const fileNum = this.getFileNum(pitch);
-                    const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
-                    const blob = await getData.blob();
-                    const buffer = await blob.arrayBuffer();
-                    this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
-                }catch(e){
-                    console.log(e);
-                }   
-                resolve();
-            };
-            asyncDo();
-        });
+    async getFileTask(pitch) {
+        this.audio[pitch] = {};
+        if ([39, 40, 52, 54, 55].includes(pitch)) {
+            return;
+        }
+        const fileNum = this.getFileNum(pitch);
+        const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
+        const blob = await getData.blob();
+        const buffer = await blob.arrayBuffer();
+        if (buffer.byteLength <= 183) {
+            return;
+        }
+        this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
+        return;
     }
 }

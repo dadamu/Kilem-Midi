@@ -31,7 +31,7 @@ app.initRender = () => {
     app.initiTrackRender();
     app.initChatRender();
     app.initRegionNoteRender();
-    return;
+    app.filenameRender();
 };
 
 $(document).ready(app.init);

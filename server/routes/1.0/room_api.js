@@ -16,6 +16,7 @@ router.route("/room/:type")
 
 router.route("/room/user")
     .post(roomController.addUser);
+    
 router.route("/room/user")
     .delete(roomController.deleteUser);
 

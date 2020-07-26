@@ -39,7 +39,7 @@ app.use("/api", (req, res, next) => {
 });
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, viewsPath, "404.html"));
+    res.status(404).sendFile(path.join(__dirname, viewsPath, "404.html"));
 });
 
 // eslint-disable-next-line no-unused-vars

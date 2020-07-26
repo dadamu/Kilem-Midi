@@ -19,6 +19,7 @@ app.loadFile = async () => {
 app.setFile = async () => {
     const music = await app.loadFile();
     app.filename = music.filename;
+    app.creator = music.creator;
     app.music = new MidiFile(music.bpm, music.tracks);
 };
 

@@ -7,7 +7,7 @@ module.exports = {
         const { id } = req.params;
         const isRoomExisted = await roomModel.hasRoom(id);
         if (!isRoomExisted) {
-            res.sendFile(path.join(__dirname, viewsPath, "404.html"));
+            res.status(404).sendFile(path.join(__dirname, viewsPath, "404.html"));
             return;
         }
         res.sendFile(path.join(__dirname, viewsPath, "editor.html"));

@@ -54,14 +54,23 @@ body{
     display: flex;
     position: relative;
     padding : 5px 10px;
-    height : 20px;
 }
 
 .file-title{
+    cursor: text;
+    background: inherit;
+    color: inherit;
+    border: none;
     position: absolute;
     text-align: center;
-    width: 200px;
+    width: 300px;
+    padding: 5px;
     left: calc( 50% - 100px);
+}
+
+.file-title.editable:hover,
+.file-title.editable:focus{
+    background: #565656;
 }
 
 .exit{

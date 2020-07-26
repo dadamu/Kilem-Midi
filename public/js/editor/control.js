@@ -5,6 +5,7 @@ app.controlListen = () => {
     app.midiPlayListen();
     app.midiStopListen();
     app.midiResetListen();
+    app.filenameChangeListen();
 };
 
 app.exitListen = () => {
@@ -116,4 +117,23 @@ app.fadeAudio = function (source, time) {
     gain.connect(app.audioCtx.destination);
     source.start(0);
     source.stop(currentTime + time);
+};
+
+
+app.filenameRender = () => {
+    $("#filename").val(app.filename);
+    if(app.creator.id === app.userId){
+        $("#filename").removeAttr("disabled").addClass("editable");
+    }
+};
+
+app.filenameChangeListen = () => {
+    $("#filename").change(function(){
+        const res = app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, { filename: $(this).val() }, "PATCH");
+        if(res.error){
+            app.showError(res.error);
+            return;
+        }
+        app.filename = $(this).val();
+    });
 };

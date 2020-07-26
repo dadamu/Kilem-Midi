@@ -66,7 +66,7 @@ app.playNote = async (instrument, pitch) => {
         const source = app.audioCtx.createBufferSource();
         const { buffer, pitchShift } = app.instruments[instrument].audio[pitch];
         source.buffer = buffer;
-        if(pitchShift){
+        if (pitchShift) {
             source.detune.value = pitchShift * 100;
         }
         const duration = 0.5;
@@ -269,8 +269,10 @@ app.notesRender = (posX, notes) => {
         const tailDiv = $("<div></div>").addClass("tail");
         noteDiv.append(tailDiv);
         $("#grids").append(noteDiv);
-        app.setNoteDrag(noteDiv);
-        app.setNoteEditWidth(tailDiv);
+        if (parseInt(app.userId) === app.music.getLocker($("#midiPanel").attr("trackId")).id) {
+            app.setNoteDrag(noteDiv);
+            app.setNoteEditWidth(tailDiv);
+        }
     }
 };
 

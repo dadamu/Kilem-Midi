@@ -9,6 +9,9 @@ router.route("/midi/file")
 router.route("/midi/file")
     .get(fileController.getFile);
 
+router.route("/midi/file/:roomId/:type")
+    .patch(fileController.update);
+
 router.route("/midi/track")
     .post(trackController.add);
 

@@ -10,12 +10,14 @@ module.exports = {
     getFile: async (roomId, userId) => {
         const selectUser = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
-            .select(["r.bpm AS bpm", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", "t.active AS active",
-                "t.id AS trackId", "t.name AS trackName", "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
+            .select(["r.bpm AS bpm", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName", 
+                "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
+                "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
             .leftJoin("track AS t", "t.room_id", "r.id")
             .leftJoin("version AS v", "t.id", "v.track_id")
             .leftJoin("user AS u1", "u1.id", "t.user_id")
             .leftJoin("user AS u2", "u2.id", "v.user_id")
+            .leftJoin("user AS u3", "u3.id", "r.user_id")
             .where("r.id", roomId);
         let userData;
         if(selectUser.length === 0){
@@ -30,7 +32,7 @@ module.exports = {
         const data = merge(userData, masterData);
         return data;
     },
-    update: async (info) => {
+    saveNote: async (info) => {
         const { trackId, type, roomId, userId, note } = info;
         const trx = await knex.transaction();
         try {
@@ -62,6 +64,12 @@ module.exports = {
             await trx.rollback();
             throw e;
         }
+    },
+    update: async (roomId, type, body) => {
+        if(type === "filename"){
+            await knex("room").update("filename", body.filename).where("id", roomId);
+            return;
+        }
     }
 };
 
@@ -86,6 +94,10 @@ function getMasterData(data) {
     const result = {};
     result.bpm = data[0].bpm;
     result.filename = data[0].filename;
+    result.creator = {
+        id: data[0].creatorId,
+        name: data[0].creatorName
+    };
     result.tracks = {};
     const trackMap = {};
     const versionsMap = [];

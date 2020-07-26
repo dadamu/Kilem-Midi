@@ -17,5 +17,12 @@ module.exports = {
             return;
         }
         res.status(200).json({ data: result });
+    }),
+    update: asyncHandler(async (req, res) => {
+        const { roomId, type } = req.params;
+        await fileModel.update(roomId, type, req.body);
+        res.status(201).json({ status: "success" });
+        const io = req.app.get("io");
+        io.of("/room" + roomId).to("editor").emit("filenameChange", { filename: req.body.filename});
     })
 };

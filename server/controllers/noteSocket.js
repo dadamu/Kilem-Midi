@@ -4,7 +4,7 @@ module.exports = {
     noteListen: (socket) => {
         socket.on("noteUpdate", async(info) => {
             noteDebug(info);
-            const note = await fileModel.update(info);
+            const note = await fileModel.saveNote(info);
             socket.broadcast.to("editor" + info.userId).emit(info.type, { trackId: info.trackId, note });
             noteDebug("Note Update");
         });

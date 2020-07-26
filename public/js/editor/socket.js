@@ -75,4 +75,10 @@ app.ioListen = async () => {
         app.music.tracks[track.id].instrument = track.instrument;
         $(`.track.track-${track.id} .instrument-selector`).val(track.instrument);
     });
+
+    app.on("filenameChange", (data) => {
+        const { filename } = data;
+        app.filename = filename;
+        app.filenameRender(filename);
+    });
 };
