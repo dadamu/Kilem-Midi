@@ -20,7 +20,11 @@ module.exports = {
     }),
     update: asyncHandler(async (req, res) => {
         const { roomId, type } = req.params;
-        await fileModel.update(roomId, type, req.body);
+        const result = await fileModel.update(roomId, type, req.body);
+        if(result instanceof Error){
+            res.status(403).json({error: result.message});
+            return;
+        }
         res.status(201).json({ status: "success" });
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("filenameChange", { filename: req.body.filename});

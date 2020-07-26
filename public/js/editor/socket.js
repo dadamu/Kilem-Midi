@@ -47,7 +47,18 @@ app.ioListen = async () => {
         const { track } = data;
         app.music.changeLocker(track.id, track.locker);
         $(`.track.track-${track.id} .track-lock`).html( app.lockerRender(track.locker).html() );
+        if(track.locker.id === app.userId){
+            $(`.track.track-${track.id} .track-name`).addClass("editable").removeAttr("disabled");
+        }
+        else{
+            $(`.track.track-${track.id} .track-name`).removeClass("editable");
+        }
         app.saveFile();
+    });
+
+    app.on("trackNameChange", (data) => {
+        app.music.tracks[data.id].name = data.name;
+        $(`.track.track-${data.id} .track-name`).val(data.name);
     });
 
     app.on("chat", (data) => {
@@ -64,7 +75,6 @@ app.ioListen = async () => {
 
     app.on("deleteNote", (data) => {
         const { note, trackId } = data;
-        console.log(note);
         app.deleteNoteRender(trackId, note);
         app.regionNoteDelete(trackId, note);
         app.noteOutTrack(trackId, note);

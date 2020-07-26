@@ -151,6 +151,7 @@ module.exports = {
                 };
             }
             else {
+                await trx.rollback();
                 return new Error("It's not your locked track");
             }
         }
@@ -159,7 +160,24 @@ module.exports = {
             throw e;
         }
     },
-    instrumentSet: async(trackId, body) => {
+    nameChange: async (trackId, body) => {
+        const trx = await knex.transaction();
+        const { userId, name } = body;
+        try {
+            const select = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId).forUpdate();
+            if (select.length === 0) {
+                await trx.rollback();
+                return new Error("It's not your locked track");
+            }
+            await trx("track AS t").update("t.name", name).where("t.id", trackId);
+            await trx.commit();
+        }
+        catch (e) {
+            await trx.rollback();
+            throw e;
+        }
+    },
+    instrumentSet: async (trackId, body) => {
         const trx = await knex.transaction();
         const { userId, instrument } = body;
         try {

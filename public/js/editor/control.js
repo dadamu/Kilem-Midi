@@ -128,10 +128,14 @@ app.filenameRender = () => {
 };
 
 app.filenameChangeListen = () => {
-    $("#filename").change(function(){
-        const res = app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, { filename: $(this).val() }, "PATCH");
+    $("#filename").change(async function(){
+        const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, { 
+            filename: $(this).val(),
+            userId: app.userId 
+        }, "PATCH");
         if(res.error){
-            app.showError(res.error);
+            app.errorShow(res.error);
+            app.filenameRender(app.filename);
             return;
         }
         app.filename = $(this).val();

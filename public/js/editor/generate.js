@@ -13,7 +13,7 @@ app.init = async () => {
 };
 
 app.UIListen = () => {
-    app.trackSelectListen();
+    app.trackListen();
     app.midiPanelListen();
     app.chatListen();
     app.loadListen();

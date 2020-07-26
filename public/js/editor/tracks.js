@@ -1,4 +1,10 @@
 /* global $ app */
+
+app.trackListen = () => {
+    app.trackNameChangeListen();
+    app.trackSelectListen();
+};
+
 app.initRulerRender = () => {
     const length = app.musicLength;
     const interval = app.regionInterval;
@@ -32,16 +38,21 @@ app.initiTrackRender = () => {
 };
 
 app.lockerRender = (locker) => {
-    const lockDiv = $("<div></div>").addClass("track-lock").text("開");
+    const lockDiv = $("<div></div>").addClass("track-lock");
+    const iconDiv = $("<span></span>").addClass("lock-icon").text("開");
     if (locker) {
         if (!locker.id){
-            $(lockDiv).text("開");
+            $(iconDiv).text("開");
+            lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {
-            $(lockDiv).text("自");
+            $(iconDiv).text("自");
+            lockDiv.append(iconDiv);
         }
         else{
-            $(lockDiv).text("鎖:"+locker.name);
+            const lockerDiv = $("<span></span>").addClass("locker-name").text(locker.name);
+            $(iconDiv).text("鎖:");
+            lockDiv.append(iconDiv, lockerDiv);
         }
     }
     return lockDiv;
@@ -63,7 +74,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
 
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const infoDiv = $("<div></div>").addClass("track-info");
-    const trackNameDiv = $("<div></div>").addClass("track-name").text(trackName);
+    const trackNameDiv = $("<input></input>").addClass("track-name").val(trackName).attr("disabled", true);
     const instrumentSelect = $("<select></select>").addClass("instrument-selector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
@@ -78,6 +89,9 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const track = app.music.getTrack(trackId);
     const { locker } = track;
     const lockDiv = app.lockerRender(locker);
+    if(locker.id === app.userId){
+        trackNameDiv.addClass("editable").removeAttr("disabled");
+    }
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
     $("#tracksContent").append(trackDiv);
     return;
@@ -131,6 +145,24 @@ app.trackSelect = (target) => {
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
     app.panelLoadTrack($(".track.selected").attr("trackId"));  
+};
+
+app.trackNameChangeListen = () => {
+    $("#tracksContent").on("change", ".track-name", async function(){
+        const newName = $(this).val();
+        const trackId = $(this).closest(".track").attr("trackId");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/name`, {
+            userId: app.userId,
+            name: newName,
+            roomId: app.roomId
+        }, "PATCH");
+        if(res.error){
+            app.errorShow(res.error);
+            $(this).val(app.music.tracks[trackId].name);
+            return;
+        }
+        app.music.tracks[trackId].name = newName;
+    });
 };
 
 

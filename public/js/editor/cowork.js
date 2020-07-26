@@ -81,7 +81,7 @@ app.deleteTrackListen = () => {
 };
 
 app.lockClickListen = () => {
-    $("#tracksContent").on("click", ".track-lock", async function () {
+    $("#tracksContent").on("click", ".lock-icon", async function () {
         const trackId = $(this).closest(".track").attr("trackId");
         const data = {
             userId: app.userId,

@@ -44,9 +44,27 @@
     margin-right : 20px;
 }
 
-.track-lock{
-    width: 20px;
+.track-name{
+    color: inherit;
+    background: inherit;
+    border: none;
+}
+
+.lock-icon{
+    width: 1em;
     cursor: pointer;
+}
+
+.track-name:focus{
+    outline: none;
+}
+
+.track-name.editable:focus{
+    background: #333940;
+}
+
+.track-name.editable:hover{
+    background: #333940;
 }
 
 .track-info{

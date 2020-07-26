@@ -67,6 +67,10 @@ module.exports = {
     },
     update: async (roomId, type, body) => {
         if(type === "filename"){
+            const select = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
+            if(select.length === 0){
+                return new Error("You are not creator");
+            }
             await knex("room").update("filename", body.filename).where("id", roomId);
             return;
         }
