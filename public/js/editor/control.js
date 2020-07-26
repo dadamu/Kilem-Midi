@@ -6,10 +6,12 @@ app.controlListen = () => {
     app.midiStopListen();
     app.midiResetListen();
     app.filenameChangeListen();
+    app.bpmChangeListen();
+    app.loopControlListen();
 };
 
 app.exitListen = () => {
-    $("#exit").click(()=>{
+    $("#exit").click(() => {
         window.location.href = "/room";
     });
 };
@@ -23,7 +25,7 @@ app.midiPlayListen = () => {
 app.midiPlay = () => {
     if (!app.isplaying) {
         const bpm = app.music.bpm;
-        const resolution = 1 / (bpm / 60) / 16 * 1000;
+        const resolution = 1 / (bpm / 60) / 8 * 1000;
         const tracks = app.music.getTracks();
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
@@ -98,7 +100,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             const source = app.audioCtx.createBufferSource();
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
-            if(pitchShift){
+            if (pitchShift) {
                 source.detune.value = pitchShift * 100;
             }
             const time = (1 / (bpm / 60)) * (4 * note.length);
@@ -122,22 +124,181 @@ app.fadeAudio = function (source, time) {
 
 app.filenameRender = () => {
     $("#filename").val(app.filename);
-    if(app.creator.id === app.userId){
+    if (app.creator.id === app.userId) {
         $("#filename").removeAttr("disabled").addClass("editable");
     }
 };
 
 app.filenameChangeListen = () => {
-    $("#filename").change(async function(){
-        const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, { 
+    $("#filename").change(async function () {
+        const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, {
             filename: $(this).val(),
-            userId: app.userId 
+            userId: app.userId
         }, "PATCH");
-        if(res.error){
+        if (res.error) {
             app.errorShow(res.error);
             app.filenameRender(app.filename);
             return;
         }
         app.filename = $(this).val();
     });
+};
+
+app.bpmChangeListen = () => {
+    $("#bpm").change(async function () {
+        const bpm = $(this).val();
+        if (bpm > 200 || bpm < 60) {
+            app.bpmRender(app.music.bpm);
+            app.errorShow("bpm must be between 60 and 200.");
+            return;
+        }
+        const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/bpm`, {
+            bpm,
+            userId: app.userId
+        }, "PATCH");
+        if (res.error) {
+            app.errorShow(res.error);
+            app.bpmRender(app.music.bpm);
+            return;
+        }
+        app.music.bpm = $(this).val();
+    });
+};
+
+app.bpmRender = () => {
+    $("#bpm").val(app.music.bpm);
+    if (app.creator.id === app.userId) {
+        $("#bpm").removeAttr("disabled");
+    }
+};
+
+app.controlRulerRender = () => {
+    const grid = app.rulerSvgGrid(app.regionInterval, app.musicLength);
+    $("#rulerControl").append(grid);
+};
+
+app.controlLoopRender = () => {
+    $("#loopControl").width(app.regionInterval * 4).height("100%");
+    app.setLoopHeadDrag($("#loopControl .head"));
+    app.setLoopTailDrag($("#loopControl .tail"));
+};
+
+app.setLoopHeadDrag = (div) => {
+    div.draggable({
+        axis: "x",
+        start: () => {
+            let start = $("#loopControl").css("left");
+            let oWidth = $("#loopControl").width();
+            this.start = parseFloat(start.replace("px", ""));
+            this.oWidth = oWidth;
+        },
+        drag: (evt) => {
+            let curr = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
+            let widthChange = this.start - curr;
+            let width;
+            const resolution = app.regionInterval / 4;
+            curr =  Math.round(curr / resolution) * resolution;
+            if(Math.abs(widthChange) >= resolution){
+                width = Math.round(widthChange / resolution) * resolution + this.oWidth;
+               
+            }
+            else{
+                width = resolution + this.oWidth;
+            }
+            if(curr <= 0){
+                curr = 0;
+            }
+            if(curr > this.start + this.oWidth - resolution){
+                $("#loopControl").width(resolution);
+                return;
+            }
+            $("#loopControl").width(width);
+            $("#loopControl").css("left", curr);
+        },
+        stop: (evt) => {
+            $(evt.target).css("left", 0).css("top", 0);
+        }
+    });
+};
+
+app.setLoopTailDrag = (div) => {
+    div.draggable({
+        axis: "x",
+        drag: (evt) => {
+            let start = $("#loopControl").css("left");
+            start = parseFloat(start.replace("px", ""));
+            const curr = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
+            let width = curr - start;
+            const resolution = app.regionInterval / 4;
+            if(width > resolution){
+                this.width = Math.round(width / resolution) * resolution;
+                $("#loopControl").width(this.width);
+                return;
+            }
+            const max = app.musicLength * app.regionInterval;
+            if(width >= max){
+                this.width = max;
+                $("#loopControl").width(max);
+                return;
+            }
+            this.width = resolution;
+        },
+        stop: (evt) => {
+            $(evt.target).css("left", parseInt(this.width) - 10).css("top", 0);
+        }
+    });
+};
+
+app.loopControlListen = () => {
+    $("#rulerControl").on("dblclick", "#loopControl", function () {
+        if ($(this).hasClass("inactive")) {
+            $(this).removeClass("inactive");
+            app.islooping = true;
+            return;
+        }
+        $(this).addClass("inactive");
+        app.islooping = false;
+    });
+
+    $("#rulerGirds").mousedown(function (evt) {
+        $("#loopControl").remove();
+        const target = evt.target;
+        const dim = target.getBoundingClientRect();
+        const x = evt.clientX - dim.left;
+        const start = Math.round(x / (app.regionInterval / 4)) * (app.regionInterval / 4);
+        const newLoop = $("<div></div>").attr("id", "loopControl").addClass("loop-control").css("left", start).height("100%");
+        if (!app.islooping) {
+            newLoop.addClass("inactive");
+        }
+        $("#rulerControl").append(newLoop);
+
+        $("#rulerGirds").bind("mousemove", function (evt) {
+            const target = evt.target;
+            const dim = target.getBoundingClientRect();
+            const x = evt.clientX - dim.left;
+            const current = Math.round(x / (app.regionInterval / 4)) * (app.regionInterval / 4);
+            if (current - start < 0) {
+                $("#loopControl").width(start - current).css("left", current);
+                return;
+            }
+            $("#loopControl").width(current - start).css("left", start);
+        });
+    });
+    $("body").mouseup(function () {
+        $("#rulerGirds").unbind("mousemove");
+        if($("#loopControl").children().length > 0)
+            return;
+        const tail = $("<div class='tail'></div>");
+        const head = $("<div class='head'></div>");
+        $("#loopControl").append(head, tail);
+        app.setLoopHeadDrag(head);
+        app.setLoopTailDrag(tail);
+    });
+};
+
+app.initControlRender = () => {
+    app.bpmRender();
+    app.filenameRender();
+    app.controlRulerRender();
+    app.controlLoopRender();
 };

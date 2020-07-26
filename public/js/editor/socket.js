@@ -91,4 +91,10 @@ app.ioListen = async () => {
         app.filename = filename;
         app.filenameRender(filename);
     });
+
+    app.on("bpmChange", (data) => {
+        const { bpm } = data;
+        app.music.bpm = bpm;
+        app.bpmRender(bpm);
+    });
 };

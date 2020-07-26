@@ -94,14 +94,11 @@
     position: absolute;
     position: relative;
     left: 0px;
-
-    
     flex: auto;
 }
 
 .svgGrids{
-    position: absolute;
-    top: -1px;
+    position: absolute; 
 }
 
 .note{

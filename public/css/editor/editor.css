@@ -86,10 +86,15 @@ body{
 .tool{
     margin-left: 10px;
     display: inline-block;
-    width: 50px;
     background-color: #555555;
-    cursor: pointer;
     text-align: center;
+}
+
+button.tool{
+    color: inherit;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
 }
 
 .editor-body{
@@ -112,7 +117,7 @@ body{
 .ruler-control{
     background-color: #23242d;
     height: 25px;
-
+    position: relative;
 }
 
 .scale{
@@ -158,4 +163,53 @@ body{
 
 .download span{
     display: block;
+}
+
+.bpm-edit{
+    border: none;
+    outline: none;
+    color: inherit;
+    background: inherit;
+    width: 2em;
+}
+
+.loop-control{
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: red;
+    opacity: 0.6;
+    z-index: 3;
+}
+
+.loop-control .head{
+    cursor: col-resize;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 100%;
+    z-index: 5;
+}
+
+
+.loop-control .tail{
+    cursor: col-resize;
+    position: absolute;
+    top: 0;
+    left: calc(100% - 10px);
+    width: 10px;
+    height: 100%;
+    z-index: 5;
+}
+
+.loop-control.inactive{
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: red;
+    opacity: 0.3;
+    z-index: 3;
 }

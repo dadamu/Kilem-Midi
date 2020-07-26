@@ -41,7 +41,7 @@ app.lockerRender = (locker) => {
     const lockDiv = $("<div></div>").addClass("track-lock");
     const iconDiv = $("<span></span>").addClass("lock-icon").text("開");
     if (locker) {
-        if (!locker.id){
+        if (!locker.id) {
             $(iconDiv).text("開");
             lockDiv.append(iconDiv);
         }
@@ -49,7 +49,7 @@ app.lockerRender = (locker) => {
             $(iconDiv).text("自");
             lockDiv.append(iconDiv);
         }
-        else{
+        else {
             const lockerDiv = $("<span></span>").addClass("locker-name").text(locker.name);
             $(iconDiv).text("鎖:");
             lockDiv.append(iconDiv, lockerDiv);
@@ -89,7 +89,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const track = app.music.getTrack(trackId);
     const { locker } = track;
     const lockDiv = app.lockerRender(locker);
-    if(locker.id === app.userId){
+    if (locker.id === app.userId) {
         trackNameDiv.addClass("editable").removeAttr("disabled");
     }
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
@@ -144,11 +144,12 @@ app.trackSelect = (target) => {
 
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
-    app.panelLoadTrack($(".track.selected").attr("trackId"));  
+    app.panelLoadTrack(id);
+    app.activeKeyRender(app.music.tracks[id].instrument);
 };
 
 app.trackNameChangeListen = () => {
-    $("#tracksContent").on("change", ".track-name", async function(){
+    $("#tracksContent").on("change", ".track-name", async function () {
         const newName = $(this).val();
         const trackId = $(this).closest(".track").attr("trackId");
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/name`, {
@@ -156,7 +157,7 @@ app.trackNameChangeListen = () => {
             name: newName,
             roomId: app.roomId
         }, "PATCH");
-        if(res.error){
+        if (res.error) {
             app.errorShow(res.error);
             $(this).val(app.music.tracks[trackId].name);
             return;

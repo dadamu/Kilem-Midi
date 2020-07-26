@@ -12,8 +12,8 @@ module.exports = {
             return;
         }
         const result = await fileModel.getFile(roomId, userId);
-        if(result instanceof Error){
-            res.status(403).json({error: result.message});
+        if (result instanceof Error) {
+            res.status(403).json({ error: result.message });
             return;
         }
         res.status(200).json({ data: result });
@@ -21,12 +21,17 @@ module.exports = {
     update: asyncHandler(async (req, res) => {
         const { roomId, type } = req.params;
         const result = await fileModel.update(roomId, type, req.body);
-        if(result instanceof Error){
-            res.status(403).json({error: result.message});
+        if (result instanceof Error) {
+            res.status(403).json({ error: result.message });
             return;
         }
         res.status(201).json({ status: "success" });
         const io = req.app.get("io");
-        io.of("/room" + roomId).to("editor").emit("filenameChange", { filename: req.body.filename});
+        if(type === "filename"){
+            io.of("/room" + roomId).to("editor").emit("filenameChange", { filename: req.body.filename });
+        }
+        else if(type === "bpm"){
+            io.of("/room" + roomId).to("editor").emit("bpmChange", { bpm: req.body.bpm });
+        }
     })
 };

@@ -29,8 +29,9 @@
                 </div>
                 <div class="editor-toolbox">Toolbox
                     <div class="toolbox-menu">
-                        <div id="save" class="toolbox-save tool">Save</div>
-                        <div id="export" class="toolbox-export tool">Export</div>
+                        <button id="save" class="toolbox-save tool">Save</button>
+                        <button id="export" class="toolbox-export tool">Export</button>
+                        <div class="tool"><input id="bpm" class="bpm-edit" disabled><span>Bpm</span></input></div>
                     </div>
                 </div>
             </header>
@@ -49,7 +50,12 @@
                             <div id="rulerScale">
                             </div>
                         </div>
-                        <div id="rulerControl" class="ruler-control">Control</div>
+                        <div id="rulerControl" class="ruler-control">
+                            <div id="loopControl" class="loop-control inactive">
+                                    <div class="head"></div>
+                                <div class="tail"></div>
+                            </div>
+                        </div>
                     </div>
                     <div id="regionContent" class="region-content">
                         <div id="regionPlayhead" class="playhead body" style="transform: translateX(0px);">
