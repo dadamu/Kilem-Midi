@@ -21,9 +21,6 @@ router.route("/midi/track/:id")
 router.route("/midi/track/:id/:type")
     .patch(trackController.update);
 
-router.route("/midi/track/:id/instrument")
-    .patch(trackController.instrumentSet);
-
 router.route("/midi/track")
     .get(trackController.pull);
 

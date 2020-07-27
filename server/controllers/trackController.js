@@ -49,42 +49,58 @@ module.exports = {
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
     }),
     update: asyncHandler(async (req, res) => {
-        const { id, type } = req.params;
-        const { roomId } = req.body;
-        let result;
-        if (type === "lock") {
-            result = await trackModel.lockSet(id, req.body);
+        const { type } = req.params;
+        if (type === "instrument") {
+            await instrumentSet(req, res);
+        }
+        else if (type === "lock") {
+            await lockSet(req, res);
         }
         else if (type === "name") {
-            result = await trackModel.nameChange(id, req.body);
+            await nameChange(req, res);
         }
-        if (result instanceof Error) {
-            res.json({ error: result.message });
-            return;
-        }
-        res.json({ status: "success" });
-
-        const io = req.app.get("io");
-        if (type === "lock")
-            io.of("/room" + roomId).emit("lock", { track: result });
-        else if (type === "name") {
-            io.of("/room" + roomId).emit("trackNameChange", {
-                id,
-                name: req.body.name
-            });
-        }
-    }),
-    instrumentSet: asyncHandler(async (req, res) => {
-        const { id } = req.params;
-        const { roomId } = req.body;
-        const result = await trackModel.instrumentSet(id, req.body);
-        if (result instanceof Error) {
-            res.json({ error: result.message });
-            return;
-        }
-        res.json({ status: "success" });
-        trackDebug("Change Track Instrument Success");
-        const io = req.app.get("io");
-        io.of("/room" + roomId).emit("instrumentSet", { track: result });
     })
+};
+
+const lockSet = async (req, res) => {
+    const { id } = req.params;
+    const { roomId } = req.body;
+    const result = await trackModel.lockSet(id, req.body);
+    if (result instanceof Error) {
+        res.json({ error: result.message });
+        return;
+    }
+    res.json({ status: "success" });
+    const io = req.app.get("io");
+    io.of("/room" + roomId).emit("lock", { track: result });
+};
+
+const nameChange = async (req, res) => {
+    const { id } = req.params;
+    const { roomId } = req.body;
+    const result = await trackModel.nameChange(id, req.body);
+    if (result instanceof Error) {
+        res.json({ error: result.message });
+        return;
+    }
+    res.json({ status: "success" });
+    const io = req.app.get("io");
+    io.of("/room" + roomId).emit("trackNameChange", {
+        id,
+        name: req.body.name
+    });
+};
+
+const instrumentSet = async (req, res) => {
+    const { id } = req.params;
+    const { roomId } = req.body;
+    const result = await trackModel.instrumentSet(id, req.body);
+    if (result instanceof Error) {
+        res.json({ error: result.message });
+        return;
+    }
+    res.json({ status: "success" });
+    trackDebug("Change Track Instrument Success");
+    const io = req.app.get("io");
+    io.of("/room" + roomId).emit("instrumentSet", { track: result });
 };

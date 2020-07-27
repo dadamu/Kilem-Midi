@@ -18,16 +18,4 @@ app.logoListen = () => {
     });
 };
 
-app.getStartListen = () => {
-    $("#start").click(() => {
-        const token = window.localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/sign";
-        }
-        else {
-            window.location.href = "/room";
-        }
-    });
-};
-
 $(document).ready(app.init);
