@@ -27,7 +27,7 @@ module.exports = {
             await googleSignIn(req, res);
         }
     }),
-    profileGet: (async (req, res) => {
+    profileGet: asyncHandler(async (req, res) => {
         profileGet(req, res);
     })
 };
@@ -133,7 +133,7 @@ async function nativeSignIn(req, res) {
     });
 }
 
-async function profileGet(req, res) {
+function profileGet(req, res) {
     const { headers } = req;
     const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
     if (!isAuth) {

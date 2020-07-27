@@ -74,7 +74,19 @@ module.exports = {
     deleteUser: asyncHandler(async (req, res) => {
         const { token, roomId } = req.body;
         const user = jwt.verify(token, JWT_KEY);
-        await roomModel.deleteUser(roomId, user);
+        const result = await roomModel.deleteUser(roomId, user);
         res.status(201).json({ status: "success" });
+        const io = req.app.get("io");
+        for (let item of result) {
+            io.of("/room" + roomId).emit("lock", {
+                track: {
+                    id: item.id,
+                    locker: {
+                        id: null,
+                        name: null
+                    }
+                }
+            });
+        }
     })
 };

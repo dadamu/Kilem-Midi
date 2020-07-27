@@ -10,6 +10,7 @@ app.init = async () => {
     app.initRender();
     await app.socketInit();
     app.UIListen();
+    app.saveFile();
 };
 
 app.UIListen = () => {

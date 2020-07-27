@@ -14,15 +14,16 @@ app.fetchData = (url, data, method, headers = {
 app.checkToken = async () => {
     const token = window.localStorage.getItem("token");
     if (!token) {
-        window.location.href = "/sign";
+        window.location.href = "/";
     }
     const headers = {
         authorization: "Bearer " + token,
     };
     const res = await fetch("/api/1.0/user/profile", { headers, method: "GET" }).then(res => res.json());
     if (res.error) {
-        alert(res.error);
-        window.location.href = "/sign";
+        app.errorShow(res.error);
+        window.localStorage.removeItem("token", "");
+        window.location.href = "/";
     }
     else {
         app.userId = res.id;

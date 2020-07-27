@@ -30,11 +30,13 @@ app.initRegionRender = () => {
 };
 
 app.initiTrackRender = () => {
+    if(Object.values(app.music.tracks).length === 0){
+        return;
+    }
     for (let [key, track] of Object.entries(app.music.tracks)) {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
     app.trackSelect($(".track").first());
-    return;
 };
 
 app.lockerRender = (locker) => {

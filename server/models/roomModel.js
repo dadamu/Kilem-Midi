@@ -115,6 +115,8 @@ module.exports = {
     },
     deleteUser: async (roomId, user) => {
         await knex("save").where("room_id", roomId).andWhere("user_id", user.id).del();
-        return;
+        const select = await knex("track").select("id").where("room_id", roomId).andWhere("user_id", user.id)
+        await knex("track").update("user_id", null).where("room_id", roomId).andWhere("user_id", user.id);
+        return select;
     }
 };

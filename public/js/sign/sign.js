@@ -1,13 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* global $ gapi */
-const app = {};
-
-app.init = () => {
-    app.googleInit();
-    app.selectTabListen();
-    app.signListen();
-    app.twitterSignListen();
-};
+/* global $ gapi app */
 
 app.signListen = () => {
     $("#nativeSignin").click(async () => {
@@ -101,4 +93,3 @@ app.googleSignup = (element) => {
     });
 };
 
-$(document).ready(app.init);

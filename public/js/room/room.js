@@ -34,24 +34,50 @@ app.UIListen = () => {
 
 app.createRoomListen = () => {
     $("#createRoomButton").click(async function () {
-        const createData = {};
-        const room = {};
-        room.name = $(".create-room input[name='name']").val();
-        room.filename = $(".create-room input[name='filename']").val();
-        room.isPrivate = $(".create-room input[name='is_private']").prop("checked");
-        if (room.isPrivate) {
-            room.password = $(".create-room input[name='password']").val();
-        }
-        room.intro = $(".create-room textarea[name='intro']").val();
-        createData.room = room;
-        createData.token = window.localStorage.getItem("token");
-        const createRes = await app.fetchData("/api/1.0/room", createData, "POST");
+        const token = window.localStorage.getItem("token");
+        const swalRes = await Swal.fire({
+            title: "Create Room",
+            html: `
+                <br>
+                <label>name</label><input type='text' id='name' class='swal2-input'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input'></input>
+                <input type='checkbox' id='isPrivate'></input><label>private</label><br><br>
+                <label>password</label><input type='password' id='password' class='swal2-input'></input>
+                <label>intro</label><textarea id='intro' class='swal2-textarea'></textarea>`,
+            showCancelButton: true,
+            confirmButtonText: "Create",
+            preConfirm: () => {
+                const target = Swal.getPopup();
+                const name = $(target).find("#name").val();
+                const filename = $(target).find("#filename").val();
+                const isPrivate = $(target).find("#isPrivate").prop("checked");
+                const intro = $(target).find("#intro").val();
+                if (!name || !filename) {
+                    app.errorShow("Please fill name and filename field");
+                    return;
+                }
+                const room = {
+                    name,
+                    filename,
+                    isPrivate,
+                    intro
+                };
+                if (isPrivate) {
+                    room.password = $(target).find("#password").val();
+                }
+                return app.fetchData("/api/1.0/room", {
+                    room,
+                    token
+                }, "POST");
+            }
+        });
+        const createRes = swalRes.value;
         if (createRes.error) {
             app.errorShow(createRes.error);
             return;
         }
         const addData = {};
-        addData.token = window.localStorage.getItem("token");
+        addData.token = token;
         addData.roomId = createRes.roomId;
         const addRes = await app.fetchData("/api/1.0/room/user", addData, "POST");
         if (addRes.error) {
@@ -64,7 +90,7 @@ app.createRoomListen = () => {
 
 app.roomListen = () => {
     const rooms = $(".rooms");
-    //open and close card when clicked on card
+    // open and close card when clicked on card
     rooms.on("click", ".js-expander", function () {
         const cell = $(".room");
         const thisCell = $(this).closest(".room");
@@ -73,7 +99,7 @@ app.roomListen = () => {
             thisCell.removeClass("is-collapsed").removeClass("is-inactive").addClass("is-expanded");
 
             if (cell.not(thisCell).hasClass("is-inactive")) {
-                //do nothing
+                // do nothing
             } else {
                 cell.not(thisCell).addClass("is-inactive");
             }
@@ -220,19 +246,18 @@ app.editRoomListen = () => {
         let intro = $(this).find(".line-intro").html();
         const res = await Swal.fire({
             title: "Edit Room Info",
-            html: `<input type='text' id='name' class='swal2-input' value='${name}'></input>
-                    <input type='text' id='filename' class='swal2-input' value='${filename}'></input>
-                    <textarea id='intro' class='swal2-textarea'>${intro.split("<br>").join("\n")}</textarea>`,
+            html: `
+                <br>
+                <label>name</label><input type='text' id='name' class='swal2-input' value='${name}'></input>
+                <label>intro</label><textarea id='intro' class='swal2-textarea'>${intro.split("<br>").join("\n")}</textarea>`,
             showCancelButton: true,
             confirmButtonText: "Edit",
             preConfirm: () => {
                 name = Swal.getPopup().querySelector("#name").value;
-                filename = Swal.getPopup().querySelector("#filename").value;
                 intro = Swal.getPopup().querySelector("#intro").value;
                 const data = {
                     id,
                     name,
-                    filename,
                     intro
                 };
                 return app.fetchData("/api/1.0/room", data, "PUT");
@@ -266,10 +291,6 @@ app.roomTempGen = (room) => {
             <div class="line">
                 <label class="line-first">name: </label>
                 <span class="line-second line-name">${room.name}</span>
-            </div>
-            <div class="line">
-                <label class="line-first">filename: </label>
-                <span class="line-second line-filename">${room.filename}</span>
             </div>
             <div class="line">
                 <label class="line-first">creator: </label>
