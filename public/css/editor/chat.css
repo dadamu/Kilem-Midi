@@ -5,7 +5,7 @@
     min-width: 300px;
     min-height: 400px;
     padding: 10px;
-    bottom: 45px;
+    bottom: 60px;
     right: 20px;
     background-color: white;
     border-top: 1px solid #000000;
@@ -32,9 +32,7 @@
     display: flex;
 }
 
-.chat-button{
-    margin-left: auto;
-}
+
 
 .chat-input-space{
     height: 100%;

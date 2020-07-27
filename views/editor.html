@@ -26,7 +26,7 @@
             <header class="editor-header">
                 <div class="editor-title">
                     <input id="filename" class="file-title" value="" disabled></input>
-                    <div id="exit" class="exit"><i class="fas fa-sign-out-alt"></i></div>
+                    <div id="exit" class="exit">Exit <i class="fas fa-sign-out-alt"></i></div>
                 </div>
                 <div class="editor-toolbox">
                     <div class="toolbox-menu">
@@ -69,7 +69,8 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                <div class="midi-toolbox"><i class="fas fa-border-all"></i>
+                <div class="midi-toolbox"><i class="fas fa-border-all icon"></i>
+                    <div class="border"></div>
                     <div class="note-grid midi-tool" value="0.0625">
                         <span>&#x1D161;</span>
                     </div>
@@ -86,7 +87,8 @@
                         <span>&#x1D15D;</span>
                     </div>
                 </div>
-                <div class="midi-toolbox"><i class="fas fa-ruler-horizontal"></i>
+                <div class="midi-toolbox"><i class="fas fa-ruler-horizontal icon"></i>
+                    <div class="border"></div>
                     <div class="note-length midi-tool" value="0.0625">
                         <span>&#x1D161;</span>
                     </div>
@@ -117,9 +119,11 @@
         </section>
         <footer class="editor-footer">
             <div id="midiPanelButton" class="midi-panel-button control-button"><i class="fas fa-edit"></i>Midi</div>
-            <div id="resetButton" class="reset-button control-button"><i class="fas fa-step-backward"></i></div>
-            <div id="playButton" class="play-button control-button"><i class="fas fa-play"></i></div>
-            <div id="stopButton" class="stop-button control-button"><i class="fas fa-stop"></i></div>
+            <div class="footer-midi-control">
+                <div id="resetButton" class="reset-button control-button"><i class="fas fa-step-backward"></i></div>
+                <div id="playButton" class="play-button control-button"><i class="fas fa-play"></i></div>
+                <div id="stopButton" class="stop-button control-button"><i class="fas fa-stop"></i></div>
+            </div>
             <div id="chatButton" class="chat-button control-button"><i class="far fa-comments"></i></div>
         </footer>
         <section id="chatRoom" class="chatroom hidden">

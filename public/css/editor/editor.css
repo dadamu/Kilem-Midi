@@ -125,8 +125,10 @@ button.tool{
 }
 
 .control-button{
+    border: 1px #AAAAAA solid;
+    border-radius: 2px;
     display: inline-block;
-    width: 80px;
+    padding: 10px 15px;
     text-align: center;
     cursor: pointer;
 }
@@ -135,9 +137,10 @@ button.tool{
     display: flex;
     background-color: #333940;
     margin-top: auto;
-    padding: 10px;
-    height: 45px;
+    padding: 10px 20px;
+    height: 60px;
     align-items: center;
+    justify-content: space-between;
     border-top: #AAAAAA solid 1px;
 }
 
@@ -178,7 +181,7 @@ button.tool{
     position: absolute;
     top: 0;
     left: 0;
-    background: red;
+    background: #F02D3A;
     opacity: 0.6;
     z-index: 3;
 }
@@ -209,7 +212,7 @@ button.tool{
     position: absolute;
     top: 0;
     left: 0;
-    background: red;
-    opacity: 0.3;
+    background: #F02D3A;
+    opacity: 0.6;
     z-index: 3;
 }

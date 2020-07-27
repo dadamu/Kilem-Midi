@@ -10,6 +10,7 @@ app.midiPanelListen = () => {
 app.openMidiPanelListen = () => {
     $("#midiPanelButton").click(() => {
         if ($("#midiPanel").hasClass("hidden")) {
+            $("#midiPanelButton").css("background", "#00A15C");
             const trackId = $(".track.selected").attr("trackId");
             $("#midiPanel").removeClass("hidden");
             app.panelLoadTrack(trackId);
@@ -19,6 +20,7 @@ app.openMidiPanelListen = () => {
         }
         else {
             $("#midiPanel").addClass("hidden");
+            $("#midiPanelButton").css("background", "inherit");
             app.isMidiEditorOpen = false;
         }
     });

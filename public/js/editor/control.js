@@ -80,8 +80,6 @@ app.midiResetListen = () => {
         const bpm = app.music.bpm;
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
-        clearInterval(app.playInterval);
-        app.isplaying = false;
     });
 };
 

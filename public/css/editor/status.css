@@ -3,9 +3,9 @@
 }
 
 .selected{
-    background-color: #444444; 
+    background-color: rgba(70,76,83,0.5); 
 }
 
 .notify{
-    background-color: #a1a123;
+    background-color: #00A15C;
 }

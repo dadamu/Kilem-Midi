@@ -42,7 +42,7 @@ app.lockerRender = (locker) => {
     const iconDiv = $("<span></span>").addClass("lock-icon");
     if (locker) {
         if (!locker.id) {
-            $(iconDiv).html("<i class='fas fa-lock-open'></i>");;
+            $(iconDiv).html("<i class='fas fa-lock-open'></i>");
             lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {

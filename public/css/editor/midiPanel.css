@@ -1,25 +1,44 @@
 
 .midi-header{
+    padding-left: 50px; 
     display: flex;
-    height: 100%;
+    height: 50px;
+    justify-self: flex-start
 }
 
 .midi-toolbox{
     display: flex;
-    padding: 10px;
+    margin-top: 10px;
+    margin-right: 10px; 
+    padding: 0 10px;
+    align-items: center;
+    border: 1px #AAAAAA solid;
+    border-radius: 2px;
+    height: 2.5em;
+}
+
+.midi-toolbox .icon{
+    padding-right: 10px;
+}
+
+.midi-toolbox .border{
+    border: .5px #AAAAAA solid;
     height: 100%;
 }
 
 .midi-tool{
-    padding: 5px;
+    padding: 0.25em;
     cursor: pointer;
-    flex:auto;
     width: 30px;
-    font-size: 1.5em;
+    font-size: 1.4em;
     text-align: center;
 }
 .midi-tool span{
     vertical-align: middle;
+}
+
+.midi-tool.selected{
+    background: #00A15C;
 }
 
 .panel-track-name{
@@ -27,17 +46,20 @@
 }
 
 .midi-panel{
+    border-top: 1px #FFFFFF solid;
     display: flex;
     flex-direction: column;
     background-color: #333940;
     height: 40%;
     min-height: 300px;
+    justify-content: flex-end;
 }
 
 .panel-content{
+    padding-top: 10px; 
     padding-left: 50px;
-    min-height: calc(100% - 50px);
-    flex: auto;
+    padding-right: 20px;
+    height: calc(100% - 50px);
 }
 
 .panel-info{
