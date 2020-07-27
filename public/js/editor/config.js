@@ -95,7 +95,7 @@ app.rulerSvgGrid = (interval, musicLength) => `
 app.midiKeysTemplate = (num) => {
     const offset = 12;
     return `
-    < div class="white-key key" pitch = "${num * 12 + 11 + offset}" ></div >
+    <div class="white-key key" pitch="${num * 12 + 11 + offset}" ></div >
         <div class="black-key key" pitch="${num * 12 + 10 + offset}"></div>
         <div class="white-key key" pitch="${num * 12 + 9 + offset}"></div>
         <div class="black-key key" pitch="${num * 12 + 8 + offset}"></div>
@@ -107,5 +107,6 @@ app.midiKeysTemplate = (num) => {
         <div class="white-key key" pitch="${num * 12 + 2 + offset}"></div>
         <div class="black-key key" pitch="${num * 12 + 1 + offset}"></div>
         <div class="white-key key" pitch="${num * 12 + offset}">C${num}</div>
+    </div>
 `;
 };
