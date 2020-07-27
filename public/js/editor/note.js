@@ -142,7 +142,6 @@ app.addMidiNoteListen = () => {
 
 app.setNoteDrag = (noteDiv) => {
     noteDiv.draggable({
-        containment: $("#grids"),
         cursor: "move",
         start: (evt) => {
             const trackId = $("#midiPanel").attr("trackId");
