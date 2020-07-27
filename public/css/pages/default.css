@@ -66,6 +66,7 @@ body{
 .nav-tool{
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .nav-profile{

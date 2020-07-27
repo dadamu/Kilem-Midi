@@ -46,6 +46,20 @@ a{
     cursor: pointer;
 }
 
+.button{
+    outline: none;
+    background: #00A15C;
+    padding: 5px 10px;
+    color: inherit;
+    border: 1px #AAAAAA solid;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.logout{
+    margin-left: 20px;
+}
+
 .room:hover .room__inner {
     background-color: #1abc9c;
     transform: scale(1.05);

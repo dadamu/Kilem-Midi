@@ -8,7 +8,8 @@ app.topNavListen = () => {
     $("#navLogo").click(() => {
         window.location.href = "/room";
     });
-    $("#navProfile").click(() => {
-        window.location.href = "/profile";
+    $("#logOut").click(() => {
+        window.localStorage.removeItem("token");
+        window.location.href = "/";
     });
 };
