@@ -46,11 +46,11 @@ app.ioListen = async () => {
     app.on("lock", (data) => {
         const { track } = data;
         app.music.changeLocker(track.id, track.locker);
-        $(`.track.track-${track.id} .track-lock`).html( app.lockerRender(track.locker).html() );
-        if(track.locker.id === app.userId){
+        $(`.track.track-${track.id} .track-lock`).html(app.lockerRender(track.locker).html());
+        if (track.locker.id === app.userId) {
             $(`.track.track-${track.id} .track-name`).addClass("editable").removeAttr("disabled");
         }
-        else{
+        else {
             $(`.track.track-${track.id} .track-name`).removeClass("editable");
         }
         app.saveFile();
@@ -92,9 +92,19 @@ app.ioListen = async () => {
         app.filenameRender(filename);
     });
 
-    app.on("bpmChange", (data) => {
+    app.on("bpmChange", async (data) => {
         const { bpm } = data;
+        const oldBpm = app.music.bpm;
         app.music.bpm = bpm;
         app.bpmRender(bpm);
+
+        app.loopend = app.loopend * oldBpm / bpm;
+        if (app.isplaying) {
+            app.currentTime = app.currentTime * oldBpm / bpm; 
+            clearInterval(app.playInterval);
+            app.isplaying = false;
+            app.successShow("Bpm Change");
+            app.midiPlay();
+        }
     });
 };

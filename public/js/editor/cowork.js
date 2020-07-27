@@ -54,7 +54,7 @@ app.addTrack = async () => {
         }, "POST");
     }
     catch (e) {
-        console.log(e);
+        app.errorShow(e.message);
     }
 };
 

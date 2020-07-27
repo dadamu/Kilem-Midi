@@ -24,25 +24,24 @@ app.midiPlayListen = () => {
 
 app.midiPlay = () => {
     if (!app.isplaying) {
-        const bpm = app.music.bpm;
-        const resolution = 1 / (bpm / 60) / 8 * 1000;
+        const resolution =  60 / app.music.bpm / 16 * 1000;
         const tracks = app.music.getTracks();
         app.isplaying = true;
-        const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
+        const maxTime = app.musicLength * 4 / (app.music.bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
             if (app.currentTime >= maxTime) {
                 clearInterval(app.playInterval);
                 app.isplaying = false;
             }
-            if(app.islooping && app.currentTime >= app.loopend){
+            if(app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2)){
                 app.currentTime = app.loopstart;
             }
 
-            app.regionPlayheadTrans(bpm);
+            app.regionPlayheadTrans(app.music.bpm);
             if (app.isMidiEditorOpen) {
-                app.midiPlayheadTrans(bpm);
+                app.midiPlayheadTrans(app.music.bpm);
             }
-            app.playTracks(bpm, tracks);
+            app.playTracks(app.music.bpm, tracks);
             app.currentTime += resolution;
         }, resolution);
     }
@@ -91,7 +90,7 @@ app.setPlayingTracks = () => {
 };
 
 app.playTrack = (bpm, track) => {
-    const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000) * 16);
+    const posX = Math.floor(app.currentTime / (60 / bpm * 1000) * 16);
     if (track.notes[posX]) {
         app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
     }

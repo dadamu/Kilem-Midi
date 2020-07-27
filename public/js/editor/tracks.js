@@ -39,19 +39,19 @@ app.initiTrackRender = () => {
 
 app.lockerRender = (locker) => {
     const lockDiv = $("<div></div>").addClass("track-lock");
-    const iconDiv = $("<span></span>").addClass("lock-icon").text("開");
+    const iconDiv = $("<span></span>").addClass("lock-icon");
     if (locker) {
         if (!locker.id) {
-            $(iconDiv).text("開");
+            $(iconDiv).html("<i class='fas fa-lock-open'></i>");;
             lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {
-            $(iconDiv).text("自");
+            $(iconDiv).html("<i class='fas fa-key'></i>");
             lockDiv.append(iconDiv);
         }
         else {
-            const lockerDiv = $("<span></span>").addClass("locker-name").text(locker.name);
-            $(iconDiv).text("鎖:");
+            const lockerDiv = $("<span></span>").addClass("locker-name").text(" : " + locker.name);
+            $(iconDiv).html("<i class='fas fa-lock'></i>");
             lockDiv.append(iconDiv, lockerDiv);
         }
     }
@@ -84,8 +84,6 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     infoDiv.append(trackNameDiv, instrumentSelect);
 
     const versionControl = app.trackVersionRender(trackId);
-    //const musciControl = app.trackControlRender();
-
     const track = app.music.getTrack(trackId);
     const { locker } = track;
     const lockDiv = app.lockerRender(locker);

@@ -1,7 +1,7 @@
 
 .midi-header{
     display: flex;
-    height: 50px;
+    height: 100%;
 }
 
 .midi-toolbox{
@@ -14,6 +14,12 @@
     padding: 5px;
     cursor: pointer;
     flex:auto;
+    width: 30px;
+    font-size: 1.5em;
+    text-align: center;
+}
+.midi-tool span{
+    vertical-align: middle;
 }
 
 .panel-track-name{
@@ -31,6 +37,7 @@
 .panel-content{
     padding-left: 50px;
     min-height: calc(100% - 50px);
+    flex: auto;
 }
 
 .panel-info{

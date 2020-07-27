@@ -14,9 +14,10 @@
     <link href="/public/css/editor/midiPanel.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/chat.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/status.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-wordpress-admin/wordpress-admin.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
-    <script src="https://unpkg.com/@tonejs/midi"></script>
+    <link rel="stylesheet" href="/public/css/util/sweet-alert.css">
+    <script src="/public/js/util/sweet-alert.js"></script>
+    <script src="/public/js/util/tonejs-midi.js"></script>
+    <script src="https://kit.fontawesome.com/99d77cf260.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -25,12 +26,12 @@
             <header class="editor-header">
                 <div class="editor-title">
                     <input id="filename" class="file-title" value="" disabled></input>
-                    <div id="exit" class="exit">Exit</div>
+                    <div id="exit" class="exit"><i class="fas fa-sign-out-alt"></i></div>
                 </div>
-                <div class="editor-toolbox">Toolbox
+                <div class="editor-toolbox">
                     <div class="toolbox-menu">
-                        <button id="save" class="toolbox-save tool">Save</button>
-                        <button id="export" class="toolbox-export tool">Export</button>
+                        <button id="save" class="toolbox-save tool"><i class="fas fa-save"></i></button>
+                        <button id="export" class="toolbox-export tool"><i class="fas fa-file-export"></i></button>
                         <div class="tool"><input id="bpm" class="bpm-edit" disabled><span>Bpm</span></input></div>
                     </div>
                 </div>
@@ -38,8 +39,8 @@
             <section class="editor-body">
                 <div class="tracks-title">
                     <div class="tracks-control">
-                        <div id="addTrack" class="add-track">Add</div>
-                        <div id="deleteTrack" class="delete-track">Delete</div>
+                        <div id="addTrack" class="add-track"><i class="fas fa-plus-square"></i></div>
+                        <div id="deleteTrack" class="delete-track"><i class="fas fa-trash-alt"></i></div>
                     </div>
                     <div id="tracksContent" class="tracks-content">
                     </div>
@@ -52,7 +53,7 @@
                         </div>
                         <div id="rulerControl" class="ruler-control">
                             <div id="loopControl" class="loop-control inactive">
-                                    <div class="head"></div>
+                                <div class="head"></div>
                                 <div class="tail"></div>
                             </div>
                         </div>
@@ -68,19 +69,39 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                <div class="midi-toolbox">GRID
-                    <div class="note-grid midi-tool" value="0.0625">1/16</div>
-                    <div class="note-grid midi-tool selected" value="0.125">1/8</div>
-                    <div class="note-grid midi-tool" value="0.25">1/4</div>
-                    <div class="note-grid midi-tool" value="0.5">1/2</div>
-                    <div class="note-grid midi-tool" value="1">1</div>
+                <div class="midi-toolbox"><i class="fas fa-border-all"></i>
+                    <div class="note-grid midi-tool" value="0.0625">
+                        <span>&#x1D161;</span>
+                    </div>
+                    <div class="note-grid midi-tool selected" value="0.125">
+                        <span>&#x1D160;</span>
+                    </div>
+                    <div class="note-grid midi-tool" value="0.25">
+                        <span>&#x1D15F;</span>
+                    </div>
+                    <div class="note-grid midi-tool" value="0.5">
+                        <span>&#x1D15E;</span>
+                    </div>
+                    <div class="note-grid midi-tool" value="1">
+                        <span>&#x1D15D;</span>
+                    </div>
                 </div>
-                <div class="midi-toolbox">Length
-                    <div class="note-length midi-tool" value="0.0625">1/16</div>
-                    <div class="note-length midi-tool selected" value="0.125">1/8</div>
-                    <div class="note-length midi-tool" value="0.25">1/4</div>
-                    <div class="note-length midi-tool" value="0.5">1/2</div>
-                    <div class="note-length midi-tool" value="1">1</div>
+                <div class="midi-toolbox"><i class="fas fa-ruler-horizontal"></i>
+                    <div class="note-length midi-tool" value="0.0625">
+                        <span>&#x1D161;</span>
+                    </div>
+                    <div class="note-length midi-tool selected" value="0.125">
+                        <span>&#x1D160;</span>
+                    </div>
+                    <div class="note-length midi-tool" value="0.25">
+                        <span>&#x1D15F;</span>
+                    </div>
+                    <div class="note-length midi-tool" value="0.5">
+                        <span>&#x1D15E;</span>
+                    </div>
+                    <div class="note-length midi-tool" value="1">
+                        <span>&#x1D15D;</span>
+                    </div>
                 </div>
             </header>
             <div class="panel-content">
@@ -95,11 +116,11 @@
             </div>
         </section>
         <footer class="editor-footer">
-            <div id="midiPanelButton" class="midi-panel-button control-button">Midi Editor</div>
-            <div id="playButton" class="play-button control-button">Start</div>
-            <div id="stopButton" class="stop-button control-button">Stop</div>
-            <div id="resetButton" class="reset-button control-button">Reset</div>
-            <div id="chatButton" class="chat-button control-button">Chat</div>
+            <div id="midiPanelButton" class="midi-panel-button control-button"><i class="fas fa-edit"></i>Midi</div>
+            <div id="resetButton" class="reset-button control-button"><i class="fas fa-step-backward"></i></div>
+            <div id="playButton" class="play-button control-button"><i class="fas fa-play"></i></div>
+            <div id="stopButton" class="stop-button control-button"><i class="fas fa-stop"></i></div>
+            <div id="chatButton" class="chat-button control-button"><i class="far fa-comments"></i></div>
         </footer>
         <section id="chatRoom" class="chatroom hidden">
             <div id="chatContainer" class="chat-container">
@@ -107,7 +128,7 @@
             </div>
             <div class="chat-input">
                 <input id="chatInput" class="chat-input-space" type="text"></input>
-                <button id="chatSend" class="chat-send-button">Send</button>
+                <button id="chatSend" class="chat-send-button"><i class="fas fa-paper-plane"></i></button>
             </div>
         </section>
     </main>
