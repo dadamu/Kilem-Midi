@@ -34,6 +34,10 @@ app.midiPlay = () => {
                 clearInterval(app.playInterval);
                 app.isplaying = false;
             }
+            if(app.islooping && app.currentTime >= app.loopend){
+                app.currentTime = app.loopstart;
+            }
+
             app.regionPlayheadTrans(bpm);
             if (app.isMidiEditorOpen) {
                 app.midiPlayheadTrans(bpm);
@@ -90,7 +94,6 @@ app.playTrack = (bpm, track) => {
     const posX = Math.floor(app.currentTime / (1 / (bpm / 60) * 1000) * 16);
     if (track.notes[posX]) {
         app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
-        delete track.notes[posX];
     }
 };
 
@@ -178,9 +181,15 @@ app.controlRulerRender = () => {
 };
 
 app.controlLoopRender = () => {
+    app.loopstart = 0;
+    app.loopend = app.posToTime(4 * app.regionInterval, app.regionInterval);
     $("#loopControl").width(app.regionInterval * 4).height("100%");
     app.setLoopHeadDrag($("#loopControl .head"));
     app.setLoopTailDrag($("#loopControl .tail"));
+};
+
+app.posToTime = (pos, interval) => {
+    return pos * 4 / interval * 60 / app.music.bpm * 1000;
 };
 
 app.setLoopHeadDrag = (div) => {
@@ -197,18 +206,18 @@ app.setLoopHeadDrag = (div) => {
             let widthChange = this.start - curr;
             let width;
             const resolution = app.regionInterval / 4;
-            curr =  Math.round(curr / resolution) * resolution;
-            if(Math.abs(widthChange) >= resolution){
+            curr = Math.round(curr / resolution) * resolution;
+            if (Math.abs(widthChange) >= resolution) {
                 width = Math.round(widthChange / resolution) * resolution + this.oWidth;
-               
+
             }
-            else{
+            else {
                 width = resolution + this.oWidth;
             }
-            if(curr <= 0){
+            if (curr <= 0) {
                 curr = 0;
             }
-            if(curr > this.start + this.oWidth - resolution){
+            if (curr > this.start + this.oWidth - resolution) {
                 $("#loopControl").width(resolution);
                 return;
             }
@@ -217,6 +226,9 @@ app.setLoopHeadDrag = (div) => {
         },
         stop: (evt) => {
             $(evt.target).css("left", 0).css("top", 0);
+            let start = $("#loopControl").css("left");
+            start = start.replace("px", "");
+            app.loopstart = app.posToTime(start, app.regionInterval);
         }
     });
 };
@@ -230,13 +242,13 @@ app.setLoopTailDrag = (div) => {
             const curr = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
             let width = curr - start;
             const resolution = app.regionInterval / 4;
-            if(width > resolution){
+            if (width > resolution) {
                 this.width = Math.round(width / resolution) * resolution;
                 $("#loopControl").width(this.width);
                 return;
             }
             const max = app.musicLength * app.regionInterval;
-            if(width >= max){
+            if (width >= max) {
                 this.width = max;
                 $("#loopControl").width(max);
                 return;
@@ -245,6 +257,10 @@ app.setLoopTailDrag = (div) => {
         },
         stop: (evt) => {
             $(evt.target).css("left", parseInt(this.width) - 10).css("top", 0);
+            let start = $("#loopControl").css("left");
+            start = parseFloat(start.replace("px", ""));
+            const end = start + this.width;
+            app.loopend = app.posToTime(end, app.regionInterval);
         }
     });
 };
@@ -286,8 +302,16 @@ app.loopControlListen = () => {
     });
     $("body").mouseup(function () {
         $("#rulerGirds").unbind("mousemove");
-        if($("#loopControl").children().length > 0)
+        if ($("#loopControl").children().length > 0)
             return;
+        
+        let start = $("#loopControl").css("left");
+        start = parseFloat(start.replace("px", ""));
+        const width = $("#loopControl").width();
+        const end = start + width;
+        app.loopstart = app.posToTime(start, app.regionInterval);
+        app.loopend = app.posToTime(end, app.regionInterval);
+        
         const tail = $("<div class='tail'></div>");
         const head = $("<div class='head'></div>");
         $("#loopControl").append(head, tail);
