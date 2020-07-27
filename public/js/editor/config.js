@@ -11,7 +11,7 @@ app.setConfig = () => {
 
     // UI config
     app.musicLength = 24;
-    app.scaleNumMax = 5;
+    app.scaleNumMax = 6;
     app.scaleNumMin = 1;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
     app.regionInterval = 120;
