@@ -42,6 +42,14 @@ app.createNote = async (note) => {
     app.createNoteRender(trackId, newNote);
 };
 
+app.notSelectListen = () => {
+    $("#grids").on("click", ".note", async function () {
+        const trackId = $("#midiPanel").attr("trackId");
+        const { instrument } = app.music.tracks[trackId];
+        app.playNote(instrument, $(this).attr("pitch"));
+    });
+};
+
 app.noteDeleteListen = () => {
     $("#grids").on("dblclick", ".note", async function () {
         const trackId = $("#midiPanel").attr("trackId");
@@ -281,4 +289,5 @@ app.noteListen = () => {
     app.noteLengthListen();
     app.addMidiNoteListen();
     app.noteDeleteListen();
+    app.notSelectListen();
 };
