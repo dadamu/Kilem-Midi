@@ -23,10 +23,10 @@ app.clickCommitListen = () => {
                 app.errorShow(res.error);
                 return;
             }
-            app.successShow("Commited");
+            app.successShow("Save Success");
         }
         catch (e) {
-            app.errorShow("Commit failed");
+            app.errorShow("Save failed");
         }
     });
 };
@@ -52,6 +52,7 @@ app.addTrack = async () => {
             roomId: app.roomId,
             userId: app.userId
         }, "POST");
+        app.successShow("Add Track Success");
     }
     catch (e) {
         app.errorShow(e.message);
@@ -77,6 +78,7 @@ app.deleteTrackListen = () => {
             app.errorShow(res.error);
             return;
         }
+        app.successShow("Remove Track Success");
     });
 };
 

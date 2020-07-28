@@ -3,6 +3,7 @@
 app.trackListen = () => {
     app.trackNameChangeListen();
     app.trackSelectListen();
+    app.trackEditListen();
 };
 
 app.initRulerRender = () => {
@@ -41,7 +42,7 @@ app.initiTrackRender = () => {
 
 app.lockerRender = (locker) => {
     const lockDiv = $("<div></div>").addClass("track-lock");
-    const iconDiv = $("<span></span>").addClass("lock-icon");
+    const iconDiv = $("<span></span>").addClass("lock-icon").addClass("icon-container");
     if (locker) {
         if (!locker.id) {
             $(iconDiv).html("<i class='fas fa-lock-open'></i>");
@@ -98,7 +99,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
 };
 
 app.trackVersionRender = (trackId) => {
-    const commitButton = $("<button></button>").addClass("version-commit").text("commit");
+    const commitButton = $("<button></button>").addClass("version-commit").text("save");
     const selector = $("<select></select>").addClass("version-select");
     const versions = app.music.getVersions(trackId);
     for (let version of versions) {
@@ -135,6 +136,12 @@ app.trackSelectListen = () => {
     });
 };
 
+app.trackEditListen = () => {
+    $("#regionContent").on("dblclick", ".region", function () {
+        app.openMidiPanel();
+    });
+};
+
 app.trackSelect = (target) => {
     const id = $(target).attr("trackId");
     $(".track.selected").removeClass("selected");
@@ -152,6 +159,11 @@ app.trackNameChangeListen = () => {
     $("#tracksContent").on("change", ".track-name", async function () {
         const newName = $(this).val();
         const trackId = $(this).closest(".track").attr("trackId");
+        if(!newName){
+            $(this).val(app.music.tracks[trackId].name);
+            app.errorShow("name required");
+            return;
+        }
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/name`, {
             userId: app.userId,
             name: newName,
@@ -163,6 +175,7 @@ app.trackNameChangeListen = () => {
             return;
         }
         app.music.tracks[trackId].name = newName;
+        app.successShow("Change Trackname Success");
     });
 };
 

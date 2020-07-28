@@ -9,6 +9,21 @@ app.controlListen = () => {
     app.bpmChangeListen();
     app.loopControlListen();
     app.inviteButtonListen();
+    app.loopButtonListen();
+    app.iconParentHoverListen();
+};
+
+app.iconParentHoverListen = () => {
+    $("body").on("mouseenter", ".icon-container", function () {
+        $(this).find("i").addClass("hover");
+    });
+
+    $("body").on("mouseleave", ".icon-container", function () {
+        $("i").parent().mouseleave(function () {
+            $(this).find("i").removeClass("hover");
+        });
+    });
+   
 };
 
 app.exitListen = () => {
@@ -18,8 +33,29 @@ app.exitListen = () => {
 };
 
 app.midiPlayListen = () => {
-    $("#playButton").click(() => {
+    $("#playButton").click(function () {
+        if (app.isplaying) {
+            clearInterval(app.playInterval);
+            app.isplaying = false;
+            $(this).find("i").removeClass("fas fa-pause").addClass("fas fa-play");
+            return;
+        }
         app.midiPlay();
+        $(this).find("i").removeClass("fas fa-play").addClass("fas fa-pause");
+    });
+};
+
+app.loopButtonListen = () => {
+    $("#loopButton").click(function () {
+        if (!app.islooping) {
+            $("#loopControl").removeClass("inactive");
+            app.islooping = true;
+            $(this).addClass("active");
+            return;
+        }
+        $("#loopControl").addClass("inactive");
+        app.islooping = false;
+        $(this).removeClass("active");
     });
 };
 
@@ -72,12 +108,17 @@ app.midiStopListen = () => {
     $("#stopButton").click(() => {
         clearInterval(app.playInterval);
         app.isplaying = false;
+        app.currentTime = 0;
+        const bpm = app.music.bpm;
+        app.regionPlayheadTrans(bpm);
+        app.midiPlayheadTrans(bpm);
+        $("#playButton i").removeClass("fas fa-pause").addClass("fas fa-play");
     });
 };
 
 app.midiResetListen = () => {
     $("#resetButton").click(() => {
-        app.currentTime = 0;
+        app.currentTime = app.loopstart;
         const bpm = app.music.bpm;
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
@@ -162,6 +203,7 @@ app.bpmChangeListen = () => {
             app.bpmRender(app.music.bpm);
             return;
         }
+        app.successShow("Bpm Change Success");
         app.music.bpm = $(this).val();
     });
 };
@@ -169,7 +211,7 @@ app.bpmChangeListen = () => {
 app.bpmRender = () => {
     $("#bpm").val(app.music.bpm);
     if (app.creator.id === app.userId) {
-        $("#bpm").removeAttr("disabled");
+        $("#bpm").removeAttr("disabled").addClass("editable");
     }
 };
 
@@ -201,20 +243,23 @@ app.setLoopHeadDrag = (div) => {
         },
         drag: (evt) => {
             let curr = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
-            let widthChange = this.start - curr;
-            let width;
             const resolution = app.regionInterval / 4;
+            let width;
+            if (curr <= 0) {
+                curr = 0;
+            }
+            let widthChange = this.start - curr;
             curr = Math.round(curr / resolution) * resolution;
             if (Math.abs(widthChange) >= resolution) {
                 width = Math.round(widthChange / resolution) * resolution + this.oWidth;
-
+            }
+            else if (curr === 0) {
+                width = this.oWidth;
             }
             else {
                 width = resolution + this.oWidth;
             }
-            if (curr <= 0) {
-                curr = 0;
-            }
+
             if (curr > this.start + this.oWidth - resolution) {
                 $("#loopControl").width(resolution);
                 return;
@@ -268,10 +313,12 @@ app.loopControlListen = () => {
         if ($(this).hasClass("inactive")) {
             $(this).removeClass("inactive");
             app.islooping = true;
+            $("#loopButton").addClass("active");
             return;
         }
         $(this).addClass("inactive");
         app.islooping = false;
+        $("#loopButton").removeClass("active");
     });
 
     $("#rulerGirds").mousedown(function (evt) {

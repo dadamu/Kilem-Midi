@@ -68,11 +68,6 @@ body{
     left: calc( 50% - 100px);
 }
 
-.file-title.editable:hover,
-.file-title.editable:focus{
-    background: #565656;
-}
-
 .exit{
     margin-left: auto;
     cursor: pointer;
@@ -90,7 +85,7 @@ body{
     border-radius: 2px;
     margin-left: 10px;
     display: inline-block;
-    background-color: #555555;
+    background-color: inherit;
     text-align: center;
 }
 
@@ -180,7 +175,10 @@ button.tool{
     outline: none;
     color: inherit;
     background: inherit;
-    width: 2em;
+    width: 2.2em;
+    margin: 0 3px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .loop-control{

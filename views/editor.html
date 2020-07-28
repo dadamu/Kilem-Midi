@@ -26,22 +26,21 @@
             <header class="editor-header">
                 <div class="editor-title">
                     <input id="filename" class="file-title" value="" disabled></input>
-                    <div id="exit" class="exit">Exit <i class="fas fa-sign-out-alt"></i></div>
+                    <div id="exit" class="exit icon-container">Exit <i class="fas fa-sign-out-alt"></i></div>
                 </div>
                 <div class="editor-toolbox">
                     <div class="toolbox-menu">
-                        <button id="save" class="toolbox-save tool"><i class="fas fa-save"></i></button>
-                        <button id="export" class="toolbox-export tool"><i class="fas fa-file-export"></i></button>
-                        <div class="tool"><input id="bpm" class="bpm-edit" disabled><span>Bpm</span></input></div>
-                        <div id="invite" class="toolbox-invite tool">Invite</div>
+                        <button id="export" class="toolbox-export tool icon-container"><i class="fas fa-file-export"></i>&nbsp;Export</button>
+                        <div class="tool icon-container"><i class="fas fa-edit"></i><input id="bpm" class="bpm-edit" disabled></input><span>Bpm</span></div>
+                        <div id="invite" class="toolbox-invite tool icon-container"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp;Invite</div>
                     </div>
                 </div>
             </header>
             <section class="editor-body">
                 <div class="tracks-title">
                     <div class="tracks-control">
-                        <div id="addTrack" class="add-track"><i class="fas fa-plus-square"></i></div>
-                        <div id="deleteTrack" class="delete-track"><i class="fas fa-trash-alt"></i></div>
+                        <div id="addTrack" class="add-track icon-container"><i class="fas fa-plus-square fa-lg"></i></div>
+                        <div id="deleteTrack" class="delete-track icon-container"><i class="fas fa-trash-alt fa-lg"></i></div>
                     </div>
                     <div id="tracksContent" class="tracks-content">
                     </div>
@@ -93,19 +92,19 @@
                 </div>
                 <div class="midi-toolbox"><i class="fas fa-ruler-horizontal icon"></i>
                     <div class="border"></div>
-                    <div class="note-length midi-tool" value="0.0625">
+                    <div class="note-length midi-tool icon-container" value="0.0625">
                         <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
                     </div>
-                    <div class="note-length midi-tool selected" value="0.125">
+                    <div class="note-length midi-tool icon-container selected" value="0.125">
                         <img src="/public/img/toolbox/eighth-note.svg" class="note-icon"></img>
                     </div>
-                    <div class="note-length midi-tool" value="0.25">
+                    <div class="note-length midi-tool icon-container" value="0.25">
                         <img src="/public/img/toolbox/quarter-note.svg" class="note-icon"></img>
                     </div>
                     <div class="note-length midi-tool" value="0.5">
                         <img src="/public/img/toolbox/half-note.svg" class="note-icon"></img>
                     </div>
-                    <div class="note-length midi-tool" value="1">
+                    <div class="note-length midi-tool icon-container" value="1">
                         <div style="height: 50%; width:100%"></div>
                         <div style="height: 35%; width:100%">
                             <img src="/public/img/toolbox/whole-note.svg" class="note-icon"></img>
@@ -125,13 +124,14 @@
             </div>
         </section>
         <footer class="editor-footer">
-            <div id="midiPanelButton" class="midi-panel-button control-button"><i class="fas fa-edit"></i>Midi</div>
+            <div id="midiPanelButton" class="midi-panel-button control-button icon-container"><i class="fas fa-edit"></i>&nbsp;Midi Editor</div>
             <div class="footer-midi-control">
-                <div id="resetButton" class="reset-button control-button"><i class="fas fa-step-backward"></i></div>
-                <div id="playButton" class="play-button control-button"><i class="fas fa-play"></i></div>
-                <div id="stopButton" class="stop-button control-button"><i class="fas fa-stop"></i></div>
+                <div id="resetButton" class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>
+                <div id="playButton" class="play-button control-button icon-container"><i class="fas fa-play"></i></div>
+                <div id="stopButton" class="stop-button control-button icon-container"><i class="fas fa-stop"></i></div>
+                <div id="loopButton" class="stop-button control-button icon-container"><i class="fa fa-retweet" aria-hidden="true"></i></div>
             </div>
-            <div id="chatButton" class="chat-button control-button"><i class="far fa-comments"></i></div>
+            <div id="chatButton" class="chat-button control-button icon-container"><i class="far fa-comments"></i></div>
         </footer>
         <section id="chatRoom" class="chatroom hidden">
             <div id="chatContainer" class="chat-container">
@@ -139,7 +139,7 @@
             </div>
             <div class="chat-input">
                 <input id="chatInput" class="chat-input-space" type="text"></input>
-                <button id="chatSend" class="chat-send-button"><i class="fas fa-paper-plane"></i></button>
+                <button id="chatSend" class="chat-send-button icon-container"><i class="fas fa-paper-plane"></i></button>
             </div>
         </section>
     </main>

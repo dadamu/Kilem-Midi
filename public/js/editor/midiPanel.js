@@ -26,6 +26,23 @@ app.openMidiPanelListen = () => {
     });
 };
 
+app.openMidiPanel = () => {
+    if ($("#midiPanel").hasClass("hidden")) {
+        $("#midiPanelButton").css("background", "#00A15C");
+        const trackId = $(".track.selected").attr("trackId");
+        $("#midiPanel").removeClass("hidden");
+        app.panelLoadTrack(trackId);
+        app.activeKeyRender(app.music.tracks[trackId].instrument);
+        app.isMidiEditorOpen = true;
+        app.setCurrentPlayhead(app.currentTime);
+    }
+    else {
+        $("#midiPanel").addClass("hidden");
+        $("#midiPanelButton").css("background", "inherit");
+        app.isMidiEditorOpen = false;
+    }
+};
+
 app.activeKeyRender = (instrument) => {
     const curr = app.instruments[instrument];
     $(".key.inactive").removeClass("inactive");

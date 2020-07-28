@@ -12,15 +12,17 @@ app.initChatRender = async () => {
 };
 
 app.chatRoomlListen = () => {
-    $("#chatButton").click(() => {
+    $("#chatButton").click(function(){
         if ($("#chatRoom").hasClass("hidden")) {
             $("#chatRoom").removeClass("hidden");
             $("#chatButton").removeClass("notify");
             const container = $("#chatContainer");
             container.animate({ scrollTop: container.prop("scrollHeight") }, 100);
+            $(this).addClass("active");
         }
         else {
             $("#chatRoom").addClass("hidden");
+            $(this).removeClass("active");
         }
     });
 };
@@ -38,6 +40,10 @@ app.chatSendlListen = () => {
 
     async function send() {
         const text = $("#chatInput").val();
+        if(!text){
+            return;
+        }
+        $("#chatInput").val("");
         const data = {
             msg: text,
             userId: app.userId,
@@ -48,7 +54,6 @@ app.chatSendlListen = () => {
             app.errorShow("message send failed");
             return;
         }
-        $("#chatInput").val("");
     }
 };
 

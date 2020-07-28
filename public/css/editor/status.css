@@ -7,5 +7,18 @@
 }
 
 .notify{
+    background-color: rgb(207, 151, 47);
+}
+
+.active{
     background-color: #00A15C;
+}
+
+i.hover{
+    color: #BCBCBC;
+}
+
+.editable:hover,
+.editable:focus{
+    background: #565656;
 }
