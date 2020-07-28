@@ -178,3 +178,23 @@
   height:100%;
   background: rgba(0, 0, 0, 0.6);
 }
+
+.sixteenth-note:before{
+    content: "\01D161";
+}
+
+.eighth-note:before{
+    content: "\01D160";
+}
+
+.quarter-note:before{
+    content: "\01D15F";
+}
+
+.half-note:before{
+    content: "\01D15E";
+}
+
+.whole-note:before{
+    content: "\01D15D";
+}
