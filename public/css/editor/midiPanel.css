@@ -9,8 +9,8 @@
 .midi-toolbox{
     display: flex;
     margin-top: 10px;
-    margin-right: 10px; 
-    padding: 0 10px;
+    margin-right: 20px; 
+    padding-left: 10px;
     align-items: center;
     border: 1px #AAAAAA solid;
     border-radius: 2px;
@@ -32,6 +32,7 @@
     width: 30px;
     font-size: 1.4em;
     text-align: center;
+    height: 100%;
 }
 .midi-tool span{
     vertical-align: middle;
@@ -179,22 +180,7 @@
   background: rgba(0, 0, 0, 0.6);
 }
 
-.sixteenth-note:before{
-    content: "\01D161";
-}
-
-.eighth-note:before{
-    content: "\01D160";
-}
-
-.quarter-note:before{
-    content: "\01D15F";
-}
-
-.half-note:before{
-    content: "\01D15E";
-}
-
-.whole-note:before{
-    content: "\01D15D";
+.note-icon{
+    width: 100%;
+    height: 100%;
 }
