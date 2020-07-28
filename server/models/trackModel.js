@@ -102,7 +102,6 @@ module.exports = {
         }
         catch (e) {
             await trx.rollback();
-            console.log(e);
             throw e;
         }
     },
@@ -126,7 +125,7 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId } = body;
         try {
-            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId).forUpdate();
+            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId);
             if (!select[0].lockerId) {
                 await trx("track AS t").update("t.user_id", userId).where("t.id", trackId);
                 const nameSelect = await trx("user AS u").select(["u.username AS name"]).where("u.id", userId);
@@ -164,7 +163,7 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId, name } = body;
         try {
-            const select = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId).forUpdate();
+            const select = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId);
             if (select.length === 0) {
                 await trx.rollback();
                 return new Error("It's not your locked track");
@@ -181,7 +180,7 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId, instrument } = body;
         try {
-            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId).forUpdate();
+            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId);
             if (parseInt(select[0].lockerId) === parseInt(userId)) {
                 await trx("track AS t").update("t.instrument", instrument).where("t.id", trackId);
                 await trx.commit();
