@@ -8,6 +8,7 @@ app.controlListen = () => {
     app.filenameChangeListen();
     app.bpmChangeListen();
     app.loopControlListen();
+    app.inviteButtonListen();
 };
 
 app.exitListen = () => {
@@ -314,6 +315,19 @@ app.loopControlListen = () => {
         $("#loopControl").append(head, tail);
         app.setLoopHeadDrag(head);
         app.setLoopTailDrag(tail);
+    });
+};
+
+app.inviteButtonListen = () => {
+    $("#invite").click(function(){
+        app.successShow("URL Copied");
+        const url = $("<input></input>");
+        const host = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
+        $(url).val( host + "/room?invite=" + app.roomId);
+        $(this).parent().append(url);
+        url.select();
+        document.execCommand("copy");
+        $(url).remove();
     });
 };
 

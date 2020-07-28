@@ -84,16 +84,23 @@ body{
 }
 
 .tool{
+    padding: 5px 10px;
+    height: 100%;
+    border: 1px #AAAAAA solid;
+    border-radius: 2px;
     margin-left: 10px;
     display: inline-block;
     background-color: #555555;
     text-align: center;
 }
 
+.toolbox-invite{
+    cursor: pointer;
+}
+
 button.tool{
     color: inherit;
     box-shadow: none;
-    border: none;
     cursor: pointer;
 }
 
