@@ -18,6 +18,8 @@ a{
 .header-content{
     display: flex;
     color: white;
+    flex-direction: column;
+    align-items: center;
 }
 
 .main-header .intro{
@@ -165,7 +167,7 @@ a{
     opacity: 0;
 }
 .room.is-expanded .room__inner {
-    background-color: #1abc9c;
+    background-color: #00A15C;
 }
 .room.is-expanded .room__inner:after {
     content: "";

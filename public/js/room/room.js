@@ -39,10 +39,10 @@ app.createRoomListen = () => {
             title: "Create Room",
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input'></input>
+                <label>name</label><input type='text' id='name' class='swal2-input' autocomplete='off'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input' autocomplete='off'></input>
                 <input type='checkbox' id='isPrivate'></input><label>private</label><br><br>
-                <label>password</label><input type='password' id='password' class='swal2-input'></input>
+                <label>password</label><input type='password' id='password' class='swal2-input' autocomplete='off'></input>
                 <label>intro</label><textarea id='intro' class='swal2-textarea'></textarea>`,
             showCancelButton: true,
             confirmButtonText: "Create",
@@ -71,6 +71,9 @@ app.createRoomListen = () => {
                 }, "POST");
             }
         });
+        if (swalRes.isDismissed) {
+            return;
+        }
         const createRes = swalRes.value;
         if (createRes.error) {
             app.errorShow(createRes.error);
@@ -125,8 +128,12 @@ app.roomListen = () => {
     });
 
     rooms.on("click", ".delete", async function () {
-        const deleteCheck = confirm("delete confirm");
-        if (!deleteCheck) {
+        const swal = await Swal.fire({
+            icon: "warning",
+            title: "Remove room?",
+            showCancelButton: true
+        });
+        if (swal.isDismissed) {
             return;
         }
         const id = $(this).closest(".room").attr("id");
@@ -146,8 +153,12 @@ app.roomListen = () => {
     });
 
     rooms.on("click", ".exit", async function () {
-        const exitCheck = confirm("exit confirm");
-        if (!exitCheck) {
+        const swal = await Swal.fire({
+            icon: "warning",
+            title: "Exit room?",
+            showCancelButton: true
+        });
+        if (swal.isDismissed) {
             return;
         }
         const id = $(this).closest(".room").attr("id");
@@ -185,21 +196,46 @@ app.inviteCheck = async () => {
         window.history.replaceState(null, null, window.location.pathname);
         return;
     }
-    const check = confirm("Join?");
-    if (!check) {
-        window.history.replaceState(null, null, window.location.pathname);
-        return;
-    }
+
+    const isPrivate = getRes.data[0].password;
+    console.log(getRes.data[0]);
+    let swalConfig = {
+        title: "Join Room?",
+        showCancelButton: true,
+        confirmButtonText: "Join",
+    };
+
     const data = {
         roomId: id,
         token
     };
-    if (getRes.data[0].password) {
-        data.password = prompt("input password");
+
+    if (isPrivate) {
+        swalConfig.html = "<br><label>password</div><input id='password' type='password' class='swal2-input'></input>";
+        swalConfig.preConfirm = () => {
+            const target = Swal.getPopup();
+            const password = $(target).find("#password").val();
+            data.password = password;
+            return app.fetchData("/api/1.0/room/user", data, "POST");
+        };
     }
-    const res = await app.fetchData("/api/1.0/room/user", data, "POST");
+    else {
+        swalConfig.preConfirm = () => {
+            console.log(data);
+            return app.fetchData("/api/1.0/room/user", data, "POST");
+        };
+    }
+
+    const swalRes = await Swal.fire(swalConfig);
+
+    if (swalRes.isDismissed) {
+        window.history.replaceState(null, null, window.location.pathname);
+        return;
+    }
+    const res = swalRes.value;
     if (res.error) {
         app.errorShow(res.error);
+        window.history.replaceState(null, null, window.location.pathname);
         return;
     }
     window.location.href = "/editor/" + id;
