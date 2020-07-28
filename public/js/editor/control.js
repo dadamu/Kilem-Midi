@@ -25,7 +25,7 @@ app.midiPlayListen = () => {
 
 app.midiPlay = () => {
     if (!app.isplaying) {
-        const resolution =  60 / app.music.bpm / 16 * 1000;
+        const resolution = 60 / app.music.bpm / 16 * 1000;
         const tracks = app.music.getTracks();
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (app.music.bpm / 60) * 1000;
@@ -34,7 +34,7 @@ app.midiPlay = () => {
                 clearInterval(app.playInterval);
                 app.isplaying = false;
             }
-            if(app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2)){
+            if (app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2)) {
                 app.currentTime = app.loopstart;
             }
 
@@ -302,14 +302,14 @@ app.loopControlListen = () => {
         $("#rulerGirds").unbind("mousemove");
         if ($("#loopControl").children().length > 0)
             return;
-        
+
         let start = $("#loopControl").css("left");
         start = parseFloat(start.replace("px", ""));
         const width = $("#loopControl").width();
         const end = start + width;
         app.loopstart = app.posToTime(start, app.regionInterval);
         app.loopend = app.posToTime(end, app.regionInterval);
-        
+
         const tail = $("<div class='tail'></div>");
         const head = $("<div class='head'></div>");
         $("#loopControl").append(head, tail);
@@ -319,11 +319,14 @@ app.loopControlListen = () => {
 };
 
 app.inviteButtonListen = () => {
-    $("#invite").click(function(){
+    $("#invite").click(function () {
         app.successShow("URL Copied");
         const url = $("<input></input>");
-        const host = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
-        $(url).val( host + "/room?invite=" + app.roomId);
+        let host = window.location.protocol + "//" + window.location.hostname;
+        if (window.location.hostname === "localhost") {
+            host += ":" + window.location.port;
+        }
+        $(url).val(host + "/room?invite=" + app.roomId);
         $(this).parent().append(url);
         url.select();
         document.execCommand("copy");
