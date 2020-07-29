@@ -8,8 +8,8 @@ app.init = () => {
     app.googleInit();
     app.selectTabListen();
     app.signListen();
-    app.getStartListen();
     app.logoListen();
+    $("#signup .username").attr("maxlength", 10);
 };
 
 app.logoListen = () => {

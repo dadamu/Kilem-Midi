@@ -5,6 +5,7 @@
     min-width: 300px;
     min-height: 400px;
     padding: 10px;
+    padding-left: 20px;
     bottom: 60px;
     right: 20px;
     background-color: white;
@@ -42,12 +43,15 @@
 .chat-send-button{
     height: 100%;
     width: 50px;
+    background: #FFF;
+    outline: none;
 }
 
 .chat-msg{
     margin-top: 10px;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+
 }
 
 .chat-user{
@@ -62,4 +66,9 @@
     word-break: break-all;
     flex: auto;
     cursor: pointer;
+    border-radius: 5px;
 }
+
+.chatroom textarea {
+    resize: none;
+  }

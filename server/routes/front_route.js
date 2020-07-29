@@ -8,13 +8,8 @@ router.route("/editor/:id")
 router.route("")
     .get(frontController.welcome);
 
-router.route("/sign")
-    .get(frontController.sign);
-
 router.route("/room")
     .get(frontController.room);
 
-router.route("/profile")
-    .get(frontController.profile);
 
 module.exports = router;

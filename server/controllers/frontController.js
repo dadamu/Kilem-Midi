@@ -15,13 +15,7 @@ module.exports = {
     welcome: asyncHandler(async (req, res) => {
         res.sendFile(path.join(__dirname, viewsPath, "welcome.html"));
     }),
-    sign: asyncHandler(async (req, res) => {
-        res.sendFile(path.join(__dirname, viewsPath, "sign.html"));
-    }),
     room: asyncHandler(async (req, res) => {
         res.sendFile(path.join(__dirname, viewsPath, "room.html"));
-    }),
-    profile: asyncHandler(async (req, res)=>{
-        res.sendFile(path.join(__dirname, viewsPath, "profile.html"));
     })
 };

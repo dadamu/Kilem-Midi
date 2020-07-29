@@ -1,4 +1,4 @@
-/* global app $ */
+/* global app $ filterXSS */
 
 app.chatListen = () => {
     app.chatRoomlListen();
@@ -12,7 +12,7 @@ app.initChatRender = async () => {
 };
 
 app.chatRoomlListen = () => {
-    $("#chatButton").click(function(){
+    $("#chatButton").click(function () {
         if ($("#chatRoom").hasClass("hidden")) {
             $("#chatRoom").removeClass("hidden");
             $("#chatButton").removeClass("notify");
@@ -29,18 +29,26 @@ app.chatRoomlListen = () => {
 
 
 app.chatSendlListen = () => {
+    $("textarea").keydown(function (e) {
+        if (e.keyCode == 13 && !e.shiftKey) {
+            e.preventDefault();
+        }
+    });
     $("#chatSend").click(() => {
         send();
     });
     $("#chatInput").on("keyup", function (e) {
-        if (e.keyCode === 13) {
+        if (e.shiftKey && e.keyCode === 13) {
+            return;
+        }
+        else if (e.keyCode === 13) {
             send();
         }
     });
 
     async function send() {
         const text = $("#chatInput").val();
-        if(!text){
+        if (!text) {
             return;
         }
         $("#chatInput").val("");
@@ -61,12 +69,13 @@ app.chatSendlListen = () => {
 app.chatRender = (chat) => {
     const msgDiv = $("<div></div>").addClass("chat-msg");
     const userDiv = $("<div></div>").text(chat.user + ":").addClass("chat-user");
-    const contentDiv = $("<div></div>").text(chat.msg).addClass("chat-content").attr("title", chat.date);
+    const msg = filterXSS(chat.msg.split("\n").join("<br>"));
+    const contentDiv = $("<div></div>").html(msg).addClass("chat-content").attr("title", chat.date);
     msgDiv.append(userDiv, contentDiv);
     const container = $("#chatContainer");
-    const pos = container.scrollTop()  + container.height();
+    const pos = container.scrollTop() + container.height();
     const max = container.prop("scrollHeight") - 100;
-    if ( pos < max ) {
+    if (pos < max) {
         container.append(msgDiv);
     }
     else {
