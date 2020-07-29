@@ -1,6 +1,7 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
     get: async (type, requirement) => {
+        const num = 3;
         let query = knex("room AS r")
             .select(["r.id AS id", "r.name As name", "r.filename AS filename", "u.username AS username", "r.intro AS intro"])
             .innerJoin("user AS u", "r.user_id", "u.id");
@@ -10,8 +11,8 @@ module.exports = {
         if (type === "public") {
             query = query.clone().where("r.is_private", 0);
             const count = await query.clone().count("* AS total");
-            maxPaging = Math.ceil(count[0].total / 4);
-            const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
+            maxPaging = Math.ceil(count[0].total / num);
+            const data = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
             result.data = data;
         }
         else if (type === "my") {
@@ -19,8 +20,8 @@ module.exports = {
             const { id: userId } = user;
             query = query.clone().where("user_id", userId);
             const count = await query.clone().count("* AS total");
-            maxPaging = Math.ceil(count[0].total / 4);
-            const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
+            maxPaging = Math.ceil(count[0].total / num);
+            const data = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
             result.data = data;
         }
         else if (type === "in") {
@@ -28,8 +29,8 @@ module.exports = {
             const { id: userId } = user;
             query = query.clone().innerJoin("save AS s", "s.room_id", "r.id").where("s.user_id", userId).andWhereNot("r.user_id", userId);
             const count = await query.clone().count("* AS total");
-            maxPaging = Math.ceil(count[0].total / 4);
-            const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
+            maxPaging = Math.ceil(count[0].total / num);
+            const data = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
             result.data = data;
         }
         else if (type === "search"){
@@ -39,8 +40,8 @@ module.exports = {
                 this.where("r.name", "like", keyword).orWhere("r.filename", "like", keyword);
             });
             const count = await query.clone().count("* AS total");
-            maxPaging = Math.ceil(count[0].total / 4);
-            const data = await query.clone().offset(paging * 4).limit(4).orderBy("r.id", "desc");
+            maxPaging = Math.ceil(count[0].total / num);
+            const data = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
             result.data = data;
         }
         else {

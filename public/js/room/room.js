@@ -1,4 +1,4 @@
-/* global $ Swal */
+/* global $ Swal filterXSS */
 const app = {};
 
 app.init = async () => {
@@ -33,16 +33,29 @@ app.UIListen = () => {
 };
 
 app.createRoomListen = () => {
+    $(document).on("change").on("change", ".swal2-checkbox input[type='checkbox']", function(){
+        if(this.checked){
+            $("#createPassword").removeClass("hidden");
+            return;
+        }
+        $("#createPassword").addClass("hidden");
+    });
     $("#createRoomButton").click(async function () {
         const token = window.localStorage.getItem("token");
         const swalRes = await Swal.fire({
             title: "Create Room",
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' autocomplete='off'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input' autocomplete='off'></input>
-                <input type='checkbox' id='isPrivate'></input><label>private</label><br><br>
-                <label>password</label><input type='password' id='password' class='swal2-input' autocomplete='off'></input>
+                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='10' autocomplete='off'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='10' autocomplete='off'></input>
+                <label for='swal2-checkbox' class='swal2-checkbox' style='display: flex;justify-content:flex-start;'>
+                    <input type='checkbox'  style='margin-left: 0;'></input>
+                    <span class='swal2-label'>isPrivate</span>
+                </label>
+                <div id='createPassword' class='hidden'>
+                    <label>password</label>
+                    <input type='password' id='password' class='swal2-input' maxlength='10' autocomplete='off'></input>
+                </div>
                 <label>intro</label><textarea id='intro' class='swal2-textarea'></textarea>`,
             showCancelButton: true,
             confirmButtonText: "Create",
@@ -50,7 +63,7 @@ app.createRoomListen = () => {
                 const target = Swal.getPopup();
                 const name = $(target).find("#name").val();
                 const filename = $(target).find("#filename").val();
-                const isPrivate = $(target).find("#isPrivate").prop("checked");
+                const isPrivate = $(target).find(".swal2-checkbox input[type='checkbox']").prop("checked");
                 const intro = $(target).find("#intro").val();
                 if (!name || !filename) {
                     app.errorShow("Please fill name and filename field");
@@ -127,6 +140,12 @@ app.roomListen = () => {
         app.inviteCheck();
     });
 
+    rooms.on("click", ".enter", function () {
+        const id = $(this).closest(".room").attr("id");
+        window.history.replaceState(null, null, "?invite=" + id);
+        window.location.href = "/editor/" + id;
+    });
+
     rooms.on("click", ".delete", async function () {
         const swal = await Swal.fire({
             icon: "warning",
@@ -196,43 +215,36 @@ app.inviteCheck = async () => {
         window.history.replaceState(null, null, window.location.pathname);
         return;
     }
-
     const isPrivate = getRes.data[0].password;
-    console.log(getRes.data[0]);
-    let swalConfig = {
-        title: "Join Room?",
-        showCancelButton: true,
-        confirmButtonText: "Join",
-    };
-
     const data = {
         roomId: id,
         token
     };
 
+    let res;
     if (isPrivate) {
-        swalConfig.html = "<br><label>password</div><input id='password' type='password' class='swal2-input'></input>";
+        let swalConfig = {
+            title: "Join Room?",
+            showCancelButton: true,
+            confirmButtonText: "Join",
+            html: "<br><label>password</div><input id='password' type='password' class='swal2-input'></input>"
+        };
         swalConfig.preConfirm = () => {
             const target = Swal.getPopup();
             const password = $(target).find("#password").val();
             data.password = password;
             return app.fetchData("/api/1.0/room/user", data, "POST");
         };
-    }
-    else {
-        swalConfig.preConfirm = () => {
-            console.log(data);
-            return app.fetchData("/api/1.0/room/user", data, "POST");
-        };
-    }
+        const swalRes = await Swal.fire(swalConfig);
 
-    const swalRes = await Swal.fire(swalConfig);
-
-    if (swalRes.isDismissed) {
-        window.history.replaceState(null, null, window.location.pathname);
-        return;
+        if (swalRes.isDismissed) {
+            window.history.replaceState(null, null, window.location.pathname);
+            return;
+        }
+        res = swalRes.value;
     }
-    const res = swalRes.value;
+    res = await app.fetchData("/api/1.0/room/user", data, "POST");
+
     if (res.error) {
         app.errorShow(res.error);
         window.history.replaceState(null, null, window.location.pathname);
@@ -284,12 +296,14 @@ app.editRoomListen = () => {
             title: "Edit Room Info",
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' value='${name}'></input>
-                <label>intro</label><textarea id='intro' class='swal2-textarea'>${intro.split("<br>").join("\n")}</textarea>`,
+                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='10' value='${name}'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='10' value='${filename}'></input>
+                <label>intro</label><textarea id='intro' style='resize: none;' class='swal2-textarea' wrap="hard" cols='10'>${intro.split("<br>").join("\n")}</textarea>`,
             showCancelButton: true,
             confirmButtonText: "Edit",
             preConfirm: () => {
                 name = Swal.getPopup().querySelector("#name").value;
+                filename = Swal.getPopup().querySelector("#filename").value;
                 intro = Swal.getPopup().querySelector("#intro").value;
                 const data = {
                     id,
@@ -321,23 +335,29 @@ app.roomTempGen = (room) => {
     return `<div id="${room.id}" class="room is-collapsed">
         <div class="room__inner js-expander">
             <i class="fa fa-folder-o"></i>
-            <span>${room.name}</span>
+            <span>${filterXSS(room.name)}</span>
         </div>
         <div class="room__expander">
             <div class="line">
-                <label class="line-first">name: </label>
-                <span class="line-second line-name">${room.name}</span>
+                <label class="line-first">name</label>
+                <label class="colon">:</label>
+                <span class="line-second line-name">${filterXSS(room.name)}</span>
             </div>
             <div class="line">
-                <label class="line-first">creator: </label>
-                <span class="line-second line-username">${room.username}</span>
+                <label class="line-first">filename</label>
+                <label class="colon">:</label>
+                <span class="line-second line-filename">${filterXSS(room.filename)}</span>
+            </div>
+            <div class="line">
+                <label class="line-first">creator</label>
+                <label class="colon">:</label>
+                <span class="line-second line-username">${filterXSS(room.username)}</span>
             </div>
             <div class="line">
                 <label class="line-first">intro: </label>
             </div>
-            <div class="line intro line-intro">${room.intro.split("\n").join("<br>")}</div>
+            <div class="line intro line-intro">${filterXSS(room.intro).split("\n").join("<br>")}</div>
             <div class="control">
-                <button class="button join">join</button>
             </div>
         </div>
     </div>`;
@@ -355,40 +375,49 @@ app.renderRoom = async (type, paging) => {
     }
     const res = await fetch(endpoint, { headers, method: "GET" }).then(res => res.json());
     const { data: rooms, next, previous } = res;
-    $(`#${type}Rooms .rooms .room`).remove();
+    const typeRooms = `#${type}Rooms`;
+    $(`${typeRooms} .rooms .room`).remove();
     if (rooms.length === 0) {
-        $(`#${type}Rooms .next`).addClass("hidden");
-        $(`#${type}Rooms .previous`).addClass("hidden");
-        $(`#${type}Rooms .rooms`).append("<div class='no-content'>No Content</div>");
+        $(`${typeRooms} .next`).addClass("hidden");
+        $(`${typeRooms} .previous`).addClass("hidden");
+        if ($(`${typeRooms} .rooms`).find(".no-content").length === 0) {
+            $(`${typeRooms} .rooms`).append("<div class='no-content'>No Content</div>");
+        }
         return;
     }
-    $(`#${type}Rooms .rooms .no-content`).remove();
-    $(`#${type}Rooms .next`).removeClass("hidden");
-    $(`#${type}Rooms .previous`).removeClass("hidden");
+    $(`${typeRooms} .rooms .no-content`).remove();
+    $(`${typeRooms} .next`).removeClass("hidden");
+    $(`${typeRooms} .previous`).removeClass("hidden");
     for (let room of rooms) {
         const roomDiv = $(app.roomTempGen(room));
         if (type === "my") {
+            const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
             const deleteButton = $("<button></button>").addClass("button").addClass("delete").text("delete");
-            roomDiv.find(".control").append(deleteButton);
+            roomDiv.find(".control").append(enterButton, deleteButton);
         }
         if (type === "in") {
+            const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
             const exitButton = $("<button></button>").addClass("button").addClass("exit").text("exit");
-            roomDiv.find(".control").append(exitButton);
+            roomDiv.find(".control").append(enterButton, exitButton);
         }
-        $(`#${type}Rooms .rooms`).append(roomDiv);
+        if (type === "public") {
+            const joinButton = $("<button></button>").addClass("button").addClass("join").text("join");
+            roomDiv.find(".control").append(joinButton);
+        }
+        $(`${typeRooms} .rooms`).append(roomDiv);
     }
     if (typeof previous === "undefined") {
-        $(`#${type}Rooms .previous`).addClass("hidden");
+        $(`${typeRooms} .previous`).addClass("hidden");
     }
     else {
-        $(`#${type}Rooms .previous`).removeClass("hidden");
+        $(`${typeRooms} .previous`).removeClass("hidden");
     }
 
     if (typeof next === "undefined") {
-        $(`#${type}Rooms .next`).addClass("hidden");
+        $(`${typeRooms} .next`).addClass("hidden");
     }
     else {
-        $(`#${type}Rooms .next`).removeClass("hidden");
+        $(`${typeRooms} .next`).removeClass("hidden");
     }
     app.paging.type = paging;
 };

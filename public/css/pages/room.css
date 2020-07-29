@@ -35,15 +35,24 @@ a{
 .rooms {
     position: relative;
     width: 100%;
-    padding: 30px;
+    padding: 40px;
     display: flex;
     flex-flow: row wrap;
-  }
+}
+
+.search{
+    margin-left: 15px; 
+}
+
+.rooms-head{
+    display: flex;
+    align-items: center;
+}
 
 .room {
-    margin: 15px; 
+    margin: 20px;
     min-width: 150px;
-    width: calc((100% / 4) - 30px);
+    width: calc((100% / 3) - 40px);
     transition: all 0.2s ease-in-out;
     cursor: pointer;
 }
@@ -69,7 +78,7 @@ a{
 
 .room__inner {
     width: 100%;
-    padding: 1.5em;
+    padding: 2em 1.5em;
     position: relative;
     cursor: pointer;
     background-color: #949fb0;
@@ -104,18 +113,33 @@ a{
 }
 
 .line{
-    display: flex;
-    margin-bottom: 10px; 
+    position: relative;
+    margin-bottom: 10px;
+    height: 1em;
 }
 
 .line-first{
-    text-align: right;
+    position: absolute;
+    text-align: left;
+    left: 0;
+    top : 0;
     display: block;
-    width: 50%;
-    margin-right: 15px
+    width: 70px;
 }
+
+.line .colon{
+    position: absolute;
+    left: 70px;
+    top: 0px;
+}
+
 .line-second{
-    flex: auto;
+    position: absolute;
+    text-align: left;
+    left: 90px;
+    top : 0;
+    display: block;
+    width: 200px;
 }
 
 .room .intro{
@@ -124,6 +148,7 @@ a{
     border: 1px white solid;
     word-break: break-all;
     padding: 10px;
+    height: 100%;
 }
 
 .room__expander .fa {
@@ -222,15 +247,15 @@ footer{
 
 .previous{
     position: absolute;
-    left: 0;
-    top: 40px;
+    left: 15px;
+    top: 60px;
     z-index: 5;
 }
 
 .next{
     position: absolute;
-    right: 0;
-    top: 40px;
+    right: 15px;
+    top: 60px;
     z-index: 5;
 }
 

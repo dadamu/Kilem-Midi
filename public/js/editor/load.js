@@ -9,9 +9,11 @@ app.loadFile = async () => {
     const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
     const response = await fetch(endpoint).then(res => res.json());
     if (response.error) {
-        app.errorShow(response.error);
-        window.location.href = "/room";
-        return;
+        const res = await app.errorShow(response.error);
+        if(res.value){
+            window.location.href = "/room";
+            return;
+        }
     }
     return response.data;
 };

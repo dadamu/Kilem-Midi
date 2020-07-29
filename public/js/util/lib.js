@@ -14,6 +14,7 @@ app.fetchData = (url, data, method, headers = {
 app.checkToken = async () => {
     const token = window.localStorage.getItem("token");
     if (!token) {
+        await app.errorShow("Please Login First");
         window.location.href = "/";
     }
     const headers = {
@@ -21,7 +22,7 @@ app.checkToken = async () => {
     };
     const res = await fetch("/api/1.0/user/profile", { headers, method: "GET" }).then(res => res.json());
     if (res.error) {
-        app.errorShow(res.error);
+        await app.errorShow(res.error);
         window.localStorage.removeItem("token", "");
         window.location.href = "/";
     }
@@ -32,7 +33,7 @@ app.checkToken = async () => {
 };
 
 app.errorShow = (text) => {
-    Swal.fire({
+    return Swal.fire({
         icon: "error",
         title: "Error",
         text
@@ -53,7 +54,7 @@ app.successShow = (text) => {
         }
     });
 
-    Toast.fire({
+    return Toast.fire({
         icon: "success",
         title: text
     });

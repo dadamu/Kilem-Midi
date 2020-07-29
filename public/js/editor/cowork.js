@@ -8,27 +8,34 @@ app.clickCommitListen = () => {
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
         }
-
         const check = confirm("Commit Check");
         if (!check)
             return;
         const name = prompt("fill version name", `version${version}`);
-        try {
-            const res = await app.fetchData(`/api/1.0/midi/track/${trackId}`, {
-                roomId: app.roomId,
-                userId: app.userId,
-                name,
-                notes: app.music.getNotes(trackId)
-            }, "PUT");
-            if (res.error) {
-                app.errorShow(res.error);
-                return;
-            }
-            app.successShow("Save Success");
+
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}`, {
+            roomId: app.roomId,
+            userId: app.userId,
+            name,
+            notes: app.music.getNotes(trackId)
+        }, "PUT");
+        if (res.error === "It's not your locked track") {
+            Swal.fire({
+                title: "Failed",
+                icon: "error",
+                html: `
+                    <br>
+                    <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
+                    <div style='padding-left:20px; margin-top: 20px;'>You only can edit yourself's track, Check Track status first.</div>
+                    `
+            });
+            return;
         }
-        catch (e) {
-            app.errorShow("Save failed");
+        if (res.error) {
+            app.errorShow(res.error);
+            return;
         }
+        app.successShow("Save Success");
     });
 };
 
@@ -109,7 +116,7 @@ app.lockClickListen = () => {
         }
 
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
-        if(res.error === "It's not your locked track"){
+        if (res.error === "It's not your locked track") {
             Swal.fire({
                 title: "Failed",
                 icon: "error",

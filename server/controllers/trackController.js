@@ -8,7 +8,7 @@ module.exports = {
         const { roomId } = req.body;
         const isValid = await trackModel.authorityCheck(id, req.body);
         if (!isValid) {
-            res.json({ error: "It's Not Your Locked Track" });
+            res.json({ error: "It's not your locked track" });
             return;
         }
         const result = await trackModel.commit(id, req.body);
