@@ -1,4 +1,4 @@
-/* global app $ */
+/* global app $ Swal */
 
 app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
@@ -104,11 +104,23 @@ app.lockClickListen = () => {
             previous = {};
         }
         if (JSON.stringify(previous) !== JSON.stringify(current)) {
-            app.errorShow("Please Save change first");
+            app.errorShow("Please Save Change First");
             return;
         }
 
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
+        if(res.error === "It's not your locked track"){
+            Swal.fire({
+                title: "Failed",
+                icon: "error",
+                html: `
+                    <br>
+                    <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
+                    <div style='padding-left:20px; margin-top: 20px;'>You only can Edit yourself's track, Check Track status first.</div>
+                    `
+            });
+            return;
+        }
         if (res.error) {
             app.errorShow(res.error);
             return;
