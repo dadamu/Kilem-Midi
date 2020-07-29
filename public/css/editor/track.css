@@ -72,13 +72,14 @@
 
 .track-info{
     display: flex;
-    margin-left: 30px;
+    margin-left: 25px;
 }
 
 .version-control{
     display: flex;
     margin-top: auto;
-    padding: 5px 20px;
+    padding: 5px 15px;
+    padding-left: 20px;
 }
 
 .version-select{
@@ -89,7 +90,7 @@
 
 
 .version-commit{
-    width: 70px;
+    width: 75px;
 }
 
 .region{
@@ -119,11 +120,11 @@
 
 img.icon{
     height: 100%;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .instrument-selector{
     display: inline-block;
     height: 100%;
-    text-indent: 2px;
+    padding-left: 5px;
 }

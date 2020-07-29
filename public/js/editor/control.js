@@ -188,6 +188,7 @@ app.filenameChangeListen = () => {
             return;
         }
         app.filename = $(this).val();
+        app.successShow("Filename Change Success");
     });
 };
 

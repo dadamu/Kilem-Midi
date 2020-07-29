@@ -38,6 +38,7 @@ app.initiTrackRender = () => {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
     app.trackSelect($(".track").first());
+    app.openMidiPanel();
 };
 
 app.lockerRender = (locker) => {
