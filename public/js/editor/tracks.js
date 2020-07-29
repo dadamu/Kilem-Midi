@@ -99,7 +99,10 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     }
     $(trackDiv).append(lockDiv, infoDiv, versionControl);
     $("#tracksContent").append(trackDiv);
-    return;
+    if($(".track.selected").length === 0){
+        app.trackSelect(trackDiv);
+        app.openMidiPanel();
+    }
 };
 
 app.trackVersionRender = (trackId) => {

@@ -11,8 +11,12 @@ app.midiPanelListen = () => {
 app.openMidiPanelListen = () => {
     $("#midiPanelButton").click(() => {
         if ($("#midiPanel").hasClass("hidden")) {
-            $("#midiPanelButton").css("background", "#00A15C");
             const trackId = $(".track.selected").attr("trackId");
+            if(!trackId){
+                app.errorShow("Please Select a Track");
+                return;
+            }
+            $("#midiPanelButton").css("background", "#00A15C");
             $("#midiPanel").removeClass("hidden");
             app.panelLoadTrack(trackId);
             app.activeKeyRender(app.music.tracks[trackId].instrument);

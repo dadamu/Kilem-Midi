@@ -20,6 +20,7 @@ app.ioListen = async () => {
         app.music.getTrack(id).setLocker(locker);
         app.addTrackRender(id, name);
         app.saveFile();
+        app.successShow("Track Render");
     });
     app.on("commit", (data) => {
         const { track } = data;
@@ -41,6 +42,17 @@ app.ioListen = async () => {
         $(".region").first().addClass("selected");
         app.panelLoadTrack($(".region").last().attr("trackId"));
         app.saveFile();
+        if (parseInt($("#midiPanel").attr("trackId")) === parseInt(track.id)) {
+            $("#midiPanel").addClass("hidden");
+            $("#midiPanelButton").css("background", "inherit");
+            app.isMidiEditorOpen = false;
+        }
+        if (app.isplaying) {
+            clearInterval(app.playInterval);
+            app.isplaying = false;
+            app.successShow("Track Render");
+            $("#playButton").find("i").removeClass("fas fa-pause").addClass("fas fa-play");
+        }
     });
 
     app.on("lock", (data) => {
@@ -103,7 +115,7 @@ app.ioListen = async () => {
 
         app.loopend = app.loopend * oldBpm / bpm;
         if (app.isplaying) {
-            app.currentTime = app.currentTime * oldBpm / bpm; 
+            app.currentTime = app.currentTime * oldBpm / bpm;
             clearInterval(app.playInterval);
             app.isplaying = false;
             app.successShow("Bpm Change");
