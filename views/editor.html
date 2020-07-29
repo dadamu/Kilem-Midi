@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/public/css/util/sweet-alert.css">
     <script src="/public/js/util/sweet-alert.js"></script>
     <script src="/public/js/util/tonejs-midi.js"></script>
-    <script src="/public/js/util/fontawsome.js" crossorigin="anonymous"></script>
+    <script src="/public/js/util/fontawesome.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -25,22 +25,23 @@
         <div class="editor">
             <header class="editor-header">
                 <div class="editor-title">
-                    <input id="filename" class="file-title" value="" disabled></input>
-                    <div id="exit" class="exit icon-container">Exit <i class="fas fa-sign-out-alt"></i></div>
+                        <div class="file-title" title="filename"><span>filename:&nbsp;</span><input id="filename" value="" disabled maxlength="10"></input></div>
+                    <div class="room-title" title="roomname" maxlength="10"><span id="roomname"></span></div>
+                    <div id="exit" class="exit icon-container"><span>Exit</span> <i class="fas fa-sign-out-alt"></i></div>
                 </div>
                 <div class="editor-toolbox">
                     <div class="toolbox-menu">
-                        <button id="export" class="toolbox-export tool icon-container"><i class="fas fa-file-export"></i>&nbsp;Export</button>
-                        <div class="tool icon-container"><i class="fas fa-edit"></i><input id="bpm" class="bpm-edit" disabled></input><span>Bpm</span></div>
-                        <div id="invite" class="toolbox-invite tool icon-container"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp;Invite</div>
+                        <button id="export" title="Export Midi File" class="toolbox-export tool icon-container"><i class="fas fa-file-export"></i>&nbsp;<span>Export</span></button>
+                        <div class="tool icon-container" title="Change Song's Bpm"><i class="fas fa-edit"></i><input id="bpm" type="number" min="60" max="200" class="bpm-edit" disabled></input><span>Bpm</span></div>
+                        <div id="invite" title="Invite Freinds with URL" class="toolbox-invite tool icon-container"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp;<span>Invite</span></div>
                     </div>
                 </div>
             </header>
             <section class="editor-body">
                 <div class="tracks-title">
                     <div class="tracks-control">
-                        <div id="addTrack" class="add-track icon-container"><i class="fas fa-plus-square fa-lg"></i></div>
-                        <div id="deleteTrack" class="delete-track icon-container"><i class="fas fa-trash-alt fa-lg"></i></div>
+                        <div id="addTrack" title="Add Track" class="add-track icon-container"><i class="fas fa-plus-square fa-lg"></i></div>
+                        <div id="deleteTrack" title="Remove Track" class="delete-track icon-container"><i class="fas fa-trash-alt fa-lg"></i></div>
                     </div>
                     <div id="tracksContent" class="tracks-content">
                     </div>
@@ -69,7 +70,7 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                <div class="midi-toolbox"><i class="fas fa-border-all icon"></i>
+                <div class="midi-toolbox"><i class="fa fa-columns icon" aria-hidden="true"></i>
                     <div class="border"></div>
                     <div class="note-grid midi-tool" value="0.0625">
                         <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
@@ -111,6 +112,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="panelCancel" class="icon-container cancel"><i class="fa fa-times fa-lg" aria-hidden="true"></i></div>
             </header>
             <div class="panel-content">
                 <div class="keys-and-grid">
@@ -124,12 +126,12 @@
             </div>
         </section>
         <footer class="editor-footer">
-            <div id="midiPanelButton" class="midi-panel-button control-button icon-container"><i class="fas fa-edit"></i>&nbsp;Midi Editor</div>
+            <div id="midiPanelButton" class="midi-panel-button control-button icon-container"><i class="fas fa-edit"></i>&nbsp;<span>Midi Editor</span></div>
             <div class="footer-midi-control">
-                <div id="resetButton" class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>
-                <div id="playButton" class="play-button control-button icon-container"><i class="fas fa-play"></i></div>
-                <div id="stopButton" class="stop-button control-button icon-container"><i class="fas fa-stop"></i></div>
-                <div id="loopButton" class="stop-button control-button icon-container"><i class="fa fa-retweet" aria-hidden="true"></i></div>
+                <div id="resetButton" title="Reset to Loop Interval Start" class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>
+                <div id="playButton" title="start/pause" class="play-button control-button icon-container"><i class="fas fa-play"></i></div>
+                <div id="stopButton" title="stop" class="stop-button control-button icon-container"><i class="fas fa-stop"></i></div>
+                <div id="loopButton" title="Looping Interval By Red Bar" class="stop-button control-button icon-container"><i class="fa fa-retweet" aria-hidden="true"></i></div>
             </div>
             <div id="chatButton" class="chat-button control-button icon-container"><i class="far fa-comments"></i></div>
         </footer>

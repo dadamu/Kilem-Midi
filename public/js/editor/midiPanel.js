@@ -5,6 +5,7 @@ app.midiPanelListen = () => {
     app.clickKeysListen();
     app.midiPlayheadDragListen();
     app.regionPlayheadDragListen();
+    app.panelCancelListen();
 };
 
 app.openMidiPanelListen = () => {
@@ -36,20 +37,19 @@ app.openMidiPanel = () => {
         app.isMidiEditorOpen = true;
         app.setCurrentPlayhead(app.currentTime);
     }
-    else {
-        $("#midiPanel").addClass("hidden");
-        $("#midiPanelButton").css("background", "inherit");
-        app.isMidiEditorOpen = false;
-    }
 };
 
 app.activeKeyRender = (instrument) => {
     const curr = app.instruments[instrument];
     $(".key.inactive").removeClass("inactive");
-    const activeKeys = $(".key").filter(function(){
+    const activeKeys = $(".key").filter(function () {
         return $(this).attr("pitch") < curr.minPitch || $(this).attr("pitch") > curr.maxPitch;
     });
     activeKeys.addClass("inactive");
+    const y = app.pitchHeight * ( app.keysNum + 25 - curr.maxPitch );
+    $("#midiPanel .keys-and-grid").animate({
+        scrollTop: y
+    }, 0);
 };
 
 app.regionPlayheadDragListen = () => {
@@ -94,11 +94,11 @@ app.midiPlayheadDragListen = () => {
         drag: (evt, ui) => {
             const max = app.gridsInterval * app.musicLength;
             let curr = ui.position.left + this.initialX;
-            if (curr < 0){
+            if (curr < 0) {
                 curr = 0;
                 return;
             }
-            if (curr > max){
+            if (curr > max) {
                 curr = max;
                 return;
             }
@@ -139,6 +139,14 @@ app.clickKeysListen = () => {
         const pitch = $(target).attr("pitch");
         app.playNote(instrument, pitch);
         return;
+    });
+};
+
+app.panelCancelListen = () => {
+    $("#panelCancel").click(() => {
+        $("#midiPanel").addClass("hidden");
+        $("#midiPanelButton").css("background", "inherit");
+        app.isMidiEditorOpen = false;
     });
 };
 

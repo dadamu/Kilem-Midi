@@ -1,4 +1,4 @@
-/* global app MidiFile $ Swal*/
+/* global app MidiFile $*/
 
 app.loadListen = () => {
     app.saveFileListen();
@@ -18,6 +18,7 @@ app.loadFile = async () => {
 
 app.setFile = async () => {
     const music = await app.loadFile();
+    app.roomname = music.roomname;
     app.filename = music.filename;
     app.creator = music.creator;
     app.music = new MidiFile(music.bpm, music.tracks);
@@ -34,14 +35,12 @@ app.exportFileListen = () => {
     $("#export").click(() => {
         const file = app.music.export();
         const downloadUrl = URL.createObjectURL(file);
-        const a = $("<a></a>").attr("href", downloadUrl).addClass("download").attr("download", app.filename);
-        const span = $("<span></span>").text("download");
-        a.append(span);
-        Swal.fire({
-            icon: "success",
-            title: "Exported",
-            footer: a
-        });
+        const a = document.createElement("a");
+        $(a).attr("href", downloadUrl).attr("download", app.filename);
+        $("body").append(a);
+        a.click();
+        $(a).remove();
+        app.successShow("Export Success");
     });
 };
 

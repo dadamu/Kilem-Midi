@@ -10,7 +10,7 @@ module.exports = {
     getFile: async (roomId, userId) => {
         const selectUser = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const selectMaster = await knex("room AS r")
-            .select(["r.bpm AS bpm", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
+            .select(["r.bpm AS bpm", "r.name AS roomname", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
                 "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
             .leftJoin("track AS t", "t.room_id", "r.id")
@@ -94,6 +94,7 @@ function merge(user, master) {
 
 function getMasterData(data) {
     const result = {};
+    result.roomname = data[0].roomname;
     result.bpm = data[0].bpm;
     result.filename = data[0].filename;
     result.creator = {

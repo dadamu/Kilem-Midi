@@ -15,15 +15,13 @@ app.controlListen = () => {
 
 app.iconParentHoverListen = () => {
     $("body").on("mouseenter", ".icon-container", function () {
-        $(this).find("i").addClass("hover");
+        $(this).children().addClass("hover");
     });
 
     $("body").on("mouseleave", ".icon-container", function () {
-        $("i").parent().mouseleave(function () {
-            $(this).find("i").removeClass("hover");
-        });
+        $(this).children().removeClass("hover");
     });
-   
+
 };
 
 app.exitListen = () => {
@@ -171,6 +169,13 @@ app.filenameRender = () => {
     }
 };
 
+app.roomnameRender = () => {
+    $("#roomname").text(app.roomname);
+    if (app.creator.id === app.userId) {
+        $("#roomname").removeAttr("disabled");
+    }
+};
+
 app.filenameChangeListen = () => {
     $("#filename").change(async function () {
         const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, {
@@ -185,6 +190,7 @@ app.filenameChangeListen = () => {
         app.filename = $(this).val();
     });
 };
+
 
 app.bpmChangeListen = () => {
     $("#bpm").change(async function () {
@@ -244,32 +250,33 @@ app.setLoopHeadDrag = (div) => {
         drag: (evt) => {
             let curr = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
             const resolution = app.regionInterval / 4;
-            let width;
+            this.width;
             if (curr <= 0) {
                 curr = 0;
             }
             let widthChange = this.start - curr;
             curr = Math.round(curr / resolution) * resolution;
             if (Math.abs(widthChange) >= resolution) {
-                width = Math.round(widthChange / resolution) * resolution + this.oWidth;
+                this.width = Math.round(widthChange / resolution) * resolution + this.oWidth;
             }
             else if (curr === 0) {
-                width = this.oWidth;
+                this.width = this.oWidth;
             }
             else {
-                width = resolution + this.oWidth;
+                this.width = resolution + this.oWidth;
             }
 
             if (curr > this.start + this.oWidth - resolution) {
                 $("#loopControl").width(resolution);
                 return;
             }
-            $("#loopControl").width(width);
+            $("#loopControl").width(this.width);
             $("#loopControl").css("left", curr);
         },
         stop: (evt) => {
             $(evt.target).css("left", 0).css("top", 0);
             let start = $("#loopControl").css("left");
+            $("#loopControl .tail").css("left", parseInt(this.width) - 10).css("top", 0);
             start = start.replace("px", "");
             app.loopstart = app.posToTime(start, app.regionInterval);
         }
@@ -300,6 +307,7 @@ app.setLoopTailDrag = (div) => {
         },
         stop: (evt) => {
             $(evt.target).css("left", parseInt(this.width) - 10).css("top", 0);
+            $("#loopControl head").css("left", 0). css("top", 0);
             let start = $("#loopControl").css("left");
             start = parseFloat(start.replace("px", ""));
             const end = start + this.width;
@@ -323,30 +331,32 @@ app.loopControlListen = () => {
 
     $("#rulerGirds").mousedown(function (evt) {
         $("#loopControl").remove();
-        const target = evt.target;
-        const dim = target.getBoundingClientRect();
-        const x = evt.clientX - dim.left;
-        const start = Math.round(x / (app.regionInterval / 4)) * (app.regionInterval / 4);
-        const newLoop = $("<div></div>").attr("id", "loopControl").addClass("loop-control").css("left", start).height("100%");
+        const x = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
+        const resolution = app.regionInterval / 4;
+        const start = Math.round(x / resolution) * resolution;
+        const newLoop = $("<div></div>").attr("id", "loopControl").addClass("loop-control").css("left", start).height("100%").width(resolution);
         if (!app.islooping) {
             newLoop.addClass("inactive");
         }
         $("#rulerControl").append(newLoop);
 
-        $("#rulerGirds").bind("mousemove", function (evt) {
-            const target = evt.target;
-            const dim = target.getBoundingClientRect();
-            const x = evt.clientX - dim.left;
-            const current = Math.round(x / (app.regionInterval / 4)) * (app.regionInterval / 4);
+        $("#tracksRegion").bind("mousemove", function (evt) {
+            const x = evt.pageX + $("#tracksRegion").scrollLeft() - $("#tracksRegion").offset().left;
+            const resolution = app.regionInterval / 4;
+            const current = Math.round(x / resolution) * resolution;
+            let width = Math.abs(current - start);
+            if(Math.abs(current - start) < resolution){
+                width = resolution;
+            }
             if (current - start < 0) {
-                $("#loopControl").width(start - current).css("left", current);
+                $("#loopControl").width(width).css("left", current);
                 return;
             }
-            $("#loopControl").width(current - start).css("left", start);
+            $("#loopControl").width(width).css("left", start);
         });
     });
     $("body").mouseup(function () {
-        $("#rulerGirds").unbind("mousemove");
+        $("#tracksRegion").unbind("mousemove");
         if ($("#loopControl").children().length > 0)
             return;
 
@@ -384,6 +394,7 @@ app.inviteButtonListen = () => {
 app.initControlRender = () => {
     app.bpmRender();
     app.filenameRender();
+    app.roomnameRender();
     app.controlRulerRender();
     app.controlLoopRender();
 };

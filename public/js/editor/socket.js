@@ -64,6 +64,9 @@ app.ioListen = async () => {
     app.on("chat", (data) => {
         const { chat } = data;
         app.chatRender(chat);
+        if ($("#chatRoom").hasClass("hidden")) {
+            $("#chatButton").addClass("notify");
+        }
     });
 
     app.on("createNote", (data) => {

@@ -45,32 +45,53 @@ body{
 }
 
 .editor-header{
-    padding: 10px 0;
+    padding: 5px 0;
     background-color: #333940;
     border-bottom: #888888 solid 1px; 
 }
 
 .editor-title{
-    display: flex;
     position: relative;
     padding : 5px 10px;
+    display: flex;
+    align-items: center;
 }
 
+
+.room-title{
+    margin-left: 30%;
+}
+
+.room-title span{
+    display: inline-block;
+    border: 1px #AAA solid;
+    border-radius: 2px;
+    text-align: center;
+    width: 200px;
+    padding: 5px;
+    cursor: pointer;
+    background: inherit;
+    color: inherit;
+}
+
+
 .file-title{
+   margin-left: 15px;
+   font-size: 0.9em;
+}
+
+.file-title input{
+    border: none;
+    width: 100px;
+    padding: 5px;
     cursor: text;
     background: inherit;
     color: inherit;
-    border: none;
-    position: absolute;
-    text-align: center;
-    width: 300px;
-    padding: 5px;
-    left: calc( 50% - 100px);
 }
 
 .exit{
-    margin-left: auto;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .editor-toolbox{
@@ -175,10 +196,9 @@ button.tool{
     outline: none;
     color: inherit;
     background: inherit;
-    width: 2.2em;
+    width: 3.1em;
     margin: 0 3px;
     padding-left: 5px;
-    padding-right: 5px;
 }
 
 .loop-control{

@@ -46,8 +46,13 @@
 
 .track-name{
     color: inherit;
+    text-align: center;
     background: inherit;
     border: none;
+    padding-right: 10px;
+    padding-left: 10px;
+    width: 7em;
+    margin-right: 20px;
 }
 
 .lock-icon{
@@ -55,9 +60,7 @@
     cursor: pointer;
 }
 
-.track-name:focus{
-    outline: none;
-}
+
 
 .track-name.editable:focus{
     background: #333940;
@@ -75,10 +78,18 @@
 .version-control{
     display: flex;
     margin-top: auto;
+    padding: 5px 20px;
 }
 
 .version-select{
     flex:auto;
+    padding-left: 20px;
+    margin-right: 5px;
+}
+
+
+.version-commit{
+    width: 70px;
 }
 
 .region{
@@ -100,4 +111,19 @@
     background-color: #FFFFFF; 
     border-right: #000000 solid 1px;
     border-left: #000000 solid 1px;
+}
+
+.instrument{   
+    height: 100%;
+}
+
+img.icon{
+    height: 100%;
+    margin-right: 5px;
+}
+
+.instrument-selector{
+    display: inline-block;
+    height: 100%;
+    text-indent: 2px;
 }

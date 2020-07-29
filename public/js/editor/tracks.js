@@ -45,15 +45,15 @@ app.lockerRender = (locker) => {
     const iconDiv = $("<span></span>").addClass("lock-icon").addClass("icon-container");
     if (locker) {
         if (!locker.id) {
-            $(iconDiv).html("<i class='fas fa-lock-open'></i>");
+            $(iconDiv).html("<i class='fas fa-lock-open'></i>").attr("title", locker.name);
             lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {
-            $(iconDiv).html("<i class='fas fa-key'></i>");
+            $(iconDiv).html("<i class='fas fa-key'></i>").css("color", "yellow").attr("title", locker.name);
             lockDiv.append(iconDiv);
         }
         else {
-            const lockerDiv = $("<span></span>").addClass("locker-name").text(" : " + locker.name);
+            const lockerDiv = $("<span></span>").addClass("locker-name");
             $(iconDiv).html("<i class='fas fa-lock'></i>");
             lockDiv.append(iconDiv, lockerDiv);
         }
@@ -78,13 +78,16 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
     const trackDiv = $("<div></div>").addClass(`track track-${trackId}`).attr("trackId", trackId).attr("version", version);
     const infoDiv = $("<div></div>").addClass("track-info");
     const trackNameDiv = $("<input></input>").addClass("track-name").val(trackName).attr("disabled", true);
+    const instrumentDiv = $("<div></div>").addClass("instrument");
     const instrumentSelect = $("<select></select>").addClass("instrument-selector");
     const pianoOption = $("<option>Piano</option>").val("piano");
     const guitarOption = $("<option>Guitar</option>").val("guitar");
     const bassOption = $("<option>Bass</option>").val("bass");
     const drumsOption = $("<option>Drums</option>").val("drums");
+    const icon = $("<img></img>").attr("src", "/public/img/toolbox/piano.svg").addClass("icon");
     $(instrumentSelect).append(pianoOption, guitarOption, bassOption, drumsOption).val(instrument);
-    infoDiv.append(trackNameDiv, instrumentSelect);
+    $(instrumentDiv).append(icon, instrumentSelect);
+    infoDiv.append(trackNameDiv, instrumentDiv);
 
     const versionControl = app.trackVersionRender(trackId);
     const track = app.music.getTrack(trackId);

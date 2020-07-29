@@ -73,7 +73,4 @@ app.chatRender = (chat) => {
         container.append(msgDiv);
         container.animate({ scrollTop: container.prop("scrollHeight") }, 0);
     }
-    if ($("#chatRoom").hasClass("hidden")) {
-        $("#chatButton").addClass("notify");
-    }
 };
