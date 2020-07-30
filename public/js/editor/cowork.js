@@ -123,6 +123,7 @@ app.lockClickListen = () => {
             app.errorShow(res.error);
             return;
         }
+        app.successShow("Lock Changed");
     });
 };
 
