@@ -33,8 +33,8 @@ app.UIListen = () => {
 };
 
 app.createRoomListen = () => {
-    $(document).on("change").on("change", ".swal2-checkbox input[type='checkbox']", function(){
-        if(this.checked){
+    $(document).on("change").on("change", ".swal2-checkbox input[type='checkbox']", function () {
+        if (this.checked) {
             $("#createPassword").removeClass("hidden");
             return;
         }
@@ -320,18 +320,39 @@ app.editRoomListen = () => {
             app.errorShow(res.error);
         }
         app.successShow("Edited");
-        const newRoom = app.roomTempGen({
+        const newMy = app.roomTempGen({
             id,
             filename,
             name,
             username,
             intro
         });
-        $(this).closest(".room").replaceWith(newRoom);
+        const $newMy = $(newMy);
+        const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
+        const deleteButton = $("<button></button>").addClass("button").addClass("delete").text("delete");
+        $newMy.find(".control").append(enterButton, deleteButton);
+        $(this).closest(".room").replaceWith($newMy);
+        const $oldPublic = $("#publicRooms").find(`div#${id}`);
+        if($oldPublic.length === 1){
+            const newPublic = app.roomTempGen({
+                id,
+                filename,
+                name,
+                username,
+                intro
+            });
+            const $newPublic = $(newPublic);
+            const joinButton = $("<button></button>").addClass("button").addClass("join").text("join");
+            $newPublic.find(".control").append(joinButton);
+            $oldPublic.replaceWith($newPublic);
+        }
     });
 };
 
 app.roomTempGen = (room) => {
+    if(!room.intro){
+        room.intro = "none";
+    }
     return `<div id="${room.id}" class="room is-collapsed">
         <div class="room__inner js-expander">
             <i class="fa fa-folder-o"></i>

@@ -18,8 +18,8 @@ body{
 }
 
 .container{
-    padding-right: 1em;
-    padding-left: 1em; 
+    padding-right: 2em;
+    padding-left: 2em; 
     width: 90%;
     margin: 0 auto;
     max-width: 1200px;

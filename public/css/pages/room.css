@@ -41,12 +41,28 @@ a{
 }
 
 .search{
-    margin-left: 15px; 
+    position: relative;
+    width: 15%;
+}
+.search input{
+    width:100%;
+    padding-left : 25px;
+    padding-top : 5px;
+    padding-bottom : 5px;
+    font-size: 0.9em;
 }
 
 .rooms-head{
-    display: flex;
     align-items: center;
+    border-bottom: 1px #AAAAAA solid;
+    padding-top: 20px;
+    padding-bottom: 30px;
+}
+
+.rooms-head i{
+    position: absolute;
+    top: calc(50% - 10px);
+    left: 7px;
 }
 
 .room {
@@ -241,22 +257,37 @@ footer{
     position: absolute;
     justify-content: center;
     left: 0;
-    top: 50px;
+    top: 100px;
     height: 30px;
 }
 
 .previous{
+    padding: 10px;
     position: absolute;
     left: 15px;
-    top: 60px;
+    top: 0;
     z-index: 5;
+    border: 1.5px #AAAAAA solid;
+    cursor: pointer;
+    background: inherit;
+    outline: none;
 }
 
 .next{
+    padding: 10px;
     position: absolute;
     right: 15px;
-    top: 60px;
+    top: 0; 
     z-index: 5;
+    border: 1.5px #AAAAAA solid;
+    cursor: pointer;
+    background: inherit;
+    outline: none;
+}
+
+.next:hover, .previous:hover{
+    border: 1.5px #00A15C solid;
+    border-radius: 2px;
 }
 
 .hidden{
