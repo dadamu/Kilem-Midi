@@ -26,7 +26,11 @@ body{
 }
 
 .main-footer{
-    height: 300px;   
+    display: flex;
+    justify-content: center;
+    color: white;
+    background: #37393A;
+    padding:20px;   
 }
 
 .main-content{

@@ -257,12 +257,7 @@ a{
     transform: scale(1);
 }
 
-footer{
-    margin-top: auto;
-    height: 300px;
-    padding: 20px 0;
-    background: #333a45;
-}
+
 
 .paging{
     width: 100%;
