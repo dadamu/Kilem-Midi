@@ -53,6 +53,11 @@ app.notSelectListen = () => {
 app.noteDeleteListen = () => {
     $("#grids").on("dblclick", ".note", async function () {
         const trackId = $("#midiPanel").attr("trackId");
+
+        if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
+            app.failedByLock();
+            return;
+        }
         const posX = $(this).attr("posX");
         const pitch = $(this).attr("pitch");
         const note = { posX, pitch };
@@ -136,7 +141,7 @@ app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
         const trackId = parseInt($("#midiPanel").attr("trackId"));
         if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
-            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
+            app.failedByLock();
             return;
         }
         const target = evt.target;

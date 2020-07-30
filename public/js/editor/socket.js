@@ -66,6 +66,9 @@ app.ioListen = async () => {
         else {
             $(`.track.track-${track.id} .track-name`).removeClass("editable");
         }
+        if (parseInt($("#midiPanel").attr("trackId")) === parseInt(track.id)) {
+            app.panelLoadTrack(track.id);
+        }
         app.saveFile();
     });
 
@@ -100,6 +103,9 @@ app.ioListen = async () => {
         const { track } = data;
         app.music.tracks[track.id].instrument = track.instrument;
         $(`.track.track-${track.id} .instrument-selector`).val(track.instrument);
+        if (parseInt($("#midiPanel").attr("trackId")) === parseInt(track.id)) {
+            app.activeKeyRender(app.music.tracks[track.id].instrument);
+        }
     });
 
     app.on("filenameChange", (data) => {

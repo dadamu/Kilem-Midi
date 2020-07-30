@@ -48,7 +48,7 @@ app.versionChangeListen = () => {
             return;
         }
         app.music.setNotes(result.trackId, result.notes);
-        if (parseInt($(".track.selected").attr("trackId")) === parseInt(result.trackId)) {
+        if (parseInt($("#midiPanel").attr("trackId")) === parseInt(result.trackId)) {
             app.panelLoadTrack(result.trackId);
         }
         app.loadRegionNotesRender(result.trackId);

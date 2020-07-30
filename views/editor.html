@@ -83,6 +83,27 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
+                    <div class="midi-toolbox"><i data-title='Note Length' class="fas fa-ruler-horizontal icon"></i>
+                        <div class="border"></div>
+                        <div class="note-length midi-tool icon-container" value="0.0625">
+                            <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
+                        </div>
+                        <div class="note-length midi-tool icon-container selected" value="0.125">
+                            <img src="/public/img/toolbox/eighth-note.svg" class="note-icon"></img>
+                        </div>
+                        <div class="note-length midi-tool icon-container" value="0.25">
+                            <img src="/public/img/toolbox/quarter-note.svg" class="note-icon"></img>
+                        </div>
+                        <div class="note-length midi-tool" value="0.5">
+                            <img src="/public/img/toolbox/half-note.svg" class="note-icon"></img>
+                        </div>
+                        <div class="note-length midi-tool icon-container" value="1">
+                            <div style="height: 50%; width:100%"></div>
+                            <div style="height: 35%; width:100%">
+                                <img src="/public/img/toolbox/whole-note.svg" class="note-icon"></img>
+                            </div>
+                        </div>
+                    </div>
                 <div class="midi-toolbox"><i class="fa fa-columns icon" data-title='Note align grid'
                         aria-hidden="true"></i>
                     <div class="border"></div>
@@ -105,27 +126,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="midi-toolbox"><i data-title='Note Length' class="fas fa-ruler-horizontal icon"></i>
-                    <div class="border"></div>
-                    <div class="note-length midi-tool icon-container" value="0.0625">
-                        <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
-                    </div>
-                    <div class="note-length midi-tool icon-container selected" value="0.125">
-                        <img src="/public/img/toolbox/eighth-note.svg" class="note-icon"></img>
-                    </div>
-                    <div class="note-length midi-tool icon-container" value="0.25">
-                        <img src="/public/img/toolbox/quarter-note.svg" class="note-icon"></img>
-                    </div>
-                    <div class="note-length midi-tool" value="0.5">
-                        <img src="/public/img/toolbox/half-note.svg" class="note-icon"></img>
-                    </div>
-                    <div class="note-length midi-tool icon-container" value="1">
-                        <div style="height: 50%; width:100%"></div>
-                        <div style="height: 35%; width:100%">
-                            <img src="/public/img/toolbox/whole-note.svg" class="note-icon"></img>
-                        </div>
-                    </div>
-                </div>
+                
                 <div id="panelCancel" class="icon-container cancel"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
                 </div>
             </header>
