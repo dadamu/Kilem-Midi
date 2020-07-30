@@ -36,7 +36,7 @@ class MidiFile {
         this.setNotes(id, track.notes);
         this.tracks[id].setCommiter(track.commiter);
         this.tracks[id].addVersion(track.version);
-        this.tracks[id].setVersion(track.version);
+        this.tracks[id].setVersion(track.version.version);
     }
 
     setNotes(trackId, notes) {
