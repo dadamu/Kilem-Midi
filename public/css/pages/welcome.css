@@ -1,12 +1,21 @@
+.top-nav{
+    background: none;
+}
+
 .wrapper{
     color: #FFFFFF;
-    background-color: #37393A;
+    background-color: #37393A; 
 }
 
 .main-header{
-    min-height: 100vh;
+    position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    height: 100%;
+    background-image: url("/public//img/page/homepage.jfif");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .header-nav{

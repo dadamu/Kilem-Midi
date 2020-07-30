@@ -13,6 +13,8 @@ a{
     max-height: 700px;
     background-color: #37393A;
     min-height: 250px;
+    display: flex;
+    align-items: center;
 }
 
 .header-content{
@@ -292,4 +294,13 @@ footer{
 
 .hidden{
     display: none;
+}
+
+.rooms:last-child{
+    margin-bottom: 50px;
+}
+
+.start{
+    padding: 10px 20px;
+    font-size: 1.2em;
 }

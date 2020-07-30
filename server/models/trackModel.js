@@ -74,7 +74,7 @@ module.exports = {
             }
             if (newNotes === oldNotes) {
                 await trx.rollback();
-                return new Error("No Change");
+                return new Error("No change from latest version");
             }
 
             const newVersion = version + 1;
