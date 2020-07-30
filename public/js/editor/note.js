@@ -232,6 +232,10 @@ app.setNoteEditWidth = (tailDiv) => {
             const { left } = ui.position;
             const resolution = app.gridsInterval * app.noteGrid;
             const change = parseInt(Math.round((left + 5) / resolution)) * resolution;
+            if(change <= 0){
+                $(evt.target).parent().width(resolution);
+                return;
+            }
             $(evt.target).parent().width(change);
         },
         stop: (evt) => {
