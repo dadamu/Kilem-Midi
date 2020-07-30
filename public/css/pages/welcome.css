@@ -13,7 +13,7 @@
     flex-direction: column;
     min-height: 100vh;
     height: 100%;
-    background-image: url("/public//img/page/homepage.jfif");
+    background-image: url("/public/img/page/homepage.png");
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -34,6 +34,7 @@
 }
 
 .primary{
+    -webkit-text-stroke: 1px black;
     display:flex;
     align-items: center;
     justify-content: center;
