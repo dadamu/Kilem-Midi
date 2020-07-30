@@ -46,15 +46,15 @@ app.createRoomListen = () => {
             title: "Create Room",
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='10' autocomplete='off'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='10' autocomplete='off'></input>
+                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='15' autocomplete='off'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='15' autocomplete='off'></input>
                 <label for='swal2-checkbox' class='swal2-checkbox' style='display: flex;justify-content:flex-start;'>
                     <input type='checkbox'  style='margin-left: 0;'></input>
                     <span class='swal2-label'>isPrivate</span>
                 </label>
                 <div id='createPassword' class='hidden'>
                     <label>password</label>
-                    <input type='password' id='password' class='swal2-input' maxlength='10' autocomplete='off'></input>
+                    <input type='password' id='password' class='swal2-input' maxlength='15' autocomplete='off'></input>
                 </div>
                 <label>intro</label><textarea id='intro' class='swal2-textarea'></textarea>`,
             showCancelButton: true,
@@ -296,8 +296,8 @@ app.editRoomListen = () => {
             title: "Edit Room Info",
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='10' value='${name}'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='10' value='${filename}'></input>
+                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='15' value='${name}'></input>
+                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='15' value='${filename}'></input>
                 <label>intro</label><textarea id='intro' style='resize: none;' class='swal2-textarea' wrap="hard" cols='10'>${intro.split("<br>").join("\n")}</textarea>`,
             showCancelButton: true,
             confirmButtonText: "Edit",
