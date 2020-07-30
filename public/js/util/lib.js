@@ -40,10 +40,22 @@ app.errorShow = (text) => {
     });
 };
 
+app.failedByLock = () => {
+    Swal.fire({
+        title: "Failed",
+        icon: "error",
+        html: `
+            <br>
+            <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
+            <div style='padding-left:20px; margin-top: 20px;'>You only can edit yourself's track, Check Track status first.</div>
+            `
+    });
+};
+
 app.successShow = (text) => {
     const Toast = Swal.mixin({
         toast: true,
-        position: "top-end",
+        position: "top",
         showConfirmButton: false,
         timer: 1000,
         timerProgressBar: true,

@@ -63,11 +63,11 @@
 
 
 .track-name.editable:focus{
-    background: #333940;
+    background: #565656;
 }
 
 .track-name.editable:hover{
-    background: #333940;
+    background: #565656;
 }
 
 .track-info{

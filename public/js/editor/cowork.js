@@ -27,22 +27,14 @@ app.clickCommitListen = () => {
             return;
         const res = swal.value; 
         if (res.error === "It's not your locked track") {
-            Swal.fire({
-                title: "Failed",
-                icon: "error",
-                html: `
-                    <br>
-                    <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
-                    <div style='padding-left:20px; margin-top: 20px;'>You only can edit yourself's track, Check Track status first.</div>
-                    `
-            });
+            app.failedByLock();
             return;
         }
         if (res.error) {
             app.errorShow(res.error);
             return;
         }
-        app.successShow("Save Success");
+        app.successShow("Saved");
     });
 };
 
@@ -60,7 +52,7 @@ app.versionChangeListen = () => {
             app.panelLoadTrack(result.trackId);
         }
         app.loadRegionNotesRender(result.trackId);
-        app.successShow("Version Change Success");
+        app.successShow("Version changed");
     });
 };
 
@@ -70,7 +62,7 @@ app.addTrack = async () => {
             roomId: app.roomId,
             userId: app.userId
         }, "POST");
-        app.successShow("Add Track Success");
+        app.successShow("Track added");
     }
     catch (e) {
         app.errorShow(e.message);
@@ -96,7 +88,7 @@ app.deleteTrackListen = () => {
             app.errorShow(res.error);
             return;
         }
-        app.successShow("Remove Track Success");
+        app.successShow("Track removed");
     });
 };
 
@@ -124,15 +116,7 @@ app.lockClickListen = () => {
 
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
         if (res.error === "It's not your locked track") {
-            Swal.fire({
-                title: "Failed",
-                icon: "error",
-                html: `
-                    <br>
-                    <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
-                    <div style='padding-left:20px; margin-top: 20px;'>You only can Edit yourself's track, Check Track status first.</div>
-                    `
-            });
+            app.failedByLock();
             return;
         }
         if (res.error) {
@@ -154,6 +138,11 @@ app.changeInstrumentListen = () => {
             instrument
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
+        if(res.error === "It's not your locked track" ){
+            app.failedByLock();
+            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
+            return;
+        }
         if (res.error) {
             app.errorShow(res.error);
             $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);

@@ -1,0 +1,25 @@
+[data-title]:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+}
+[data-title]:after {
+    content: attr(data-title);
+    font-weight: 100;
+    background-color: #FFF;
+    color: #000;
+    font-size: 0.8em;
+    position: absolute;
+    padding: 5px;
+    top: 50%;
+    left: 70%;
+    white-space: nowrap;
+    opacity: 0;
+    border: none;
+    z-index: 99999;
+    visibility: hidden;
+}
+
+[data-title] {
+    position: relative;
+}

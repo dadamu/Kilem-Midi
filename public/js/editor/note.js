@@ -1,4 +1,4 @@
-/* global $ app Note Swal */
+/* global $ app Note */
 app.noteOutTrack = (trackId, note) => {
     app.music.tracks[trackId].deleteNote(new Note(note.pitch, note.posX, 1));
 };
@@ -136,15 +136,7 @@ app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
         const trackId = parseInt($("#midiPanel").attr("trackId"));
         if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
-            Swal.fire({
-                title: "Failed",
-                icon: "error",
-                html: `
-                    <br>
-                    <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
-                    <div style='padding-left:20px; margin-top: 20px;'>You only can Edit yourself's track, Check Track status first.</div>
-                    `
-            });
+            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
             return;
         }
         const target = evt.target;

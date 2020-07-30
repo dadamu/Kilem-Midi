@@ -50,12 +50,12 @@ app.lockerRender = (locker) => {
             lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {
-            $(iconDiv).html("<i class='fas fa-key'></i>").css("color", "yellow").attr("title", "mine");
+            $(iconDiv).html("<i class='fas fa-key'></i>").css("color", "yellow").attr("data-title", "mine");
             lockDiv.append(iconDiv);
         }
         else {
             const lockerDiv = $("<span></span>").addClass("locker-name");
-            $(iconDiv).html("<i class='fas fa-lock'></i>").attr("title", locker.name);
+            $(iconDiv).html("<i class='fas fa-lock'></i>").attr("data-title", locker.name);
             lockDiv.append(iconDiv, lockerDiv);
         }
     }
@@ -182,7 +182,7 @@ app.trackNameChangeListen = () => {
             return;
         }
         app.music.tracks[trackId].name = newName;
-        app.successShow("Change Trackname Success");
+        app.successShow("Trackname changed");
     });
 };
 

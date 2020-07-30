@@ -8,6 +8,7 @@
     <script src="/public/js/util/jquery-min-3.5.1.js"></script>
     <script src="/public/js/util/jquery-min-ui-1.11.4.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+
     <link rel="shortcut icon" href="/public/logo/logo.png" type="image/x-icon">
     <link href="/public/css/util/normalize.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/editor.css" rel="stylesheet" type="text/css">
@@ -16,6 +17,7 @@
     <link href="/public/css/editor/chat.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/status.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/public/css/util/sweet-alert.css">
+    <link rel="stylesheet" href="/public/css/editor/tooltip.css">
     <script src="/public/js/util/sweet-alert.js"></script>
     <script src="/public/js/util/tonejs-midi.js"></script>
     <script src="/public/js/util/fontawesome.js" crossorigin="anonymous"></script>
@@ -27,23 +29,32 @@
         <div class="editor">
             <header class="editor-header">
                 <div class="editor-title">
-                        <div class="file-title" title="filename"><span>filename:&nbsp;</span><input id="filename" value="" disabled maxlength="10"></input></div>
-                    <div class="room-title" title="roomname" maxlength="10"><span id="roomname"></span></div>
-                    <div id="exit" class="exit icon-container"><span>Exit</span> <i class="fas fa-sign-out-alt"></i></div>
+                    <div class="file-title"><span data-title="change filename">filename:&nbsp;</span><input
+                            id="filename" value="" disabled maxlength="10"></input></div>
+                    <div class="room-title" data-title="roomname" maxlength="10"><span id="roomname"></span></div>
+                    <div id="exit" data-title="exit" class="exit icon-container"><span>Exit</span> <i
+                            class="fas fa-sign-out-alt"></i></div>
                 </div>
                 <div class="editor-toolbox">
                     <div class="toolbox-menu">
-                        <button id="export" title="Export Midi File" class="toolbox-export tool icon-container"><i class="fas fa-file-export"></i>&nbsp;<span>Export</span></button>
-                        <div class="tool icon-container" title="Change Song's Bpm"><i class="fas fa-edit"></i><input id="bpm" type="number" min="60" max="200" class="bpm-edit" disabled></input><span>Bpm</span></div>
-                        <div id="invite" title="Invite Freinds with URL" class="toolbox-invite tool icon-container"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp;<span>Invite</span></div>
+                        <button id="export" data-title="Export midi file" class="toolbox-export tool icon-container"><i
+                                class="fas fa-file-export"></i>&nbsp;<span>Export</span></button>
+                        <div class="tool icon-container" data-title="Change song's bpm"><i
+                                class="fas fa-edit"></i><input id="bpm" type="number" min="60" max="200"
+                                class="bpm-edit" disabled></input><span>Bpm</span></div>
+                        <div id="invite" data-title="Invite freinds with URL"
+                            class="toolbox-invite tool icon-container"><i class="fa fa-clone"
+                                aria-hidden="true"></i>&nbsp;<span>Invite</span></div>
                     </div>
                 </div>
             </header>
             <section class="editor-body">
                 <div class="tracks-title">
                     <div class="tracks-control">
-                        <div id="addTrack" title="Add Track" class="add-track icon-container"><i class="fas fa-plus-square fa-lg"></i></div>
-                        <div id="deleteTrack" title="Remove Track" class="delete-track icon-container"><i class="fas fa-trash-alt fa-lg"></i></div>
+                        <div id="addTrack" data-title="Add track" class="add-track icon-container"><i
+                                class="fas fa-plus-square fa-lg"></i></div>
+                        <div id="deleteTrack" data-title="Remove track" class="delete-track icon-container"><i
+                                class="fas fa-trash-alt fa-lg"></i></div>
                     </div>
                     <div id="tracksContent" class="tracks-content">
                     </div>
@@ -72,7 +83,8 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                <div class="midi-toolbox"><i class="fa fa-columns icon" aria-hidden="true"></i>
+                <div class="midi-toolbox"><i class="fa fa-columns icon" data-title='Note align grid'
+                        aria-hidden="true"></i>
                     <div class="border"></div>
                     <div class="note-grid midi-tool" value="0.0625">
                         <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
@@ -93,7 +105,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="midi-toolbox"><i class="fas fa-ruler-horizontal icon"></i>
+                <div class="midi-toolbox"><i data-title='Note Length' class="fas fa-ruler-horizontal icon"></i>
                     <div class="border"></div>
                     <div class="note-length midi-tool icon-container" value="0.0625">
                         <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
@@ -114,7 +126,8 @@
                         </div>
                     </div>
                 </div>
-                <div id="panelCancel" class="icon-container cancel"><i class="fa fa-times fa-lg" aria-hidden="true"></i></div>
+                <div id="panelCancel" class="icon-container cancel"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
+                </div>
             </header>
             <div class="panel-content">
                 <div class="keys-and-grid">
@@ -128,14 +141,21 @@
             </div>
         </section>
         <footer class="editor-footer">
-            <div id="midiPanelButton" class="midi-panel-button control-button icon-container"><i class="fas fa-edit"></i>&nbsp;<span>Midi Editor</span></div>
+            <div id="midiPanelButton" class="midi-panel-button control-button icon-container"><i
+                    class="fas fa-edit"></i>&nbsp;<span>Midi Editor</span></div>
             <div class="footer-midi-control">
-                <div id="resetButton" title="Reset to Loop Interval Start" class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>
-                <div id="playButton" title="start/pause" class="play-button control-button icon-container"><i class="fas fa-play"></i></div>
-                <div id="stopButton" title="stop" class="stop-button control-button icon-container"><i class="fas fa-stop"></i></div>
-                <div id="loopButton" title="Looping Interval by Red Bar" class="stop-button control-button icon-container"><i class="fa fa-retweet" aria-hidden="true"></i></div>
+                <div id="resetButton" data-title="Reset to Loop Interval Start"
+                    class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>
+                <div id="playButton" data-title="start/pause" class="play-button control-button icon-container"><i
+                        class="fas fa-play"></i></div>
+                <div id="stopButton" data-title="stop" class="stop-button control-button icon-container"><i
+                        class="fas fa-stop"></i></div>
+                <div id="loopButton" data-title="Looping Interval by Red Bar"
+                    class="stop-button control-button icon-container"><i class="fa fa-retweet" aria-hidden="true"></i>
+                </div>
             </div>
-            <div id="chatButton" class="chat-button control-button icon-container"><i class="far fa-comments"></i></div>
+            <div id="chatButton" data-title="Chat" class="chat-button control-button icon-container"><i
+                    class="far fa-comments"></i></div>
         </footer>
         <section id="chatRoom" class="chatroom hidden">
             <div id="chatContainer" class="chat-container">
@@ -143,11 +163,16 @@
             </div>
             <div class="chat-input">
                 <textarea id="chatInput" class="chat-input-space" type="text"></textarea>
-                <button id="chatSend" class="chat-send-button icon-container"><i class="fas fa-paper-plane"></i></button>
+                <button data-title="Send" id="chatSend" class="chat-send-button icon-container"><i
+                        class="fas fa-paper-plane"></i></button>
             </div>
+        </section>
+        <section class="tooltip hidden">
+            <span></span>
         </section>
     </main>
 </body>
+
 <script src="/public/js/editor/Midi.js"></script>
 <script src="/public/js/editor/config.js"></script>
 <script src="/public/js/util/lib.js"></script>

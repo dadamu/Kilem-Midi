@@ -29,7 +29,7 @@ app.setFile = async () => {
 app.saveFileListen = () => {
     $("#save").click(() => {
         app.saveFile();
-        app.successShow("Save Success");
+        app.successShow("Saved");
     });
 };
 
@@ -42,7 +42,7 @@ app.exportFileListen = () => {
         $("body").append(a);
         a.click();
         $(a).remove();
-        app.successShow("Export Success");
+        app.successShow("Exported");
     });
 };
 
@@ -54,7 +54,7 @@ app.saveFile = async () => {
     data.data = app.music.tracks;
     const result = await app.fetchData(endpoint, data, "POST");
     if (result.error) {
-        app.errorShow("Save Error");
+        app.errorShow(result.error);
         return;
     }
 };

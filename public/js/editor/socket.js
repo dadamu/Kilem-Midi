@@ -20,7 +20,7 @@ app.ioListen = async () => {
         app.music.getTrack(id).setLocker(locker);
         app.addTrackRender(id, name);
         app.saveFile();
-        app.successShow("Track Render");
+        app.successShow("Track added");
     });
     app.on("commit", (data) => {
         const { track } = data;
@@ -31,6 +31,7 @@ app.ioListen = async () => {
         }
         app.loadRegionNotesRender(track.id);
         app.saveFile();
+        app.successShow("New version saved");
     });
     app.on("deleteTrack", (data) => {
         const { track } = data;
@@ -50,7 +51,7 @@ app.ioListen = async () => {
         if (app.isplaying) {
             clearInterval(app.playInterval);
             app.isplaying = false;
-            app.successShow("Track Render");
+            app.successShow("Track removed");
             $("#playButton").find("i").removeClass("fas fa-pause").addClass("fas fa-play");
         }
     });
@@ -118,7 +119,7 @@ app.ioListen = async () => {
             app.currentTime = app.currentTime * oldBpm / bpm;
             clearInterval(app.playInterval);
             app.isplaying = false;
-            app.successShow("Bpm Change");
+            app.successShow("Bpm changed");
             app.midiPlay();
         }
     });
