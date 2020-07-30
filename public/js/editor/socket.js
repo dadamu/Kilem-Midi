@@ -48,12 +48,7 @@ app.ioListen = async () => {
             $("#midiPanelButton").css("background", "inherit");
             app.isMidiEditorOpen = false;
         }
-        if (app.isplaying) {
-            clearInterval(app.playInterval);
-            app.isplaying = false;
-            app.successShow("Track removed");
-            $("#playButton").find("i").removeClass("fas fa-pause").addClass("fas fa-play");
-        }
+        
     });
 
     app.on("lock", (data) => {

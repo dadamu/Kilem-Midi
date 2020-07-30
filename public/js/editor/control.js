@@ -60,7 +60,7 @@ app.loopButtonListen = () => {
 app.midiPlay = () => {
     if (!app.isplaying) {
         const resolution = 60 / app.music.bpm / 16 * 1000;
-        const tracks = app.music.getTracks();
+        const tracks = app.music.tracks;
         app.isplaying = true;
         const maxTime = app.musicLength * 4 / (app.music.bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
