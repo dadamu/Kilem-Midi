@@ -8,17 +8,24 @@ app.clickCommitListen = () => {
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
         }
-        const check = confirm("Commit Check");
-        if (!check)
+        const swal = await Swal.fire({
+            title: "Submit version name",
+            icon: "info",
+            input: "text",
+            inputValue: `version${version}`,
+            showCancelButton: true,
+            preConfirm: (name) => {
+                return app.fetchData(`/api/1.0/midi/track/${trackId}`, {
+                    roomId: app.roomId,
+                    userId: app.userId,
+                    name,
+                    notes: app.music.getNotes(trackId)
+                }, "PUT");
+            }
+        });
+        if(swal.isDismissed)
             return;
-        const name = prompt("fill version name", `version${version}`);
-
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}`, {
-            roomId: app.roomId,
-            userId: app.userId,
-            name,
-            notes: app.music.getNotes(trackId)
-        }, "PUT");
+        const res = swal.value; 
         if (res.error === "It's not your locked track") {
             Swal.fire({
                 title: "Failed",
