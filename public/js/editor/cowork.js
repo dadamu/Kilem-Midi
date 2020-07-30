@@ -109,7 +109,7 @@ app.lockClickListen = () => {
         else {
             previous = {};
         }
-        if (JSON.stringify(previous) !== JSON.stringify(current)) {
+        if (JSON.stringify(previous) === JSON.stringify(current)) {
             app.errorShow("Please Save Change First");
             return;
         }
