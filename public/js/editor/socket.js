@@ -116,6 +116,7 @@ app.ioListen = async () => {
         app.bpmRender(bpm);
 
         app.loopend = app.loopend * oldBpm / bpm;
+        app.loopstart = app.loopstart * oldBpm / bpm;
         if (app.isplaying) {
             app.currentTime = app.currentTime * oldBpm / bpm;
             clearInterval(app.playInterval);
