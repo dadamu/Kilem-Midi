@@ -3,6 +3,7 @@ const asyncHandler = require("../../util/asyncHandler");
 const jwt = require("jsonwebtoken");
 const { JWT_KEY, BCRYPT_SALT } = process.env;
 const bcrypt = require("bcrypt");
+const trackModel = require("../models/trackModel");
 module.exports = {
     get: asyncHandler(async (req, res) => {
         const { type } = req.params;
@@ -32,6 +33,10 @@ module.exports = {
             req.body.room.password = bcryptPass;
         }
         const roomId = await roomModel.create(req.body, user);
+        await trackModel.add({
+            roomId, 
+            userId: user.id
+        });
         res.status(201).json({ roomId });
     }),
     put: asyncHandler(async (req, res) => {
