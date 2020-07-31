@@ -5,6 +5,10 @@ class MidiFile {
         this.bpm = bpm;
         this.tracks = this.setTracks(tracks);
     }
+    getTrack(id){
+        return this.tracks[id];
+    }
+
     addTrack(track) {
         this.tracks[track.id] = track;
     }
@@ -23,12 +27,8 @@ class MidiFile {
         return this.tracks[trackId].versions;
     }
 
-    getVersion(trackId) {
-        return this.tracks[trackId].version;
-    }
-
-    getTrack(trackId) {
-        return this.tracks[trackId];
+    getVersion(id) {
+        return this.tracks[id].version;
     }
 
     setTrack(track) {
@@ -39,16 +39,16 @@ class MidiFile {
         this.tracks[id].setVersion(track.version.version);
     }
 
-    setNotes(trackId, notes) {
-        this.tracks[trackId].setNotes(notes);
+    setNotes(id, notes) {
+        this.tracks[id].setNotes(notes);
     }
 
-    changeLocker(trackId, locker) {
-        this.tracks[trackId].changeLocker(locker);
+    changeLocker(id, locker) {
+        this.tracks[id].changeLocker(locker);
     }
 
-    getLocker(trackId) {
-        return this.tracks[trackId].locker;
+    getLocker(id) {
+        return this.tracks[id].locker;
     }
 
     setTracks(tracks) {
@@ -98,6 +98,14 @@ class Track {
         this.locker = {};
         this.commiter = {};
         this.notes = {};
+    }
+
+    set(key, value){
+        this[key] = value;
+    }
+
+    get(key){
+        return this[key].value;
     }
 
     setVersion(version) {

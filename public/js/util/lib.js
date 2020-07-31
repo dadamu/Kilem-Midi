@@ -1,14 +1,18 @@
 /* global app Swal */
-app.fetchData = (url, data, method, headers = {
+app.fetchData = (url, data = null, method = "GET", headers = {
     "user-agent": "Mozilla/4.0 MDN Example",
     "content-type": "application/json"
 }) => {
+    if(method === "GET"){
+        return fetch(url).then(res => res.json());
+    }
+
     return fetch(url, {
         body: JSON.stringify(data),
         headers,
         method: method,
 
-    }).then(response => response.json());
+    }).then(res => res.json());
 };
 
 app.checkToken = async () => {
