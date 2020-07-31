@@ -16,7 +16,7 @@ app.openMidiPanelListen = () => {
                 app.errorShow("Please select a track");
                 return;
             }
-            $("#midiPanelButton").css("background", "#00A15C");
+            $("#midiPanelButton").addClass("active");
             $("#midiPanel").removeClass("hidden");
             app.panelLoadTrack(trackId);
             app.activeKeyRender(app.music.tracks[trackId].instrument);
@@ -25,7 +25,7 @@ app.openMidiPanelListen = () => {
         }
         else {
             $("#midiPanel").addClass("hidden");
-            $("#midiPanelButton").css("background", "inherit");
+            $("#midiPanelButton").removeClass("active");
             app.isMidiEditorOpen = false;
         }
     });
@@ -33,7 +33,7 @@ app.openMidiPanelListen = () => {
 
 app.openMidiPanel = () => {
     if ($("#midiPanel").hasClass("hidden")) {
-        $("#midiPanelButton").css("background", "#00A15C");
+        $("#midiPanelButton").addClass("active");
         const trackId = $(".track.selected").attr("trackId");
         $("#midiPanel").removeClass("hidden");
         app.panelLoadTrack(trackId);

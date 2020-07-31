@@ -41,7 +41,7 @@
 }
 
 .midi-tool.selected{
-    background: #00A15C;
+    background: #1E88E5;
 }
 
 .panel-track-name{
@@ -136,7 +136,7 @@
 .note{
     position: absolute;
     z-index: 5;
-    background-color: steelblue; 
+    background-color: #26C6DA; 
     border: #123123 solid 1px;
 }
 
@@ -173,7 +173,7 @@
 }
 
 .inactive:after {
-    content:'';
+  content:'';
   position:absolute;
   left:0px;
   top:0px;

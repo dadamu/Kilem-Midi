@@ -45,14 +45,14 @@ app.use((req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use("/api", (err, req, res, next) => {
     if (err instanceof jwt.JsonWebTokenError) {
-        res.status(403).json({ error: "Invalid Access" });
+        res.status(403).json({ error: "Invalid access" });
         return;
     }
 
     res.status(err.status || 500);
     if (err.status != 404) {
         console.log(err);
-        res.json({ error: "Server Error" });
+        res.json({ error: "Internal server error" });
         return;
     }
     res.json({ error: "Not Found" });
