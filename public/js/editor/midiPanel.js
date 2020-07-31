@@ -149,7 +149,7 @@ app.clickKeysListen = () => {
 app.panelCancelListen = () => {
     $("#panelCancel").click(() => {
         $("#midiPanel").addClass("hidden");
-        $("#midiPanelButton").css("background", "inherit");
+        $("#midiPanelButton").removeClass("active");
         app.isMidiEditorOpen = false;
     });
 };

@@ -35,11 +35,13 @@ app.midiPlayListen = () => {
         if (app.isplaying) {
             clearInterval(app.playInterval);
             app.isplaying = false;
+            $(this).removeClass("active");
             $(this).find("i").removeClass("fas fa-pause").addClass("fas fa-play");
             return;
         }
         app.midiPlay();
         $(this).find("i").removeClass("fas fa-play").addClass("fas fa-pause");
+        $(this).addClass("active");
     });
 };
 

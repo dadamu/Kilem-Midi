@@ -105,10 +105,11 @@ body{
 
 .tool{
     padding: 5px 10px;
+    font-size: 0.9em;
     height: 100%;
-    background: inherit;
+    background: #23242d;
     border-radius: 2px;
-    margin-left: 5px;
+    margin-left: 10px;
     display: inline-block;
     text-align: center;
     outline: none;
@@ -159,6 +160,7 @@ button.tool{
     padding: 10px 15px;
     text-align: center;
     cursor: pointer;
+    background: #23242d;
 }
 
 .editor-footer{
