@@ -112,6 +112,7 @@ app.midiStopListen = () => {
         const bpm = app.music.bpm;
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
+        $("#playButton").removeClass("active");
         $("#playButton i").removeClass("fas fa-pause").addClass("fas fa-play");
     });
 };
