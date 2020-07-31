@@ -20,13 +20,10 @@ module.exports = {
         const result = {};
         const select = await knex("chat AS c").select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"]).innerJoin("user AS u", "u.id", "c.user_id")
             .where("room_id", roomId).limit(51).orderBy("date", "desc");
-        if (select.length > 30) {
+        if (select.length > 50) {
             select.pop();
             result.next = paging + 1;
         }
-        select.forEach(chat => {
-            chat.date = moment(chat.data).format("YYYY-MM-DD HH:mm:ss");
-        });
         const chatmsgs = select.map(item => {
             return {
                 user: {
@@ -34,7 +31,7 @@ module.exports = {
                     name: item.username
                 },
                 msg: item.msg,
-                date: item.date
+                date: moment(item.data).format("YYYY-MM-DD HH:mm:ss")
             };
         });
         result.data = chatmsgs.reverse();

@@ -107,7 +107,7 @@ module.exports = {
     },
     versionPull: async (trackId, version) => {
         const select = await knex("version AS v").select(["v.notes AS notes", "v.track_id AS trackId"])
-            .where("v.version", version).andWhere("v.track_id", trackId);
+            .where("v.version", version).andWhere("v.track_id", trackId).limit(5);
         if (select.length > 0) {
             return { notes: JSON.parse(select[0].notes), trackId };
         }
