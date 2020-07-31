@@ -28,10 +28,6 @@ a{
     align-items: center;
 }
 
-.header-content h1{
-    -webkit-text-stroke: 1px black;
-}
-
 .main-header .intro{
     width: 50%;
 }
@@ -106,7 +102,7 @@ a{
 
 .control .button{
     background: #00ACC1;
-    color:#424242;
+    color:white;
     font-weight: bold;
     text-transform: uppercase;
     display: block;
@@ -237,7 +233,7 @@ a{
 }
 .room.is-expanded .room__inner {
     background-color: #00ACC1;
-    color: #424242;
+    color: white;
     font-weight: bold;
 }
 .room.is-expanded .room__inner:after {
