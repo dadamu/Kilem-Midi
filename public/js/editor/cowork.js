@@ -26,7 +26,7 @@ app.clickCommitListen = () => {
         if(swal.isDismissed)
             return;
         const res = swal.value; 
-        if (res.error === "It's not your locked track") {
+        if (res.error === "lock failed") {
             app.failedByLock();
             return;
         }
@@ -123,7 +123,7 @@ app.lockClickListen = () => {
         }
 
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
-        if (res.error === "It's not your locked track") {
+        if (res.error === "lock failed") {
             app.failedByLock();
             return;
         }
@@ -147,7 +147,7 @@ app.changeInstrumentListen = () => {
             instrument
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
-        if(res.error === "It's not your locked track" ){
+        if(res.error === "lock failed" ){
             app.failedByLock();
             $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
             return;

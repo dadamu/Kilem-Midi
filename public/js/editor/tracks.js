@@ -168,7 +168,7 @@ app.trackNameChangeListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         if(!newName){
             $(this).val(app.music.tracks[trackId].name);
-            app.errorShow("name required");
+            app.errorShow("name can not be empty");
             return;
         }
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/name`, {

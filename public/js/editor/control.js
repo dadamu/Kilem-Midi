@@ -188,7 +188,7 @@ app.filenameChangeListen = () => {
             return;
         }
         app.filename = $(this).val();
-        app.successShow("Filename Change Success");
+        app.successShow("Filename changed");
     });
 };
 
@@ -198,7 +198,7 @@ app.bpmChangeListen = () => {
         const bpm = $(this).val();
         if (bpm > 200 || bpm < 60) {
             app.bpmRender(app.music.bpm);
-            app.errorShow("bpm must be between 60 and 200.");
+            app.errorShow("bpm should be between 60 and 200.");
             return;
         }
         const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/bpm`, {

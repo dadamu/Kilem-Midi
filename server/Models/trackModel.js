@@ -45,7 +45,7 @@ module.exports = {
             }
             else {
                 await trx.rollback();
-                return new Error("It's Not Your Locked Track");
+                return new Error("lock failed");
             }
         }
         catch (e) {
@@ -74,7 +74,7 @@ module.exports = {
             }
             if (newNotes === oldNotes) {
                 await trx.rollback();
-                return new Error("No change from latest version");
+                return new Error("It's already the latest version");
             }
 
             const newVersion = version + 1;
@@ -151,7 +151,7 @@ module.exports = {
             }
             else {
                 await trx.rollback();
-                return new Error("It's not your locked track");
+                return new Error("lock failed");
             }
         }
         catch (e) {
@@ -166,7 +166,7 @@ module.exports = {
             const select = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId);
             if (select.length === 0) {
                 await trx.rollback();
-                return new Error("It's not your locked track");
+                return new Error("lock failed");
             }
             await trx("track AS t").update("t.name", name).where("t.id", trackId);
             await trx.commit();
@@ -190,7 +190,7 @@ module.exports = {
                 };
             }
             else {
-                return new Error("It's not your locked track");
+                return new Error("lock failed");
             }
         }
         catch (e) {

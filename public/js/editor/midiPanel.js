@@ -13,7 +13,7 @@ app.openMidiPanelListen = () => {
         if ($("#midiPanel").hasClass("hidden")) {
             const trackId = $(".track.selected").attr("trackId");
             if(!trackId){
-                app.errorShow("Please Select a Track");
+                app.errorShow("Please select a track");
                 return;
             }
             $("#midiPanelButton").css("background", "#00A15C");

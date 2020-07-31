@@ -59,7 +59,7 @@ app.chatSendlListen = () => {
         };
         const result = await app.fetchData("/api/1.0/chat", data, "POST");
         if (result.error) {
-            app.errorShow("message send failed");
+            app.errorShow("failed");
             return;
         }
     }

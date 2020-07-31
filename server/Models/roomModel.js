@@ -51,7 +51,7 @@ module.exports = {
                 .select(["r.id AS id", "r.name As name", "r.filename AS filename", "u.username AS username", "r.intro AS intro", "r.password AS password"])
                 .innerJoin("user AS u", "r.user_id", "u.id").where("r.id", roomId);
             if (data.length === 0) {
-                return new Error("Room not exist");
+                return new Error("Room does not exist");
             }
             const select = await knex("save").select(["user_id"]).where("room_id", roomId).andWhere("user_id", user.id);
             if(select.length === 1){
@@ -84,7 +84,7 @@ module.exports = {
         const { roomId } = body;
         const result = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
         if (result === 0) {
-            return new Error("You are Not this room's creator");
+            return new Error("You are not the room owner");
         }
         return;
     },
@@ -94,7 +94,7 @@ module.exports = {
         delete newContent.id;
         const result = await knex("room").update(newContent).where("id", id);
         if(result.length === 0){
-            return new Error("Failed to Update");
+            return new Error("Failed");
         }
         return;
     },

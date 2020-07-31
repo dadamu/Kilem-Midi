@@ -66,7 +66,7 @@ app.createRoomListen = () => {
                 const isPrivate = $(target).find(".swal2-checkbox input[type='checkbox']").prop("checked");
                 const intro = $(target).find("#intro").val();
                 if (!name || !filename) {
-                    app.errorShow("Please fill name and filename field");
+                    app.errorShow("All fields are required");
                     return;
                 }
                 const room = {

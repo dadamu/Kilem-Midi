@@ -18,7 +18,7 @@ app.fetchData = (url, data = null, method = "GET", headers = {
 app.checkToken = async () => {
     const token = window.localStorage.getItem("token");
     if (!token) {
-        await app.errorShow("Please Login First");
+        await app.errorShow("Please login first");
         window.location.href = "/";
     }
     const headers = {
@@ -51,7 +51,7 @@ app.failedByLock = () => {
         html: `
             <br>
             <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
-            <div style='padding-left:20px; margin-top: 20px;'>You only can edit yourself's track, Check Track status first.</div>
+            <div style='padding-left:20px; margin-top: 20px;'>You can only edit your own track, Please check the track status.</div>
             `
     });
 };

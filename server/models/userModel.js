@@ -12,7 +12,7 @@ module.exports = {
         }
         catch(e){
             if(e.errno === 1062){
-                return new Error("email has exist");
+                return new Error("Email has already existed");
             }
             throw e;
         }

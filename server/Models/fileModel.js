@@ -21,7 +21,7 @@ module.exports = {
             .where("r.id", roomId);
         let userData;
         if (selectUser.length === 0) {
-            return new Error("You are not in this room");
+            return new Error("Access denied");
         }
         else if (selectUser[0].data)
             userData = JSON.parse(selectUser[0].data);
@@ -68,7 +68,7 @@ module.exports = {
     update: async (roomId, type, body) => {
         const select = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
         if (select.length === 0) {
-            return new Error("You are not creator");
+            return new Error("You are not the room owner");
         }
         await knex("room").update(type, body[type]).where("id", roomId);
         return;
