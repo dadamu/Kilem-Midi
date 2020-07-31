@@ -32,8 +32,6 @@
     display: flex;
 }
 
-
-
 .chat-input-space{
     height: 100%;
     flex: auto;
@@ -58,19 +56,30 @@
 
 .chat-user{
     min-width: 40px;
-    padding-right: 5px;
+    padding-right: 20px;
+    padding-left: 5px;
+}
+
+.chat-mine{
+    text-align: right;
 }
 
 .chat-content{
     margin-right: 20px;
     padding: 10px;
-    border: 1px solid #aaaaaa;
     word-break: break-all;
-    flex: auto;
+    align-self: flex-start;
     cursor: pointer;
-    border-radius: 5px;
+    background: #1E88E5;
+    border-radius: 0 5px 5px 0;
+}
+.content-mine{
+    align-self: flex-end;
+    border-radius: 5px 0 0 5px;
 }
 
 .chatroom textarea {
+    padding-top: 5px;
+    padding-left: 10px;
     resize: none;
   }

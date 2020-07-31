@@ -68,13 +68,18 @@ app.chatSendlListen = () => {
 
 app.chatRender = (chat) => {
     const msgDiv = $("<div></div>").addClass("chat-msg");
-    const userDiv = $("<div></div>").text(chat.user + ":").addClass("chat-user");
+    const userDiv = $("<div></div>").text(chat.user.name).addClass("chat-user");
     const msg = filterXSS(chat.msg.split("\n").join("<br>"));
     const contentDiv = $("<div></div>").html(msg).addClass("chat-content").attr("title", chat.date);
     msgDiv.append(userDiv, contentDiv);
     const container = $("#chatContainer");
     const pos = container.scrollTop() + container.height();
     const max = container.prop("scrollHeight") - 100;
+    
+    if(chat.user.id === app.userId){
+        userDiv.addClass("chat-mine");
+        contentDiv.addClass("content-mine");
+    }
     if (pos < max) {
         container.append(msgDiv);
     }
