@@ -162,8 +162,8 @@ class Track {
 
 class Note {
     constructor(pitch, posX, length) {
-        this.pitch = pitch;
-        this.posX = posX;
-        this.length = length;
+        this.pitch = parseInt(pitch);
+        this.posX = parseInt(posX);
+        this.length = parseFloat(length);
     }
 }

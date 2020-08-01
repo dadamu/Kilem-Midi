@@ -176,23 +176,24 @@ app.setNoteDrag = (noteDiv) => {
             const endTop = ui.position.top;
             const endLeft = ui.position.left;
             const resolution = app.gridsInterval * app.noteLength;
-            const newTop = Math.round(endTop / app.pitchHeight) * app.pitchHeight;
+            const aligntop = Math.round(endTop / app.pitchHeight) * app.pitchHeight;
             const newLeft = Math.round(endLeft / resolution) * resolution;
 
-            const newNote = app.svgToNote(newLeft, newTop + 1);
+            const newNote = app.svgToNote(newLeft, aligntop + 1);
             const { posX, pitch } = newNote;
             const length = parseFloat($(evt.target).attr("length"));
             newNote.length = length;
-            $(evt.target).css("top", newTop).css("left", newLeft)
+            $(evt.target).css("top", aligntop).css("left", newLeft)
                 .attr("posX", newNote.posX).attr("pitch", newNote.pitch);
 
             const trackId = $("#midiPanel").attr("trackId");
 
             //ignore duplicate not at same pos
             const original = app.music.tracks[trackId].notes[posX];
+            console.log(posX);
             while ( original && original.filter(midi => midi.pitch === newNote.pitch).length > 0) {
                 newNote.pitch += 1;
-                const top = newTop - app.pitchHeight * (newNote.pitch - pitch);
+                const top = aligntop - app.pitchHeight * (newNote.pitch - pitch);
                 $(evt.target).css("top", top).attr("pitch", newNote.pitch);
                 if(top < 0){
                     $(evt.target).remove();
