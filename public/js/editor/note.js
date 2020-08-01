@@ -190,7 +190,6 @@ app.setNoteDrag = (noteDiv) => {
 
             //ignore duplicate not at same pos
             const original = app.music.tracks[trackId].notes[posX];
-            console.log(posX);
             while ( original && original.filter(midi => midi.pitch === newNote.pitch).length > 0) {
                 newNote.pitch += 1;
                 const top = aligntop - app.pitchHeight * (newNote.pitch - pitch);
