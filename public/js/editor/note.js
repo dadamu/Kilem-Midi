@@ -189,10 +189,17 @@ app.setNoteDrag = (noteDiv) => {
             const trackId = $("#midiPanel").attr("trackId");
 
             //ignore duplicate not at same pos
-            if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0) {
-                $(evt.target).remove();
-                return;
+            const original = app.music.tracks[trackId].notes[posX];
+            while ( original && original.filter(midi => midi.pitch === newNote.pitch).length > 0) {
+                newNote.pitch += 1;
+                const top = newTop - app.pitchHeight * (newNote.pitch - pitch);
+                $(evt.target).css("top", top).attr("pitch", newNote.pitch);
+                if(top < 0){
+                    $(evt.target).remove();
+                    return;
+                }
             }
+
             const { instrument } = app.music.tracks[trackId];
             app.playNote(instrument, pitch);
             const data = {
@@ -200,7 +207,7 @@ app.setNoteDrag = (noteDiv) => {
                 userId: app.userId,
                 roomId: app.roomId,
                 trackId,
-                note: { posX, pitch, length }
+                note: newNote
             };
             app.emit("noteUpdate", data);
             app.regionNoteRender(trackId, newNote);
@@ -249,12 +256,6 @@ app.setNoteEditWidth = (tailDiv) => {
             const pitch = noteDiv.attr("pitch");
             const newNote = { posX, pitch, length };
             const trackId = $("#midiPanel").attr("trackId");
-
-            //ignore duplicate not at same pos
-            if (app.music.tracks[trackId].notes[posX] && app.music.tracks[trackId].notes[posX].filter(midi => midi.pitch === pitch).length > 0) {
-                $(evt.target).remove();
-                return;
-            }
             const { instrument } = app.music.tracks[trackId];
             app.playNote(instrument, pitch);
             const data = {
