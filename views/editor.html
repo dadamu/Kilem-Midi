@@ -8,7 +8,6 @@
     <script src="/public/js/util/jquery-min-3.5.1.js"></script>
     <script src="/public/js/util/jquery-min-ui-1.11.4.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-
     <link rel="shortcut icon" href="/public/logo/logo.png" type="image/x-icon">
     <link href="/public/css/util/normalize.css" rel="stylesheet" type="text/css">
     <link href="/public/css/editor/editor.css" rel="stylesheet" type="text/css">
@@ -84,27 +83,27 @@
         </div>
         <section id="midiPanel" class="midi-panel hidden">
             <header class="midi-header">
-                    <div class="midi-toolbox"><i data-title='Note Length' class="fas fa-ruler-horizontal icon"></i>
-                        <div class="border"></div>
-                        <div class="note-length midi-tool icon-container" value="0.0625">
-                            <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
-                        </div>
-                        <div class="note-length midi-tool icon-container selected" value="0.125">
-                            <img src="/public/img/toolbox/eighth-note.svg" class="note-icon"></img>
-                        </div>
-                        <div class="note-length midi-tool icon-container" value="0.25">
-                            <img src="/public/img/toolbox/quarter-note.svg" class="note-icon"></img>
-                        </div>
-                        <div class="note-length midi-tool" value="0.5">
-                            <img src="/public/img/toolbox/half-note.svg" class="note-icon"></img>
-                        </div>
-                        <div class="note-length midi-tool icon-container" value="1">
-                            <div style="height: 50%; width:100%"></div>
-                            <div style="height: 35%; width:100%">
-                                <img src="/public/img/toolbox/whole-note.svg" class="note-icon"></img>
-                            </div>
+                <div class="midi-toolbox"><i data-title='Note Length' class="fas fa-ruler-horizontal icon"></i>
+                    <div class="border"></div>
+                    <div class="note-length midi-tool icon-container" value="0.0625">
+                        <img src="/public/img/toolbox/sixteenth-note.svg" class="note-icon"></img>
+                    </div>
+                    <div class="note-length midi-tool icon-container selected" value="0.125">
+                        <img src="/public/img/toolbox/eighth-note.svg" class="note-icon"></img>
+                    </div>
+                    <div class="note-length midi-tool icon-container" value="0.25">
+                        <img src="/public/img/toolbox/quarter-note.svg" class="note-icon"></img>
+                    </div>
+                    <div class="note-length midi-tool" value="0.5">
+                        <img src="/public/img/toolbox/half-note.svg" class="note-icon"></img>
+                    </div>
+                    <div class="note-length midi-tool icon-container" value="1">
+                        <div style="height: 50%; width:100%"></div>
+                        <div style="height: 35%; width:100%">
+                            <img src="/public/img/toolbox/whole-note.svg" class="note-icon"></img>
                         </div>
                     </div>
+                </div>
                 <div class="midi-toolbox"><i class="fa fa-columns icon" data-title='Note align grid'
                         aria-hidden="true"></i>
                     <div class="border"></div>
@@ -127,7 +126,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="panelCancel" class="icon-container cancel"><i class="fa fa-times fa-lg" aria-hidden="true"></i>
                 </div>
             </header>
@@ -144,7 +143,7 @@
         </section>
         <footer class="editor-footer">
             <div id="midiPanelButton" class="midi-panel-button control-button icon-container">
-                    <i class="fas fa-caret-up"></i>&nbsp;<span>Midi Editor</span></div>
+                <i class="fas fa-caret-up"></i>&nbsp;<span>Midi Editor</span></div>
             <div class="footer-midi-control">
                 <div id="resetButton" data-title="Reset to loop start"
                     class="reset-button control-button icon-container"><i class="fas fa-step-backward"></i></div>

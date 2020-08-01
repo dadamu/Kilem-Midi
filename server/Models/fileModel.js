@@ -81,12 +81,14 @@ function merge(user, master) {
         for (let track of Object.values(user)) {
             let { id, version, notes, commiter } = track;
             version = version.version || 0;
-            if (master.tracks[id] && version >= master.tracks[id].version) {
-                const masterTrack = master.tracks[id];
+            const masterTrack = master.tracks[id];
+            if (masterTrack && version >= masterTrack.version) {
+                
                 masterTrack.version = version;
                 masterTrack.commiter = commiter;
-                masterTrack.notes = notes;
+               
             }
+            masterTrack.notes = notes;
         }
     }
     return master;
