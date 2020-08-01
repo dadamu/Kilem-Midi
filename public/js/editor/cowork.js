@@ -23,9 +23,9 @@ app.clickCommitListen = () => {
                 }, "PUT");
             }
         });
-        if(swal.isDismissed)
+        if (swal.isDismissed)
             return;
-        const res = swal.value; 
+        const res = swal.value;
         if (res.error === "lock failed") {
             app.failedByLock();
             return;
@@ -82,7 +82,7 @@ app.deleteTrackListen = () => {
             text: "Really remove track?",
             showCancelButton: true
         });
-        if(swal.isDismissed){
+        if (swal.isDismissed) {
             return;
         }
         const selectedTrack = $(".track.selected");
@@ -107,21 +107,15 @@ app.lockClickListen = () => {
             userId: app.userId,
             roomId: app.roomId
         };
-        const current = app.music.tracks[trackId].notes;
         const version = app.music.getVersion(trackId);
-        let previous;
-        if (version) {
-            const get = await fetch(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`).then(res => res.json());
-            previous = get.notes;
+        const locker = app.music.getLocker(trackId);
+        if (locker.id === app.userId) {
+            const isDiffer = await app.checkDifferFromLatest(trackId, version);
+            if (isDiffer) {
+                app.errorShow("Please Save Change First");
+                return;
+            }
         }
-        else {
-            previous = {};
-        }
-        if (JSON.stringify(previous) !== JSON.stringify(current)) {
-            app.errorShow("Please Save Change First");
-            return;
-        }
-
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
         if (res.error === "lock failed") {
             app.failedByLock();
@@ -133,6 +127,23 @@ app.lockClickListen = () => {
         }
         app.successShow("Lock Changed");
     });
+};
+
+
+app.checkDifferFromLatest = async (id, version) => {
+    const current = app.music.tracks[id].notes;
+    let previous;
+    if (version) {
+        const get = await fetch(`/api/1.0/midi/track?trackId=${id}&version=${version}`).then(res => res.json());
+        previous = get.notes;
+    }
+    else {
+        previous = {};
+    }
+    if (JSON.stringify(previous) !== JSON.stringify(current)) {
+        return true;
+    }
+    return false;
 };
 
 app.changeInstrumentListen = () => {
@@ -147,7 +158,7 @@ app.changeInstrumentListen = () => {
             instrument
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
-        if(res.error === "lock failed" ){
+        if (res.error === "lock failed") {
             app.failedByLock();
             $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
             return;
