@@ -51,7 +51,14 @@ app.saveFile = async () => {
     const data = {};
     data.userId = app.userId;
     data.roomId = app.roomId;
-    data.data = app.music.tracks;
+    const tracks = {};
+    Object.entries(app.music.tracks).forEach(([id, track]) => {
+        console.log(id, track.locker);
+        if(track.locker.id === app.userId){
+            tracks[id] = track;
+        }
+    });
+    data.data = tracks;
     const result = await app.fetchData(endpoint, data, "POST");
     if (result.error) {
         app.errorShow(result.error);
