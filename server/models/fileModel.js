@@ -83,10 +83,8 @@ function merge(user, master) {
             version = version.version || 0;
             const masterTrack = master.tracks[id];
             if (masterTrack && version >= masterTrack.version) {
-                
                 masterTrack.version = version;
                 masterTrack.commiter = commiter;
-               
             }
             masterTrack.notes = notes;
         }

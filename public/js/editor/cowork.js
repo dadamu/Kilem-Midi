@@ -53,6 +53,7 @@ app.versionChangeListen = () => {
         }
         app.loadRegionNotesRender(result.trackId);
         app.successShow("Version changed");
+        app.saveFile();
     });
 };
 
