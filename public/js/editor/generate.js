@@ -3,10 +3,10 @@ app.init = async () => {
     app.setConfig();
     await app.checkToken();
     await app.setFile();
-    app.instruments.piano = app.setPiano();
-    app.instruments.bass = app.setBass();
-    app.instruments.guitar = app.setGuitar();
-    app.instruments.drums = app.setDrums();
+    app.instruments.piano = app.setPiano(app.instrumentsURL);
+    app.instruments.bass = app.setBass(app.instrumentsURL);
+    app.instruments.guitar = app.setGuitar(app.instrumentsURL);
+    app.instruments.drums = app.setDrums(app.instrumentsURL);
     app.initRender();
     await app.socketInit();
     app.UIListen();

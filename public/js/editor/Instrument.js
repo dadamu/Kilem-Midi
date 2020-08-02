@@ -1,11 +1,12 @@
 /* global app */
 class Instrument {
-    constructor(name, minPitch, maxPitch) {
+    constructor(name, minPitch, maxPitch, url) {
         this.name = name;
         this.minPitch = minPitch;
         this.maxPitch = maxPitch;
         this.sounds = {};
         this.audio = {};
+        this.url = url;
         this.generate();
     }
 
@@ -34,7 +35,7 @@ class Instrument {
         this.audio[pitch] = {};
         if (pitchShift === 0) {
             const fileNum = this.getFileNum(pitch);
-            const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
+            const getData = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
             const blob = await getData.blob();
             const buffer = await blob.arrayBuffer();
             this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
@@ -58,23 +59,23 @@ class Instrument {
             return this.padLeft("0" + str, length);
     }
 }
-app.setPiano = () => {
-    return new Instrument("GrandPiano", 22, 108);
+app.setPiano = (url) => {
+    return new Instrument("GrandPiano", 22, 108, url);
 };
-app.setGuitar = () => {
-    return new Instrument("AcousticGuitar", 40, 72);
+app.setGuitar = (url) => {
+    return new Instrument("AcousticGuitar", 40, 72, url);
 };
-app.setBass = () => {
-    return new Instrument("DubBass", 25, 60);
+app.setBass = (url) => {
+    return new Instrument("DubBass", 25, 60, url);
 };
 
-app.setDrums = () => {
-    return new Drums("ClassicRock", 36, 56);
+app.setDrums = (url) => {
+    return new Drums("ClassicRock", 36, 56, url);
 };
 
 class Drums extends Instrument {
-    constructor(name, minPitch, maxPitch) {
-        super(name, minPitch, maxPitch);
+    constructor(name, minPitch, maxPitch, url) {
+        super(name, minPitch, maxPitch, url);
     }
 
     async getFiles() {
@@ -92,7 +93,7 @@ class Drums extends Instrument {
             return;
         }
         const fileNum = this.getFileNum(pitch);
-        const getData = await fetch(`/public/instruments/${this.name}/${fileNum}-${this.name}.ogg`);
+        const getData = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
         const blob = await getData.blob();
         const buffer = await blob.arrayBuffer();
         if (buffer.byteLength <= 183) {

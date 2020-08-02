@@ -8,7 +8,7 @@ app.setConfig = () => {
     app.roomId = parseInt(document.URL.split("/").pop());
     app.music = {};
     app.instruments = {};
-
+    app.instrumentsURL = "https://kilem.s3-us-west-2.amazonaws.com/instruments/"; //https://kilem.s3-us-west-2.amazonaws.com/instruments/
     // UI config
     app.musicLength = 24;
     app.scaleNumMax = 6;
