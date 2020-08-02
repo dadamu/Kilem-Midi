@@ -52,7 +52,7 @@ app.saveFile = async () => {
     data.userId = app.userId;
     data.roomId = app.roomId;
     const tracks = {};
-    Object.entries(app.music.tracks).forEach(([id, track]) => {
+    Object.entries(app.music.get("tracks")).forEach(([id, track]) => {
         console.log(id, track.locker);
         if(track.locker.id === app.userId){
             tracks[id] = track;

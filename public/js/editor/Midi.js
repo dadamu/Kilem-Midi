@@ -5,6 +5,15 @@ class MidiFile {
         this.bpm = bpm;
         this.tracks = this.setTracks(tracks);
     }
+
+    set(key, value){
+        this[key] = value;
+    }
+
+    get(key){
+        return this[key];
+    }
+
     getTrack(id){
         return this.tracks[id];
     }
@@ -12,43 +21,17 @@ class MidiFile {
     addTrack(track) {
         this.tracks[track.id] = track;
     }
+
     deleteTrack(id) {
         delete this.tracks[id];
-    }
-    getTracks() {
-        return JSON.parse(JSON.stringify(this.tracks));
-    }
-
-    getNotes(trackId) {
-        return this.tracks[trackId].notes;
-    }
-
-    getVersions(trackId) {
-        return this.tracks[trackId].versions;
-    }
-
-    getVersion(id) {
-        return this.tracks[id].version;
     }
 
     setTrack(track) {
         const { id } = track;
-        this.setNotes(id, track.notes);
-        this.tracks[id].setCommiter(track.commiter);
+        this.tracks[id].set("notes", track.notes);
+        this.tracks[id].set("commiter", track.commiter);
         this.tracks[id].addVersion(track.version);
-        this.tracks[id].setVersion(track.version.version);
-    }
-
-    setNotes(id, notes) {
-        this.tracks[id].setNotes(notes);
-    }
-
-    changeLocker(id, locker) {
-        this.tracks[id].changeLocker(locker);
-    }
-
-    getLocker(id) {
-        return this.tracks[id].locker;
+        this.tracks[id].set("version", track.version.version);
     }
 
     setTracks(tracks) {
@@ -56,11 +39,11 @@ class MidiFile {
         for (let track of Object.values(tracks)) {
             const { id, name, instrument, version, versions, locker, commiter, notes } = track;
             const newTrack = new Track(id, name, instrument);
-            newTrack.setVersion(version);
-            newTrack.setVersions(versions);
-            newTrack.setLocker(locker);
-            newTrack.setCommiter(commiter);
-            newTrack.setNotes(notes);
+            newTrack.set("version", version);
+            newTrack.set("versions", versions);
+            newTrack.set("locker", locker);
+            newTrack.set("commiter", commiter);
+            newTrack.set("notes", notes);
             newTracks[track.id] = newTrack;
         }
         return newTracks;
@@ -105,31 +88,12 @@ class Track {
     }
 
     get(key){
-        return this[key].value;
+        return this[key];
     }
 
-    setVersion(version) {
-        this.version = version;
-    }
 
     addVersion(version) {
         this.versions.push(version);
-    }
-
-    setVersions(versions) {
-        this.versions = versions;
-    }
-
-    setLocker(locker) {
-        this.locker = locker;
-    }
-
-    setCommiter(commiter) {
-        this.commiter = commiter;
-    }
-
-    changeLocker(locker) {
-        this.locker = locker;
     }
 
     addNote(note) {

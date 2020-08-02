@@ -53,8 +53,8 @@ app.notSelectListen = () => {
 app.noteDeleteListen = () => {
     $("#grids").on("dblclick", ".note", async function () {
         const trackId = $("#midiPanel").attr("trackId");
-
-        if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
+        const locker = app.music.getTrack(trackId).get("locker");
+        if (parseInt(app.userId) != locker.id) {
             app.failedByLock();
             return;
         }
@@ -140,7 +140,8 @@ app.noteIntoTrack = (trackId, note) => {
 app.addMidiNoteListen = () => {
     $("#svgGrid").click(function (evt) {
         const trackId = parseInt($("#midiPanel").attr("trackId"));
-        if (parseInt(app.userId) != app.music.getLocker(trackId).id) {
+        const locker = app.music.getTrack(trackId).get("locker");
+        if (parseInt(app.userId) != locker.id) {
             app.failedByLock();
             return;
         }
@@ -286,7 +287,9 @@ app.notesRender = (posX, notes) => {
         const tailDiv = $("<div></div>").addClass("tail");
         noteDiv.append(tailDiv);
         $("#grids").append(noteDiv);
-        if (parseInt(app.userId) === app.music.getLocker($("#midiPanel").attr("trackId")).id) {
+        const trackId = $("#midiPanel").attr("trackId");
+        const locker = app.music.getTrack(trackId).get("locker");
+        if (parseInt(app.userId) ===  locker.id){
             app.setNoteDrag(noteDiv);
             app.setNoteEditWidth(tailDiv);
         }

@@ -19,7 +19,7 @@ app.openMidiPanelListen = () => {
             $("#midiPanelButton").addClass("active");
             $("#midiPanel").removeClass("hidden");
             app.panelLoadTrack(trackId);
-            app.activeKeyRender(app.music.tracks[trackId].instrument);
+            app.activeKeyRender(app.music.getTrack(trackId).get("instrument"));
             app.isMidiEditorOpen = true;
             app.setCurrentPlayhead(app.currentTime);
         }
@@ -37,7 +37,7 @@ app.openMidiPanel = () => {
         const trackId = $(".track.selected").attr("trackId");
         $("#midiPanel").removeClass("hidden");
         app.panelLoadTrack(trackId);
-        app.activeKeyRender(app.music.tracks[trackId].instrument);
+        app.activeKeyRender(app.music.getTrack(trackId).get("instrument"));
         app.isMidiEditorOpen = true;
         app.setCurrentPlayhead(app.currentTime);
     }
@@ -62,9 +62,10 @@ app.regionPlayheadDragListen = () => {
         start: () => {
             const currentTime = app.currentTime;
             const intervalX = app.regionInterval;
-            this.initialX = intervalX * app.music.bpm / 4 * currentTime / 60 / 1000;
+            this.initialX = intervalX * app.music.get("bpm") / 4 * currentTime / 60 / 1000;
         },
         drag: (evt, ui) => {
+            const bpm = app.music.get("bpm");
             const max = app.gridsInterval * app.musicLength;
             let curr = ui.position.left + this.initialX;
             if (curr < 0) {
@@ -75,11 +76,11 @@ app.regionPlayheadDragListen = () => {
                 curr = max;
                 return;
             }
-            app.currentTime = curr / app.music.bpm / app.regionInterval * 60 * 1000 * 4;
-            app.regionPlayheadTrans(app.music.bpm);
+            app.currentTime = curr / bpm / app.regionInterval * 60 * 1000 * 4;
+            app.regionPlayheadTrans(bpm);
             if ($("#midiPanel").hasClass("hidden"))
                 return;
-            app.midiPlayheadTrans(app.music.bpm);
+            app.midiPlayheadTrans(bpm);
         },
         stop: (evt) => {
             $(evt.target).css("left", 0).css("top", 0);
@@ -93,9 +94,10 @@ app.midiPlayheadDragListen = () => {
         start: () => {
             const currentTime = app.currentTime;
             const intervalX = app.gridsInterval;
-            this.initialX = intervalX * app.music.bpm / 4 * currentTime / 60 / 1000;
+            this.initialX = intervalX * app.music.get("bpm") / 4 * currentTime / 60 / 1000;
         },
         drag: (evt, ui) => {
+            const bpm = app.music.get("bpm");
             const max = app.gridsInterval * app.musicLength;
             let curr = ui.position.left + this.initialX;
             if (curr < 0) {
@@ -106,9 +108,9 @@ app.midiPlayheadDragListen = () => {
                 curr = max;
                 return;
             }
-            app.currentTime = curr / app.music.bpm / app.gridsInterval * 60 * 1000 * 4;
-            app.midiPlayheadTrans(app.music.bpm);
-            app.regionPlayheadTrans(app.music.bpm);
+            app.currentTime = curr / bpm / app.gridsInterval * 60 * 1000 * 4;
+            app.midiPlayheadTrans(bpm);
+            app.regionPlayheadTrans(bpm);
         },
         stop: (evt) => {
             $(evt.target).css("left", 0).css("top", 0);
@@ -120,8 +122,9 @@ app.panelLoadTrack = (trackId) => {
     $("#grids .note").remove();
     if (!$("#midiPanel").hasClass("hidden")) {
         $("#midiPanel").attr("trackId", trackId);
-        if (app.music.tracks[trackId]) {
-            for (let [posX, notes] of Object.entries(app.music.tracks[trackId].notes)) {
+        const track = app.music.getTrack(trackId);
+        if (track) {
+            for (let [posX, notes] of Object.entries(track.get("notes"))) {
                 app.notesRender(posX, notes);
             }
         }
@@ -130,7 +133,7 @@ app.panelLoadTrack = (trackId) => {
 
 app.setCurrentPlayhead = (current) => {
     const intervalX = app.gridsInterval;
-    const { bpm } = app.music;
+    const bpm = app.music.get("bpm");
     const currentX = intervalX / 4 * bpm * current / 60 / 1000;
     $("#midiPlayhead").css("-webkit-transform", `translateX(${currentX}px)`);
 };
@@ -138,7 +141,7 @@ app.setCurrentPlayhead = (current) => {
 app.clickKeysListen = () => {
     $("#keys").on("click", ".key", async function () {
         const trackId = $("#midiPanel").attr("trackId");
-        const { instrument } = app.music.tracks[trackId];
+        const instrument = app.music.getTrack(trackId).get("instrument");
         const target = this;
         const pitch = $(target).attr("pitch");
         app.playNote(instrument, pitch);

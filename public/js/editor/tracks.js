@@ -31,10 +31,10 @@ app.initRegionRender = () => {
 };
 
 app.initiTrackRender = () => {
-    if(Object.values(app.music.tracks).length === 0){
+    if(Object.values(app.music.get("tracks")).length === 0){
         return;
     }
-    for (let [key, track] of Object.entries(app.music.tracks)) {
+    for (let [key, track] of Object.entries(app.music.get("tracks"))) {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
     app.trackSelect($(".track").first());
@@ -108,7 +108,7 @@ app.addTrackRender = (trackId, trackName, instrument = "piano", version = 0) => 
 app.trackVersionRender = (trackId) => {
     const commitButton = $("<button></button>").addClass("version-commit").text("save");
     const selector = $("<select></select>").addClass("version-select");
-    const versions = app.music.getVersions(trackId);
+    const versions = app.music.getTrack(trackId).get("versions");
     for (let version of versions) {
         const option = $("<option></option>").text(version.name).val(version.version);
         selector.append(option);
@@ -159,15 +159,16 @@ app.trackSelect = (target) => {
     const trackName = $(`.track.track-${id} .track-name`).text();
     $("#midiPanel #trackName").text(trackName);
     app.panelLoadTrack(id);
-    app.activeKeyRender(app.music.tracks[id].instrument);
+    app.activeKeyRender(app.music.getTrack(id).get("instrument"));
 };
 
 app.trackNameChangeListen = () => {
     $("#tracksContent").on("change", ".track-name", async function () {
         const newName = $(this).val();
         const trackId = $(this).closest(".track").attr("trackId");
+        const oldName = app.music.getTrack(trackId).get("name");
         if(!newName){
-            $(this).val(app.music.tracks[trackId].name);
+            $(this).val(oldName);
             app.errorShow("name can not be empty");
             return;
         }
@@ -176,12 +177,16 @@ app.trackNameChangeListen = () => {
             name: newName,
             roomId: app.roomId
         }, "PATCH");
-        if (res.error) {
-            app.errorShow(res.error);
-            $(this).val(app.music.tracks[trackId].name);
+        if (res.error === "lock failed") {
+            app.failedByLock();
             return;
         }
-        app.music.tracks[trackId].name = newName;
+        if (res.error) {
+            app.errorShow(res.error);
+            $(this).val(oldName);
+            return;
+        }
+        app.music.getTrack(trackId).set("name", newName);
         app.successShow("Trackname changed");
     });
 };

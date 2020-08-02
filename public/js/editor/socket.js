@@ -17,7 +17,7 @@ app.ioListen = async () => {
     app.on("addTrack", (track) => {
         const { id, name, instrument, locker } = track;
         app.music.addTrack(new Track(id, name, instrument));
-        app.music.getTrack(id).setLocker(locker);
+        app.music.getTrack(id).set("locker", locker);
         app.addTrackRender(id, name);
         app.saveFile();
         app.successShow("Track added");
@@ -53,7 +53,7 @@ app.ioListen = async () => {
 
     app.on("lock", (data) => {
         const { track } = data;
-        app.music.changeLocker(track.id, track.locker);
+        app.music.getTrack(track.id).set("locker", track.locker);
         $(`.track.track-${track.id} .track-lock`).html(app.lockerRender(track.locker).html());
         if (track.locker.id === app.userId) {
             $(`.track.track-${track.id} .track-name`).addClass("editable").removeAttr("disabled");
@@ -67,9 +67,9 @@ app.ioListen = async () => {
         app.saveFile();
     });
 
-    app.on("trackNameChange", (data) => {
-        app.music.tracks[data.id].name = data.name;
-        $(`.track.track-${data.id} .track-name`).val(data.name);
+    app.on("trackNameChange", (track) => {
+        app.music.getTrack(track.id).set("name", track.name);
+        $(`.track.track-${track.id} .track-name`).val(track.name);
     });
 
     app.on("chat", (data) => {
@@ -96,10 +96,10 @@ app.ioListen = async () => {
 
     app.on("instrumentSet", (data) => {
         const { track } = data;
-        app.music.tracks[track.id].instrument = track.instrument;
+        app.music.getTrack(track.id).set("instrument", track.instrument);
         $(`.track.track-${track.id} .instrument-selector`).val(track.instrument);
         if (parseInt($("#midiPanel").attr("trackId")) === parseInt(track.id)) {
-            app.activeKeyRender(app.music.tracks[track.id].instrument);
+            app.activeKeyRender(track.instrument);
         }
     });
 
@@ -111,8 +111,8 @@ app.ioListen = async () => {
 
     app.on("bpmChange", async (data) => {
         const { bpm } = data;
-        const oldBpm = app.music.bpm;
-        app.music.bpm = bpm;
+        const oldBpm = app.music.get("bpm");
+        app.music.set("bpm", bpm);
         app.bpmRender(bpm);
 
         app.loopend = app.loopend * oldBpm / bpm;

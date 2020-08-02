@@ -3,7 +3,7 @@
 app.clickCommitListen = () => {
     $("#tracksContent").on("click", ".version-commit", async function () {
         const trackId = parseInt($(this).parent().parent().attr("trackId"));
-        const versions = app.music.getVersions(trackId);
+        const versions = app.music.getTrack(trackId).get("versions");
         let version = 1;
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
@@ -19,7 +19,7 @@ app.clickCommitListen = () => {
                     roomId: app.roomId,
                     userId: app.userId,
                     name,
-                    notes: app.music.getNotes(trackId)
+                    notes: app.music.getTrack(trackId).get("notes")
                 }, "PUT");
             }
         });
@@ -47,7 +47,7 @@ app.versionChangeListen = () => {
             app.errorShow(result.error);
             return;
         }
-        app.music.setNotes(result.trackId, result.notes);
+        app.music.getTrack(result.trackId).set("notes", result.notes);
         if (parseInt($("#midiPanel").attr("trackId")) === parseInt(result.trackId)) {
             app.panelLoadTrack(result.trackId);
         }
@@ -93,6 +93,10 @@ app.deleteTrackListen = () => {
             roomId: app.roomId
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, data, "Delete");
+        if(res.error === "lock failed"){
+            app.failedByLock();
+            return;
+        }
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -108,8 +112,8 @@ app.lockClickListen = () => {
             userId: app.userId,
             roomId: app.roomId
         };
-        const version = app.music.getVersion(trackId);
-        const locker = app.music.getLocker(trackId);
+        const version = app.music.getTrack(trackId).get("version");
+        const locker = app.music.getTrack(trackId).get("locker");
         if (locker.id === app.userId) {
             const isDiffer = await app.checkDifferFromLatest(trackId, version);
             if (isDiffer) {
@@ -132,11 +136,11 @@ app.lockClickListen = () => {
 
 
 app.checkDifferFromLatest = async (id, version) => {
-    const current = app.music.tracks[id].notes;
+    const current = app.music.getTrack(id).get("notes");
     let previous;
     if (version) {
-        const get = await fetch(`/api/1.0/midi/track?trackId=${id}&version=${version}`).then(res => res.json());
-        previous = get.notes;
+        const latest = await fetch(`/api/1.0/midi/track?trackId=${id}&version=${version}`).then(res => res.json());
+        previous = latest.notes;
     }
     else {
         previous = {};
@@ -159,14 +163,15 @@ app.changeInstrumentListen = () => {
             instrument
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
+        const originInstrument = app.music.getTrack(trackId).get("instrument");
         if (res.error === "lock failed") {
             app.failedByLock();
-            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
+            $(`.track.track-${trackId} .instrument-selector`).val(originInstrument);
             return;
         }
         if (res.error) {
             app.errorShow(res.error);
-            $(`.track.track-${trackId} .instrument-selector`).val(app.music.tracks[trackId].instrument);
+            $(`.track.track-${trackId} .instrument-selector`).val(originInstrument);
             return;
         }
     });

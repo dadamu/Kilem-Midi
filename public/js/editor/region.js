@@ -20,14 +20,14 @@ app.regionNoteDelete = (trackId, note) => {
 };
 
 app.initRegionNoteRender = () => {
-    for (let track of Object.values(app.music.tracks)) {
+    for (let track of Object.values(app.music.get("tracks"))) {
         app.loadRegionNotesRender(track.id);
     }
 };
 
 app.loadRegionNotesRender = (trackId) => {
     $(`.region.track-${trackId} .regionNote`).remove();
-    const notes = app.music.tracks[trackId].notes;
+    const notes = app.music.getTrack(trackId).get("notes");
     for (let onePosNotes of Object.values(notes)) {
         onePosNotes.forEach(note => app.regionNoteRender(trackId, note));
     }

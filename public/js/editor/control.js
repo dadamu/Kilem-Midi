@@ -61,10 +61,11 @@ app.loopButtonListen = () => {
 
 app.midiPlay = () => {
     if (!app.isplaying) {
-        const resolution = 60 / app.music.bpm / 16 * 1000;
-        const tracks = app.music.tracks;
+        const bpm = app.music.get("bpm");
+        const resolution = 60 /bpm / 16 * 1000;
+        const tracks = app.music.get("tracks");
         app.isplaying = true;
-        const maxTime = app.musicLength * 4 / (app.music.bpm / 60) * 1000;
+        const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
         app.playInterval = setInterval(() => {
             if (app.currentTime >= maxTime) {
                 clearInterval(app.playInterval);
@@ -74,11 +75,11 @@ app.midiPlay = () => {
                 app.currentTime = app.loopstart;
             }
 
-            app.regionPlayheadTrans(app.music.bpm);
+            app.regionPlayheadTrans(bpm);
             if (app.isMidiEditorOpen) {
-                app.midiPlayheadTrans(app.music.bpm);
+                app.midiPlayheadTrans(bpm);
             }
-            app.playTracks(app.music.bpm, tracks);
+            app.playTracks(bpm, tracks);
             app.currentTime += resolution;
         }, resolution);
     }
@@ -109,7 +110,7 @@ app.midiStopListen = () => {
         clearInterval(app.playInterval);
         app.isplaying = false;
         app.currentTime = 0;
-        const bpm = app.music.bpm;
+        const bpm = app.music.get("bpm");
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
         $("#playButton").removeClass("active");
@@ -120,7 +121,7 @@ app.midiStopListen = () => {
 app.midiResetListen = () => {
     $("#resetButton").click(() => {
         app.currentTime = app.loopstart;
-        const bpm = app.music.bpm;
+        const bpm = app.music.get("bpm");
         app.regionPlayheadTrans(bpm);
         app.midiPlayheadTrans(bpm);
     });
@@ -200,7 +201,7 @@ app.bpmChangeListen = () => {
     $("#bpm").change(async function () {
         const bpm = $(this).val();
         if (bpm > 200 || bpm < 60) {
-            app.bpmRender(app.music.bpm);
+            app.bpmRender(app.music.get("bpm"));
             app.errorShow("bpm should be between 60 and 200.");
             return;
         }
@@ -210,16 +211,16 @@ app.bpmChangeListen = () => {
         }, "PATCH");
         if (res.error) {
             app.errorShow(res.error);
-            app.bpmRender(app.music.bpm);
+            app.bpmRender(app.music.get("bpm"));
             return;
         }
         app.successShow("Bpm Change Success");
-        app.music.bpm = $(this).val();
+        app.music.set("bpm", $(this).val());
     });
 };
 
 app.bpmRender = () => {
-    $("#bpm").val(app.music.bpm);
+    $("#bpm").val(app.music.get("bpm"));
     if (app.creator.id === app.userId) {
         $("#bpm").removeAttr("disabled").addClass("editable");
     }
@@ -239,7 +240,7 @@ app.controlLoopRender = () => {
 };
 
 app.posToTime = (pos, interval) => {
-    return pos * 4 / interval * 60 / app.music.bpm * 1000;
+    return pos * 4 / interval * 60 / app.music.get("bpm") * 1000;
 };
 
 app.setLoopHeadDrag = (div) => {
