@@ -188,6 +188,7 @@ module.exports = {
                 };
             }
             else {
+                trx.rollback();
                 return new Error("lock failed");
             }
         }
