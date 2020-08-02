@@ -4,8 +4,8 @@ module.exports = {
     create: async (body) => {
         const { roomId, userId, msg } = body;
         const date = moment().format("YYYY-MM-DD HH:mm:ss");
-        const select = await knex("user").select("username").where("id", userId);
-        const name = select[0].username;
+        const userSelects = await knex("user").select("username").where("id", userId);
+        const name = userSelects[0].username;
         await knex("chat").insert({ user_id: userId, room_id: roomId, date, msg });
         return {
             user: {
@@ -18,13 +18,13 @@ module.exports = {
     },
     get: async (roomId, paging) => {
         const result = {};
-        const select = await knex("chat AS c").select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"]).innerJoin("user AS u", "u.id", "c.user_id")
+        const chatsSelects = await knex("chat AS c").select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"]).innerJoin("user AS u", "u.id", "c.user_id")
             .where("room_id", roomId).limit(51).orderBy("date", "desc");
-        if (select.length > 50) {
-            select.pop();
+        if (chatsSelects.length > 50) {
+            chatsSelects.pop();
             result.next = paging + 1;
         }
-        const chatmsgs = select.map(item => {
+        const chatmsgs = chatsSelects.map(item => {
             return {
                 user: {
                     id: item.userId,

@@ -6,8 +6,8 @@ module.exports = {
         let name = "";
         const trx = await knex.transaction();
         try {
-            const select = await trx("track AS t").select(["t.id AS trackId"]).where("t.room_id", roomId).orderBy("t.id", "desc").forUpdate();
-            name = `Track${select.length + 1}`;
+            const tracksSelects = await trx("track AS t").select(["t.id AS trackId"]).where("t.room_id", roomId).orderBy("t.id", "desc");
+            name = `Track${tracksSelects.length + 1}`;
             const ids = await trx("track").insert({
                 name,
                 user_id: userId,
@@ -34,8 +34,8 @@ module.exports = {
         const { userId } = body;
         const trx = await knex.transaction();
         try {
-            const select = await trx("track AS t").select(["t.user_id AS userId"]).where("t.id", trackId).forUpdate();
-            if (select[0].userId === parseInt(userId || select[0].lock === 0)) {
+            const trackSelects = await trx("track AS t").select(["t.user_id AS userId"]).where("t.id", trackId).forUpdate();
+            if (trackSelects[0].userId === parseInt(userId || trackSelects[0].lock === 0)) {
                 await trx("track AS t").update("t.active", 0).where("t.id", trackId);
                 await trx.commit();
                 return {
@@ -58,15 +58,15 @@ module.exports = {
         const newNotes = JSON.stringify(notes);
         const trx = await knex.transaction();
         try {
-            const select = await trx("version AS v")
+            const versionSelects = await trx("version AS v")
                 .select(["v.version", "v.track_id AS track_id", "v.notes AS notes"])
                 .where("v.track_id", trackId).orderBy("v.version", "desc").limit(1).forUpdate();
 
             let version, oldNotes;
-            if (select.length > 0) {
-                const { version: sVersion, notes: sOldNotes } = select[0];
-                version = sVersion;
-                oldNotes = sOldNotes;
+            if (versionSelects.length > 0) {
+                const { version: versionSelect, notes: notesSelect } = versionSelects[0];
+                version = versionSelect;
+                oldNotes = notesSelect;
             }
             else {
                 version = 0;
@@ -106,10 +106,10 @@ module.exports = {
         }
     },
     versionPull: async (trackId, version) => {
-        const select = await knex("version AS v").select(["v.notes AS notes", "v.track_id AS trackId"])
+        const versionSelects = await knex("version AS v").select(["v.notes AS notes", "v.track_id AS trackId"])
             .where("v.version", version).andWhere("v.track_id", trackId);
-        if (select.length > 0) {
-            return { notes: JSON.parse(select[0].notes), trackId };
+        if (versionSelects.length > 0) {
+            return { notes: JSON.parse(versionSelects[0].notes), trackId };
         }
         else {
             return {};
@@ -117,28 +117,28 @@ module.exports = {
     },
     authorityCheck: async (trackId, body) => {
         const { userId } = body;
-        const select = await knex("track AS t").select(["t.user_id AS lockerId"])
+        const lockerSelects = await knex("track AS t").select(["t.user_id AS id"])
             .where("t.id", trackId);
-        return select[0].lockerId === userId;
+        return lockerSelects[0].id === userId;
     },
     lockSet: async (trackId, body) => {
         const trx = await knex.transaction();
         const { userId } = body;
         try {
-            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId);
-            if (!select[0].lockerId) {
+            const lockerSelects = await trx("track AS t").select(["t.user_id AS id"]).where("t.id", trackId).forUpdate();
+            if (!lockerSelects[0].id) {
                 await trx("track AS t").update("t.user_id", userId).where("t.id", trackId);
-                const nameSelect = await trx("user AS u").select(["u.username AS name"]).where("u.id", userId);
+                const nameSelects = await trx("user AS u").select(["u.username AS name"]).where("u.id", userId);
                 await trx.commit();
                 return {
                     id: trackId,
                     locker: {
                         id: userId,
-                        name: nameSelect[0].name
+                        name: nameSelects[0].name
                     }
                 };
             }
-            else if (parseInt(select[0].lockerId) === parseInt(userId)) {
+            else if (parseInt(lockerSelects[0].id) === parseInt(userId)) {
                 await trx("track AS t").update("t.user_id", null).where("t.id", trackId);
                 await trx.commit();
                 return {
@@ -149,10 +149,8 @@ module.exports = {
                     }
                 };
             }
-            else {
-                await trx.rollback();
-                return new Error("lock failed");
-            }
+            await trx.rollback();
+            return new Error("lock failed");
         }
         catch (e) {
             await trx.rollback();
@@ -163,8 +161,8 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId, name } = body;
         try {
-            const select = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId);
-            if (select.length === 0) {
+            const lockerSelects = await trx("track AS t").select(["id"]).where("t.id", trackId).andWhere("t.user_id", userId);
+            if (lockerSelects.length === 0) {
                 await trx.rollback();
                 return new Error("lock failed");
             }
@@ -180,8 +178,8 @@ module.exports = {
         const trx = await knex.transaction();
         const { userId, instrument } = body;
         try {
-            const select = await trx("track AS t").select(["t.user_id AS lockerId"]).where("t.id", trackId);
-            if (parseInt(select[0].lockerId) === parseInt(userId)) {
+            const lockerSelects = await trx("track AS t").select(["t.user_id AS id"]).where("t.id", trackId).forUpdate();
+            if (parseInt(lockerSelects[0].id) === parseInt(userId)) {
                 await trx("track AS t").update("t.instrument", instrument).where("t.id", trackId);
                 await trx.commit();
                 return {

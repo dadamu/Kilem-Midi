@@ -8,8 +8,8 @@ module.exports = {
         return;
     },
     getFile: async (roomId, userId) => {
-        const selectUser = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
-        const selectMaster = await knex("room AS r")
+        const userSelects = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
+        const masterSelect = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.name AS roomname", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
                 "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
@@ -20,15 +20,15 @@ module.exports = {
             .leftJoin("user AS u3", "u3.id", "r.user_id")
             .where("r.id", roomId);
         let userData;
-        if (selectUser.length === 0) {
+        if (userSelects.length === 0) {
             return new Error("Access denied");
         }
-        else if (selectUser[0].data)
-            userData = JSON.parse(selectUser[0].data);
+        else if (userSelects[0].data)
+            userData = JSON.parse(userSelects[0].data);
         else
             userData = {};
 
-        const masterData = getMasterData(selectMaster);
+        const masterData = getMasterData(masterSelect);
         const data = merge(userData, masterData);
         return data;
     },
@@ -36,8 +36,8 @@ module.exports = {
         const { trackId, type, roomId, userId, note } = info;
         const trx = await knex.transaction();
         try {
-            const select = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
-            const { data } = select[0];
+            const saveSelect = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
+            const { data } = saveSelect[0];
             const tracks = JSON.parse(data);
             if (type === "createNote") {
                 if (tracks[trackId].notes[note.posX]) {
@@ -66,8 +66,9 @@ module.exports = {
         }
     },
     update: async (roomId, type, body) => {
-        const select = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
-        if (select.length === 0) {
+        const userSelects = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
+        const isInRoom = userSelects.length > 0;
+        if (isInRoom) {
             return new Error("You are not the room owner");
         }
         await knex("room").update(type, body[type]).where("id", roomId);

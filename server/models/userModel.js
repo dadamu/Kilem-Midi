@@ -18,7 +18,7 @@ module.exports = {
         }
     },
     get: async(email) => {
-        const select = await knex("user").select(["id", "username", "password"]).where("email", email);
-        return select;
+        const emailSelect = await knex("user").select(["id", "username", "password"]).where("email", email);
+        return emailSelect;
     }
 };
