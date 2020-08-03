@@ -15,14 +15,14 @@ class Instrument {
     }
 
     async getFiles() {
-        const pTask = [];
+        const pTasks = [];
         const pitchWaitQueue = [];
         const start = Math.floor((this.minPitch - 1) / 3) * 3 + 1;
         for (let pitch = start; pitch <= this.maxPitch; pitch++) {
             const task = this.getFileTask(pitch, pitchWaitQueue);
-            pTask.push(task);
+            pTasks.push(task);
         }
-        await Promise.all(pTask);
+        await Promise.all(pTasks);
         //other pitch depends on file
         for (let pitch of pitchWaitQueue) {
             const { pitchShift } = this.audio[pitch];

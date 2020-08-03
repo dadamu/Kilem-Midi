@@ -6,8 +6,9 @@ module.exports = {
         let name = "";
         const trx = await knex.transaction();
         try {
-            const tracksSelects = await trx("track AS t").select(["t.id AS trackId"]).where("t.room_id", roomId).orderBy("t.id", "desc");
-            name = `Track${tracksSelects.length + 1}`;
+            const trackSelects = await trx("track AS t").select(["t.id AS trackId"])
+                .where("t.room_id", roomId).orderBy("t.id", "desc");
+            name = `Track${trackSelects.length + 1}`;
             const ids = await trx("track").insert({
                 name,
                 user_id: userId,
@@ -34,7 +35,8 @@ module.exports = {
         const { userId } = body;
         const trx = await knex.transaction();
         try {
-            const trackSelects = await trx("track AS t").select(["t.user_id AS userId"]).where("t.id", trackId).forUpdate();
+            const trackSelects = await trx("track AS t").select(["t.user_id AS userId"])
+                .where("t.id", trackId).forUpdate();
             if (trackSelects[0].userId === parseInt(userId || trackSelects[0].lock === 0)) {
                 await trx("track AS t").update("t.active", 0).where("t.id", trackId);
                 await trx.commit();

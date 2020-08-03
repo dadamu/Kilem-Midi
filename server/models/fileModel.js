@@ -8,7 +8,7 @@ module.exports = {
         return;
     },
     getFile: async (roomId, userId) => {
-        const userSelects = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
+        const users = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
         const masterSelect = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.name AS roomname", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
@@ -20,11 +20,11 @@ module.exports = {
             .leftJoin("user AS u3", "u3.id", "r.user_id")
             .where("r.id", roomId);
         let userData;
-        if (userSelects.length === 0) {
+        if (users.length === 0) {
             return new Error("Access denied");
         }
-        else if (userSelects[0].data)
-            userData = JSON.parse(userSelects[0].data);
+        else if (users[0].data)
+            userData = JSON.parse(users[0].data);
         else
             userData = {};
 
@@ -36,8 +36,8 @@ module.exports = {
         const { trackId, type, roomId, userId, note } = info;
         const trx = await knex.transaction();
         try {
-            const saveSelect = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
-            const { data } = saveSelect[0];
+            const saves = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
+            const { data } = saves[0];
             const tracks = JSON.parse(data);
             if (type === "createNote") {
                 if (tracks[trackId].notes[note.posX]) {
@@ -48,11 +48,11 @@ module.exports = {
                 }
             }
             else if (type === "deleteNote") {
-                const posXNotes = tracks[trackId].notes[note.posX].filter(old => old.pitch != note.pitch);
-                if (posXNotes.length === 0)
+                const noteInPosX = tracks[trackId].notes[note.posX].filter(old => old.pitch != note.pitch);
+                if (noteInPosX.length === 0)
                     delete tracks[trackId].notes[note.posX];
                 else
-                    tracks[trackId].notes[note.posX] = posXNotes;
+                    tracks[trackId].notes[note.posX] = noteInPosX;
             }
             await trx("save").update({
                 data: JSON.stringify(tracks)
@@ -66,13 +66,13 @@ module.exports = {
         }
     },
     update: async (roomId, type, body) => {
-        const userSelects = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
-        const isInRoom = userSelects.length > 0;
+        const users = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
+        const isInRoom = users.length > 0;
         if (isInRoom) {
             return new Error("You are not the room owner");
         }
         await knex("room").update(type, body[type]).where("id", roomId);
-        return;
+        return true;
     },
 };
 
@@ -83,11 +83,13 @@ function merge(user, master) {
             let { id, version, notes, commiter } = track;
             version = version.version || 0;
             const masterTrack = master.tracks[id];
-            if (masterTrack && version >= masterTrack.version) {
-                masterTrack.version = version;
-                masterTrack.commiter = commiter;
+            if (masterTrack) {
+                if (version >= masterTrack.version) {
+                    masterTrack.version = version;
+                    masterTrack.commiter = commiter;
+                }
+                masterTrack.notes = notes;
             }
-            masterTrack.notes = notes;
         }
     }
     return master;

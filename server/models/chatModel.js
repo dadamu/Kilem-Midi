@@ -18,13 +18,13 @@ module.exports = {
     },
     get: async (roomId, paging) => {
         const result = {};
-        const chatsSelects = await knex("chat AS c").select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"]).innerJoin("user AS u", "u.id", "c.user_id")
+        const chats = await knex("chat AS c").select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"]).innerJoin("user AS u", "u.id", "c.user_id")
             .where("room_id", roomId).limit(51).orderBy("date", "desc");
-        if (chatsSelects.length > 50) {
-            chatsSelects.pop();
+        if (chats.length > 50) {
+            chats.pop();
             result.next = paging + 1;
         }
-        const chatmsgs = chatsSelects.map(item => {
+        const chatmsgs = chats.map(item => {
             return {
                 user: {
                     id: item.userId,

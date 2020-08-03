@@ -88,11 +88,8 @@ module.exports = {
         }
         return;
     },
-    update: async(body) => {
-        const id = body.id;
-        const newContent = body;
-        delete newContent.id;
-        const rommUpdate = await knex("room").update(newContent).where("id", id);
+    update: async(content) => {
+        const rommUpdate = await knex("room").update(content).where("id", content.id);
         if(rommUpdate.length === 0){
             return new Error("Failed");
         }

@@ -11,18 +11,18 @@ module.exports = {
             res.status(400).json({ error: "Invalid input" });
             return;
         }
-        const result = await fileModel.getFile(roomId, userId);
-        if (result instanceof Error) {
-            res.status(403).json({ error: result.message });
+        const file = await fileModel.getFile(roomId, userId);
+        if (file instanceof Error) {
+            res.status(403).json({ error: file.message });
             return;
         }
-        res.status(200).json({ data: result });
+        res.status(200).json({ data: file });
     }),
     update: asyncHandler(async (req, res) => {
         const { roomId, type } = req.params;
-        const result = await fileModel.update(roomId, type, req.body);
-        if (result instanceof Error) {
-            res.status(403).json({ error: result.message });
+        const isUpdated = await fileModel.update(roomId, type, req.body);
+        if (isUpdated instanceof Error) {
+            res.status(403).json({ error: isUpdated.message });
             return;
         }
         res.status(201).json({ status: "success" });

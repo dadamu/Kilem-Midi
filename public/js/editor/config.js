@@ -10,7 +10,7 @@ app.setConfig = () => {
     app.instruments = {};
     app.instrumentsURL = "/public/instruments/"; //https://kilem.s3-us-west-2.amazonaws.com/instruments/
     // UI config
-    app.musicLength = 24;
+    app.musicLength = 400;
     app.scaleNumMax = 6;
     app.scaleNumMin = 1;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;

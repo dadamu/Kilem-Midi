@@ -11,24 +11,23 @@ module.exports = {
             res.json({ error: "lock failed" });
             return;
         }
-        const result = await trackModel.commit(id, req.body);
-        if (result instanceof Error) {
-            res.json({ error: result.message });
+        const track = await trackModel.commit(id, req.body);
+        if (track instanceof Error) {
+            res.json({ error: track.message });
             return;
         }
-        res.json({ status: "success" });
         trackDebug("Commit Track Success");
         const io = req.app.get("io");
-        io.of("/room" + roomId).to("editor").emit("commit", { track: result });
-        return;
+        io.of("/room" + roomId).to("editor").emit("commit", { track });
+        res.json({ status: "success" });
     }),
     add: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const track = await trackModel.add(req.body);
-        res.json({ status: "success" });
         trackDebug("Add Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
+        res.json({ status: "success" });
     }),
     pull: asyncHandler(async (req, res) => {
         const { trackId, version } = req.query;
@@ -43,10 +42,10 @@ module.exports = {
             res.json({ error: result.message });
             return;
         }
-        res.json({ status: "success" });
         trackDebug("Delete Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
+        res.json({ status: "success" });
     }),
     update: asyncHandler(async (req, res) => {
         const { type } = req.params;
@@ -65,14 +64,14 @@ module.exports = {
 const lockSet = async (req, res) => {
     const { id } = req.params;
     const { roomId } = req.body;
-    const result = await trackModel.lockSet(id, req.body);
-    if (result instanceof Error) {
-        res.json({ error: result.message });
+    const track = await trackModel.lockSet(id, req.body);
+    if (track instanceof Error) {
+        res.json({ error: track.message });
         return;
     }
-    res.json({ status: "success" });
     const io = req.app.get("io");
-    io.of("/room" + roomId).emit("lock", { track: result });
+    io.of("/room" + roomId).emit("lock", { track: track });
+    res.json({ status: "success" });
 };
 
 const nameChange = async (req, res) => {
@@ -83,12 +82,12 @@ const nameChange = async (req, res) => {
         res.json({ error: result.message });
         return;
     }
-    res.json({ status: "success" });
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("trackNameChange", {
         id,
         name: req.body.name
     });
+    res.json({ status: "success" });
 };
 
 const instrumentSet = async (req, res) => {
