@@ -79,7 +79,7 @@ app.addTrackListen = () => {
 app.deleteTrackListen = () => {
     $("#deleteTrack").click(async () => {
         const swal = await Swal.fire({
-            icon: "warn",
+            icon: "warning",
             text: "Really remove track?",
             showCancelButton: true
         });
