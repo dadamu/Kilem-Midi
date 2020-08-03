@@ -1,14 +1,14 @@
 const knex = require("../../util/mysqlCon").knex;
 
 module.exports = {
-    signup: async (data) => {
+    signup: async (userInfo) => {
         try{
-            const insert = await knex("user").insert(data);
-            const result = {
+            const insert = await knex("user").insert(userInfo);
+            const user = {
                 id: insert[0],
-                username: data.username
+                username: userInfo.username
             };
-            return result;
+            return user;
         }
         catch(e){
             if(e.errno === 1062){
@@ -18,7 +18,9 @@ module.exports = {
         }
     },
     get: async(email) => {
-        const emailSelect = await knex("user").select(["id", "username", "password"]).where("email", email);
-        return emailSelect;
+        const users = await knex("user")
+            .select(["id", "username", "password"])
+            .where("email", email);
+        return users;
     }
 };

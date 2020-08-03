@@ -42,50 +42,50 @@ async function nativeSignUp(req, res) {
         return;
     }
     const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
-    const bcryptPass = bcrypt.hashSync(password, salt);
+    const bcryptPassword = bcrypt.hashSync(password, salt);
     username = validator.escape(username);
-    const data = { email, username, password: bcryptPass, provider };
-    const result = await userModel.signup(data);
+    const userInfo = { email, username, password: bcryptPassword, provider };
+    const user = await userModel.signup(userInfo);
 
-    if (result instanceof Error) {
-        res.status(400).json({ error: result.message });
+    if (user instanceof Error) {
+        res.status(400).json({ error: user.message });
         return;
     }
-    const accessToken = jwt.sign(payloadGen(result), JWT_KEY);
+    const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
         accessToken,
-        user: result
+        user
     });
 }
 
 async function googleSignUp(req, res) {
     let { accessToken } = req.body;
-    const data = await getGoogleProfie(accessToken);
-    if(data instanceof Error){
-        res.status(400).json({error: data.message});
+    const userFromGoogle = await getGoogleProfie(accessToken);
+    if(userFromGoogle instanceof Error){
+        res.status(400).json({error: userFromGoogle.message});
         return;
     }
-    const result = await userModel.signup(data);
-    const token = jwt.sign(payloadGen(result), JWT_KEY);
+    const user = await userModel.signup(userFromGoogle);
+    const token = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
         accessToken: token,
-        user: result
+        user
     });
 }
 
 async function googleSignIn(req, res) {
     let { accessToken } = req.body;
-    const data = await getGoogleProfie(accessToken);
-    if(data instanceof Error){
-        res.status(400).json({error: data.message});
+    const userFromGoogle = await getGoogleProfie(accessToken);
+    if(userFromGoogle instanceof Error){
+        res.status(400).json({error: userFromGoogle.message});
         return;
     }
-    const select = await userModel.get(data.email);
-    if (select.length === 0) {
+    const users = await userModel.get(userFromGoogle.email);
+    if (users.length === 0) {
         res.status(400).json({ error: "User not Exist" });
         return;
     }
-    const user = select[0];
+    const user = users[0];
     const token = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
         accessToken: token,
@@ -95,10 +95,10 @@ async function googleSignIn(req, res) {
 
 async function getGoogleProfie(accessToken){
     try{
-        const googleUser = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`).then(res => res.json());
+        const user = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`).then(res => res.json());
         return {
-            email: googleUser.email,
-            username: googleUser.name,
+            email: user.email,
+            username: user.name,
             provider: "google"
         };
     }
@@ -110,19 +110,20 @@ async function getGoogleProfie(accessToken){
 async function nativeSignIn(req, res) {
     let { email, password } = req.body;
     const isEmail = validator.isEmail(email);
-    const passValid = !validator.isEmpty(password);
-    if (!isEmail || !passValid) {
+    const passwordValid = !validator.isEmpty(password);
+    const isValid = !isEmail || !passwordValid;
+    if (isValid) {
         res.status(400).json({ error: "Invalid Input" });
         return;
     }
-    const select = await userModel.get(email);
-    if (select.length === 0) {
+    const users = await userModel.get(email);
+    if (users.length === 0) {
         res.status(400).json({ error: "Wrong Email or Password" });
         return;
     }
-    const user = select[0];
-    const passCheck = bcrypt.compareSync(password, user.password);
-    if (!passCheck) {
+    const user = users[0];
+    const passwordCheck = bcrypt.compareSync(password, user.password);
+    if (!passwordCheck) {
         res.status(400).json({ error: "Wrong Email or Password" });
         return;
     }
@@ -141,8 +142,8 @@ function profileGet(req, res) {
         return;
     }
     const token = headers["authorization"].split(" ")[1];
-    const data = jwt.verify(token, JWT_KEY);
-    res.json(data);
+    const user = jwt.verify(token, JWT_KEY);
+    res.json(user);
 }
 
 

@@ -62,44 +62,44 @@ module.exports = {
 };
 
 const lockSet = async (req, res) => {
-    const { id } = req.params;
-    const { roomId } = req.body;
-    const track = await trackModel.lockSet(id, req.body);
+    const { id: trackId } = req.params;
+    const { roomId, userId } = req.body;
+    const track = await trackModel.lockSet(trackId, userId);
     if (track instanceof Error) {
         res.json({ error: track.message });
         return;
     }
     const io = req.app.get("io");
-    io.of("/room" + roomId).emit("lock", { track: track });
+    io.of("/room" + roomId).emit("lock", { track });
     res.json({ status: "success" });
 };
 
 const nameChange = async (req, res) => {
-    const { id } = req.params;
+    const { id: trackId } = req.params;
     const { roomId } = req.body;
-    const result = await trackModel.nameChange(id, req.body);
+    const result = await trackModel.nameChange(trackId, req.body);
     if (result instanceof Error) {
         res.json({ error: result.message });
         return;
     }
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("trackNameChange", {
-        id,
+        id: trackId,
         name: req.body.name
     });
     res.json({ status: "success" });
 };
 
 const instrumentSet = async (req, res) => {
-    const { id } = req.params;
+    const { id: trackId } = req.params;
     const { roomId } = req.body;
-    const result = await trackModel.instrumentSet(id, req.body);
-    if (result instanceof Error) {
-        res.json({ error: result.message });
+    const track = await trackModel.instrumentSet(trackId, req.body);
+    if (track instanceof Error) {
+        res.json({ error: track.message });
         return;
     }
     res.json({ status: "success" });
     trackDebug("Change Track Instrument Success");
     const io = req.app.get("io");
-    io.of("/room" + roomId).emit("instrumentSet", { track: result });
+    io.of("/room" + roomId).emit("instrumentSet", { track });
 };

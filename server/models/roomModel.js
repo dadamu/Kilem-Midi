@@ -63,6 +63,7 @@ module.exports = {
             result.data = roomsSelects;
             return result;
         }
+
         if (paging > 0) {
             result.previous = paging - 1;
         }
@@ -71,8 +72,7 @@ module.exports = {
         }
         return result;
     },
-    create: async (body, user) => {
-        const { room } = body;
+    create: async (room, user) => {
         room.is_private = room.isPrivate;
         delete room.isPrivate;
         room.user_id = user.id;
@@ -80,32 +80,31 @@ module.exports = {
         await knex("save").insert({ user_id: user.id, room_id: roomId[0] });
         return roomId[0];
     },
-    delete: async (body, user) => {
-        const { roomId } = body;
-        const result = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
-        if (result === 0) {
+    delete: async (roomId, user) => {
+        const rooms = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
+        if (rooms === 0) {
             return new Error("You are not the room owner");
         }
         return;
     },
     update: async(content) => {
-        const rommUpdate = await knex("room").update(content).where("id", content.id);
-        if(rommUpdate.length === 0){
+        const roomsUpdated = await knex("room").update(content).where("id", content.id);
+        if(roomsUpdated.length === 0){
             return new Error("Failed");
         }
-        return;
+        return true;
     },
-    hasRoom: async (id) => {
-        const room = await knex("room").where({ id });
+    hasRoom: async (roomId) => {
+        const room = await knex("room").where({ id: roomId });
         return room.length > 0;
     },
     checkUser: async (roomId, user) => {
-        const userSelects = await knex("save").select(["user_id"]).where("room_id", roomId).andWhere("user_id", user.id);
-        return userSelects.length === 1;
+        const users = await knex("save").select(["user_id"]).where("room_id", roomId).andWhere("user_id", user.id);
+        return users.length === 1;
     },
     getPassword: async (roomId) => {
-        const passSelects = await knex("room").select(["password"]).where("id", roomId);
-        return passSelects[0].password;
+        const rooms = await knex("room").select(["password"]).where("id", roomId);
+        return rooms[0].password;
     },
     addUser: async (roomId, user) => {
         await knex("save").insert({ user_id: user.id, room_id: roomId });
@@ -113,8 +112,8 @@ module.exports = {
     },
     deleteUser: async (roomId, user) => {
         await knex("save").where("room_id", roomId).andWhere("user_id", user.id).del();
-        const userSelects = await knex("track").select("id").where("room_id", roomId).andWhere("user_id", user.id);
+        const tracks = await knex("track").select("id").where("room_id", roomId).andWhere("user_id", user.id);
         await knex("track").update("user_id", null).where("room_id", roomId).andWhere("user_id", user.id);
-        return userSelects;
+        return tracks;
     }
 };

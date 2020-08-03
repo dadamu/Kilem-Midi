@@ -9,8 +9,8 @@ module.exports = {
             socket.join("editor");
             socket.join("chat");
 
-            socket.on("init", (data) => {
-                socket.join("editor" + data.userId);
+            socket.on("init", (info) => {
+                socket.join("editor" + info.userId);
             });
 
             noteSocket.noteListen(socket);

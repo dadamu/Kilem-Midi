@@ -1,15 +1,15 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    saveFile: async (body) => {
-        const { roomId, userId, data } = body;
+    saveFile: async (file) => {
+        const { roomId, userId, data } = file;
         await knex("save").update({
             data: JSON.stringify(data)
         }).where("room_id", roomId).andWhere("user_id", userId);
         return;
     },
     getFile: async (roomId, userId) => {
-        const users = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
-        const masterSelect = await knex("room AS r")
+        const userFiles = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
+        const masterFiles = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.name AS roomname", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
                 "v.version AS version", "v.name AS versionName", "v.notes AS notes", "t.instrument AS instrument"])
@@ -20,23 +20,27 @@ module.exports = {
             .leftJoin("user AS u3", "u3.id", "r.user_id")
             .where("r.id", roomId);
         let userData;
-        if (users.length === 0) {
+        if (userFiles.length === 0) {
             return new Error("Access denied");
         }
-        else if (users[0].data)
-            userData = JSON.parse(users[0].data);
+        else if (userFiles[0].data)
+            userData = JSON.parse(userFiles[0].data);
         else
             userData = {};
 
-        const masterData = getMasterData(masterSelect);
-        const data = merge(userData, masterData);
-        return data;
+        const masterData = getMasterData(masterFiles);
+        const result = merge(userData, masterData);
+        return result;
     },
-    saveNote: async (info) => {
-        const { trackId, type, roomId, userId, note } = info;
+    saveNote: async (inputNote) => {
+        const { trackId, type, roomId, userId, note } = inputNote;
         const trx = await knex.transaction();
         try {
-            const saves = await trx("save").select(["data AS data"]).where("user_id", userId).andWhere("room_id", roomId).forUpdate();
+            const saves = await trx("save")
+                .select(["data AS data"])
+                .where("user_id", userId)
+                .andWhere("room_id", roomId)
+                .forUpdate();
             const { data } = saves[0];
             const tracks = JSON.parse(data);
             if (type === "createNote") {
@@ -54,9 +58,12 @@ module.exports = {
                 else
                     tracks[trackId].notes[note.posX] = noteInPosX;
             }
-            await trx("save").update({
-                data: JSON.stringify(tracks)
-            }).where("room_id", roomId).andWhere("user_id", userId);
+            await trx("save")
+                .update({
+                    data: JSON.stringify(tracks)
+                })
+                .where("room_id", roomId)
+                .andWhere("user_id", userId);
             await trx.commit();
             return note;
         }
@@ -65,13 +72,18 @@ module.exports = {
             throw e;
         }
     },
-    update: async (roomId, type, body) => {
-        const users = await knex("room").select(["id"]).where("id", roomId).andWhere("user_id", body.userId);
-        const isInRoom = users.length > 0;
-        if (isInRoom) {
+    update: async (roomId, type, info) => {
+        const users = await knex("room")
+            .select(["id"])
+            .where("id", roomId)
+            .andWhere("user_id", info.userId);
+        const isOwner = users.length > 0;
+        if (!isOwner) {
             return new Error("You are not the room owner");
         }
-        await knex("room").update(type, body[type]).where("id", roomId);
+        await knex("room")
+            .update(type, info[type])
+            .where("id", roomId);
         return true;
     },
 };
