@@ -70,7 +70,7 @@ app.googleSignin = (element) => {
         window.localStorage.setItem("token", res.accessToken);
         window.location.href = "/room";
     }, function (err) {
-        app.errorShow(err.details);
+        app.errorShow("Google access failed");
     });
 };
 
@@ -89,7 +89,7 @@ app.googleSignup = (element) => {
         window.localStorage.setItem("token", res.accessToken);
         window.location.href = "/room";
     }, function (err) {
-        app.errorShow(err.details);
+        app.errorShow("Google access failed");
     });
 };
 

@@ -177,8 +177,7 @@ app.trackNameChangeListen = () => {
             name: newName,
             roomId: app.roomId
         }, "PATCH");
-        if (res.error === "lock failed") {
-            app.failedByLock();
+        if(app.checkFailedByLock(res)){
             return;
         }
         if (res.error) {

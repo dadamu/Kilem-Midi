@@ -9,7 +9,7 @@ app.init = () => {
     app.selectTabListen();
     app.signListen();
     app.logoListen();
-    $("#signup .username").attr("maxlength", 10);
+    $("#signup .username").attr("maxlength", 15);
 };
 
 app.logoListen = () => {

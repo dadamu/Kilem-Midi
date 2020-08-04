@@ -93,8 +93,7 @@ app.deleteTrackListen = () => {
             roomId: app.roomId
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, data, "Delete");
-        if(res.error === "lock failed"){
-            app.failedByLock();
+        if(app.checkFailedByLock(res)){
             return;
         }
         if (res.error) {
@@ -122,8 +121,7 @@ app.lockClickListen = () => {
             }
         }
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
-        if (res.error === "lock failed") {
-            app.failedByLock();
+        if(app.checkFailedByLock(res)){
             return;
         }
         if (res.error) {
@@ -164,8 +162,7 @@ app.changeInstrumentListen = () => {
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
         const originInstrument = app.music.getTrack(trackId).get("instrument");
-        if (res.error === "lock failed") {
-            app.failedByLock();
+        if(app.checkFailedByLock(res)){
             $(`.track.track-${trackId} .instrument-selector`).val(originInstrument);
             return;
         }
