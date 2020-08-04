@@ -1,8 +1,8 @@
 const knex = require("../../util/mysqlCon").knex;
 const moment = require("moment");
 module.exports = {
-    create: async (body) => {
-        const { roomId, userId, msg } = body;
+    create: async (info) => {
+        const { roomId, userId, msg } = info;
         const date = moment().format("YYYY-MM-DD HH:mm:ss");
         const users = await knex("user")
             .select("username")
@@ -19,12 +19,14 @@ module.exports = {
         };
     },
     get: async (roomId, paging) => {
+        const num = 20;
         const result = {};
         const chats = await knex("chat AS c")
             .select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"])
             .innerJoin("user AS u", "u.id", "c.user_id")
-            .where("room_id", roomId).limit(51).orderBy("date", "desc");
-        if (chats.length > 50) {
+            .where("room_id", roomId).limit(num + 1).offset(num * paging)
+            .orderBy("date", "desc");
+        if (chats.length > num) {
             chats.pop();
             result.next = paging + 1;
         }

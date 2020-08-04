@@ -3,12 +3,19 @@
 app.chatListen = () => {
     app.chatRoomlListen();
     app.chatSendlListen();
+    app.loadChatsListen();
 };
 
 app.initChatRender = async () => {
-    const res = await fetch(`/api/1.0/chat?roomId=${app.roomId}`).then(res => res.json());
-    const { data } = res;
-    data.forEach(chat => app.chatRender(chat));
+    const chats = await app.loadChats(0);
+    chats.forEach(chat => app.chatRender(chat));
+};
+
+app.loadChats = async (paging) => {
+    const res = await fetch(`/api/1.0/chat?roomId=${app.roomId}&paging=${paging}`).then(res => res.json());
+    const { data: chats } = res;
+    app.chatsNext = res.next;
+    return chats;
 };
 
 app.chatRoomlListen = () => {
@@ -23,6 +30,17 @@ app.chatRoomlListen = () => {
         else {
             $("#chatRoom").addClass("hidden");
             $(this).removeClass("active");
+        }
+    });
+};
+
+app.loadChatsListen  = () => {
+    $("#chatContainer").scroll(async function(){
+        const posY = $(this).scrollTop();
+        if(posY === 0 && app.chatsNext){
+            const chats = await app.loadChats(app.chatsNext);
+            chats.forEach(chat => app.chatRender(chat, true) );
+            $(this).scrollTop(23 * 56);       
         }
     });
 };
@@ -66,17 +84,17 @@ app.chatSendlListen = () => {
 };
 
 
-app.chatRender = (chat) => {
+app.chatRender = (chat, load = false) => {
     const msgDiv = app.chatMsgRender(chat);
     const container = $("#chatContainer");
-    const pos = container.scrollTop() + container.height();
-    const max = container.prop("scrollHeight") - 100;
-    
-    if (pos < max) {
-        container.append(msgDiv);
+    if(load){
+        container.prepend(msgDiv);
+        return;
     }
-    else {
-        container.append(msgDiv);
+    container.append(msgDiv);
+    const pos = container.scrollTop() + container.height();
+    const max = container.prop("scrollHeight") - 150;
+    if (pos >= max){
         container.animate({ scrollTop: container.prop("scrollHeight") }, 0);
     }
 };
@@ -87,7 +105,7 @@ app.chatMsgRender = (chat) => {
     const msg = filterXSS(chat.msg.split("\n").join("<br>"));
     const contentDiv = $("<div></div>").html(msg).addClass("chat-content").attr("title", chat.date);
     msgDiv.append(userDiv, contentDiv);
-    if(chat.user.id === app.userId){
+    if (chat.user.id === app.userId) {
         userDiv.addClass("chat-mine");
         contentDiv.addClass("content-mine");
     }
