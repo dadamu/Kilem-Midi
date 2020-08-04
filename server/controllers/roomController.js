@@ -12,17 +12,14 @@ module.exports = {
         paging = paging | 0;
         const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
         if (!isAuth) {
-            res.status(403).json({ error: "Forbidden" });
-            return;
+            const err = new Error("Forbidden");
+            err.status = 403;
+            throw err;
         }
         const token = headers["authorization"].split(" ")[1];
         const user = jwt.verify(token, JWT_KEY);
         const requirement = { user, paging, keyword };
         const rooms = await roomModel.get(type, requirement);
-        if (rooms instanceof Error) {
-            res.status(404).json({ error: rooms.message });
-            return;
-        }
         res.json(rooms);
     }),
     create: asyncHandler(async (req, res) => {
@@ -41,20 +38,12 @@ module.exports = {
         res.status(201).json({ roomId });
     }),
     put: asyncHandler(async (req, res) => {
-        const isUpdated = await roomModel.update(req.body);
-        if (isUpdated instanceof Error) {
-            res.json({ error: isUpdated.message });
-            return;
-        }
+        await roomModel.update(req.body);
         res.json({ status: "success" });
     }),
     delete: asyncHandler(async (req, res) => {
         const user = jwt.verify(req.body.token, JWT_KEY);
-        const isDeleted = await roomModel.delete(req.body.roomId, user);
-        if (isDeleted instanceof Error) {
-            res.status(403).json({ error: isDeleted.message });
-            return;
-        }
+        await roomModel.delete(req.body.roomId, user);
         res.status(201).json({ status: "success" });
     }),
     addUser: asyncHandler(async (req, res) => {
@@ -70,8 +59,9 @@ module.exports = {
             const password = req.body.password || "";
             const passCheck = bcrypt.compareSync(password, roomPassword);
             if (!passCheck) {
-                res.status(403).json({ error: "Wrong password" });
-                return;
+                const err = new Error("Wrong password");
+                err.status = 403;
+                throw err;
             }
         }
         await roomModel.addUser(roomId, user);

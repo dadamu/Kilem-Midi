@@ -3,7 +3,8 @@ module.exports = {
     get: async (type, requirement) => {
         const num = 3;
         let query = knex("room AS r")
-            .select(["r.id AS id", "r.name As name", "r.filename AS filename", "u.username AS username", "r.intro AS intro"])
+            .select(["r.id AS id", "r.name As name", "r.filename AS filename",
+                "u.username AS username", "r.intro AS intro"])
             .innerJoin("user AS u", "r.user_id", "u.id");
         const result = {};
         let maxPaging;
@@ -12,8 +13,8 @@ module.exports = {
             query = query.clone().where("r.is_private", 0);
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
-            const roomsSelects = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = roomsSelects;
+            const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
+            result.data = rooms;
         }
         else if (type === "my") {
             const { user } = requirement;
@@ -21,46 +22,53 @@ module.exports = {
             query = query.clone().where("user_id", userId);
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
-            const roomsSelects = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = roomsSelects;
+            const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
+            result.data = rooms;
         }
         else if (type === "in") {
             const { user } = requirement;
             const { id: userId } = user;
-            query = query.clone().innerJoin("save AS s", "s.room_id", "r.id").where("s.user_id", userId).andWhereNot("r.user_id", userId);
+            query = query.clone().innerJoin("save AS s", "s.room_id", "r.id")
+                .where("s.user_id", userId).andWhereNot("r.user_id", userId);
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
-            const roomsSelects = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = roomsSelects;
+            const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
+            result.data = rooms;
         }
-        else if (type === "search"){
+        else if (type === "search") {
             let { keyword } = requirement;
             keyword = `%${keyword}%`;
-            query = query.clone().where("r.is_private", 0).andWhere(function(){
+            query = query.clone().where("r.is_private", 0).andWhere(function () {
                 this.where("r.name", "like", keyword).orWhere("r.filename", "like", keyword);
             });
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
-            const roomsSelects = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = roomsSelects;
+            const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
+            result.data = rooms;
         }
         else {
             const roomId = type;
             const { user } = requirement;
-            const roomsSelects = await knex("room AS r")
-                .select(["r.id AS id", "r.name As name", "r.filename AS filename", "u.username AS username", "r.intro AS intro", "r.password AS password"])
+            const rooms = await knex("room AS r")
+                .select(["r.id AS id", "r.name As name", "r.filename AS filename",
+                    "u.username AS username", "r.intro AS intro", "r.password AS password"])
                 .innerJoin("user AS u", "r.user_id", "u.id").where("r.id", roomId);
-            if (roomsSelects.length === 0) {
-                return new Error("Room does not exist");
+            if (rooms.length === 0) {
+                const err = new Error("Room does not exist");
+                err.status = 404;
+                throw err;
             }
-            const select = await knex("save").select(["user_id"]).where("room_id", roomId).andWhere("user_id", user.id);
-            if(select.length === 1){
-                roomsSelects[0].password = null;
+            const users = await knex("save")
+                .select(["user_id"])
+                .where("room_id", roomId)
+                .andWhere("user_id", user.id);
+            if (users.length === 1) {
+                rooms[0].password = null;
             }
-            if (roomsSelects[0].password) {
-                roomsSelects[0].password = true;
+            if (rooms[0].password) {
+                rooms[0].password = true;
             }
-            result.data = roomsSelects;
+            result.data = rooms;
             return result;
         }
 
@@ -81,16 +89,19 @@ module.exports = {
         return roomId[0];
     },
     delete: async (roomId, user) => {
-        const rooms = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
-        if (rooms === 0) {
-            return new Error("You are not the room owner");
+        const deletedNum = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
+        if (deletedNum === 0) {
+            const err = new Error("You are not the room owner");
+            err.status = 403;
+            throw err;
         }
-        return;
     },
-    update: async(content) => {
-        const roomsUpdated = await knex("room").update(content).where("id", content.id);
-        if(roomsUpdated.length === 0){
-            return new Error("Failed");
+    update: async (content) => {
+        const updatedNum = await knex("room").update(content).where("id", content.id);
+        if (updatedNum === 0) {
+            const err = new Error("Failed");
+            err.status = 400;
+            throw err;
         }
         return true;
     },
@@ -99,11 +110,16 @@ module.exports = {
         return room.length > 0;
     },
     checkUser: async (roomId, user) => {
-        const users = await knex("save").select(["user_id"]).where("room_id", roomId).andWhere("user_id", user.id);
+        const users = await knex("save")
+            .select(["user_id"])
+            .where("room_id", roomId)
+            .andWhere("user_id", user.id);
         return users.length === 1;
     },
     getPassword: async (roomId) => {
-        const rooms = await knex("room").select(["password"]).where("id", roomId);
+        const rooms = await knex("room")
+            .select(["password"])
+            .where("id", roomId);
         return rooms[0].password;
     },
     addUser: async (roomId, user) => {
@@ -112,8 +128,14 @@ module.exports = {
     },
     deleteUser: async (roomId, user) => {
         await knex("save").where("room_id", roomId).andWhere("user_id", user.id).del();
-        const tracks = await knex("track").select("id").where("room_id", roomId).andWhere("user_id", user.id);
-        await knex("track").update("user_id", null).where("room_id", roomId).andWhere("user_id", user.id);
+        const tracks = await knex("track")
+            .select("id")
+            .where("room_id", roomId)
+            .andWhere("user_id", user.id);
+        await knex("track")
+            .update("user_id", null)
+            .where("room_id", roomId)
+            .andWhere("user_id", user.id);
         return tracks;
     }
 };

@@ -48,14 +48,13 @@ app.use("/api", (err, req, res, next) => {
         res.status(403).json({ error: "Invalid access" });
         return;
     }
-
     res.status(err.status || 500);
-    if (err.status != 404) {
+    if (!err.status) {
         console.log(err);
         res.json({ error: "Internal server error" });
         return;
     }
-    res.json({ error: "Not Found" });
+    res.status(err.status).json({ error: err.message });
 });
 
 http.listen(process.env.HOST_PORT, () => {

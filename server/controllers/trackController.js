@@ -12,10 +12,6 @@ module.exports = {
             return;
         }
         const track = await trackModel.commit(id, req.body);
-        if (track instanceof Error) {
-            res.json({ error: track.message });
-            return;
-        }
         trackDebug("Commit Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("commit", { track });
@@ -38,10 +34,6 @@ module.exports = {
         const { roomId } = req.body;
         const { id } = req.params;
         const result = await trackModel.delete(id, req.body);
-        if (result instanceof Error) {
-            res.json({ error: result.message });
-            return;
-        }
         trackDebug("Delete Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
@@ -65,10 +57,6 @@ const lockSet = async (req, res) => {
     const { id: trackId } = req.params;
     const { roomId, userId } = req.body;
     const track = await trackModel.lockSet(trackId, userId);
-    if (track instanceof Error) {
-        res.json({ error: track.message });
-        return;
-    }
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("lock", { track });
     res.json({ status: "success" });
@@ -77,11 +65,7 @@ const lockSet = async (req, res) => {
 const nameChange = async (req, res) => {
     const { id: trackId } = req.params;
     const { roomId } = req.body;
-    const result = await trackModel.nameChange(trackId, req.body);
-    if (result instanceof Error) {
-        res.json({ error: result.message });
-        return;
-    }
+    await trackModel.nameChange(trackId, req.body);
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("trackNameChange", {
         id: trackId,
@@ -94,10 +78,6 @@ const instrumentSet = async (req, res) => {
     const { id: trackId } = req.params;
     const { roomId } = req.body;
     const track = await trackModel.instrumentSet(trackId, req.body);
-    if (track instanceof Error) {
-        res.json({ error: track.message });
-        return;
-    }
     res.json({ status: "success" });
     trackDebug("Change Track Instrument Success");
     const io = req.app.get("io");

@@ -22,7 +22,8 @@ module.exports = {
         const num = 20;
         const result = {};
         const chats = await knex("chat AS c")
-            .select(["u.id AS userId", "u.username AS username", "c.msg AS msg", "c.date AS date"])
+            .select(["u.id AS userId", "u.username AS username",
+                "c.msg AS msg", "c.date AS date"])
             .innerJoin("user AS u", "u.id", "c.user_id")
             .where("room_id", roomId).limit(num + 1).offset(num * paging)
             .orderBy("date", "desc");

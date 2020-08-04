@@ -8,23 +8,16 @@ module.exports = {
     getFile: asyncHandler(async (req, res) => {
         const { roomId, userId } = req.query;
         if (!roomId || !userId) {
-            res.status(400).json({ error: "Invalid input" });
-            return;
+            const err = new Error("Invalid input");
+            err.status = 400;
+            throw err;
         }
         const file = await fileModel.getFile(roomId, userId);
-        if (file instanceof Error) {
-            res.status(403).json({ error: file.message });
-            return;
-        }
         res.status(200).json({ data: file });
     }),
     update: asyncHandler(async (req, res) => {
         const { roomId, type } = req.params;
-        const isUpdated = await fileModel.update(roomId, type, req.body);
-        if (isUpdated instanceof Error) {
-            res.status(403).json({ error: isUpdated.message });
-            return;
-        }
+        await fileModel.update(roomId, type, req.body);
         res.status(201).json({ status: "success" });
         const io = req.app.get("io");
         if(type === "filename"){

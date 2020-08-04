@@ -51,7 +51,6 @@
     margin-top: 10px;
     display: flex;
     flex-direction: column;
-
 }
 
 .chat-user{
@@ -66,6 +65,7 @@
 .chat-content{
     margin-right: 20px;
     padding: 10px;
+    max-width: 80%;
     word-break: break-all;
     align-self: flex-start;
     cursor: pointer;

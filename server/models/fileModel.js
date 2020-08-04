@@ -21,7 +21,9 @@ module.exports = {
             .where("r.id", roomId);
         let userData;
         if (userFiles.length === 0) {
-            return new Error("Access denied");
+            const err = new Error("Access denied");
+            err.status = 401;
+            throw err;
         }
         else if (userFiles[0].data)
             userData = JSON.parse(userFiles[0].data);
@@ -29,8 +31,7 @@ module.exports = {
             userData = {};
 
         const masterData = getMasterData(masterFiles);
-        const result = merge(userData, masterData);
-        return result;
+        return merge(userData, masterData);
     },
     saveNote: async (inputNote) => {
         const { trackId, type, roomId, userId, note } = inputNote;
@@ -79,7 +80,9 @@ module.exports = {
             .andWhere("user_id", info.userId);
         const isOwner = users.length > 0;
         if (!isOwner) {
-            return new Error("You are not the room owner");
+            const err = new Error("You are not the room owner");
+            err.status = 400;
+            throw err;
         }
         await knex("room")
             .update(type, info[type])

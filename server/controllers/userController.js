@@ -38,19 +38,15 @@ async function nativeSignUp(req, res) {
     const userValid = !validator.isEmpty(username);
     const passValid = !validator.isEmpty(password);
     if (!isEmail || !userValid || !passValid) {
-        res.status(400).json({ error: "Invalid Input" });
-        return;
+        const err = new Error("Invalid input");
+        err.status = 400;
+        throw err;
     }
     const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
     const bcryptPassword = bcrypt.hashSync(password, salt);
     username = validator.escape(username);
     const userInfo = { email, username, password: bcryptPassword, provider };
     const user = await userModel.signup(userInfo);
-
-    if (user instanceof Error) {
-        res.status(400).json({ error: user.message });
-        return;
-    }
     const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
         accessToken,
@@ -61,10 +57,6 @@ async function nativeSignUp(req, res) {
 async function googleSignUp(req, res) {
     let { accessToken } = req.body;
     const userFromGoogle = await getGoogleProfie(accessToken);
-    if(userFromGoogle instanceof Error){
-        res.status(400).json({error: userFromGoogle.message});
-        return;
-    }
     const user = await userModel.signup(userFromGoogle);
     const token = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
@@ -76,14 +68,11 @@ async function googleSignUp(req, res) {
 async function googleSignIn(req, res) {
     let { accessToken } = req.body;
     const userFromGoogle = await getGoogleProfie(accessToken);
-    if(userFromGoogle instanceof Error){
-        res.status(400).json({error: userFromGoogle.message});
-        return;
-    }
     const users = await userModel.get(userFromGoogle.email);
     if (users.length === 0) {
-        res.status(400).json({ error: "User not Exist" });
-        return;
+        const err = new Error("User not Exist");
+        err.status = 400;
+        throw err;
     }
     const user = users[0];
     const token = jwt.sign(payloadGen(user), JWT_KEY);
@@ -103,7 +92,9 @@ async function getGoogleProfie(accessToken){
         };
     }
     catch(e){
-        return new Error("Google Invalid Token");
+        const err = new Error("Google invalid token");
+        err.status = 403;
+        throw err;
     }
 }
 
@@ -113,13 +104,15 @@ async function nativeSignIn(req, res) {
     const passwordValid = !validator.isEmpty(password);
     const isValid = !isEmail || !passwordValid;
     if (isValid) {
-        res.status(400).json({ error: "Invalid Input" });
-        return;
+        const err = new Error("Invalid input");
+        err.status = 400;
+        throw err;
     }
     const users = await userModel.get(email);
     if (users.length === 0) {
-        res.status(400).json({ error: "Wrong Email or Password" });
-        return;
+        const err = new Error("Wrong Email or Password");
+        err.status = 400;
+        throw err;
     }
     const user = users[0];
     const passwordCheck = bcrypt.compareSync(password, user.password);
@@ -138,8 +131,9 @@ function profileGet(req, res) {
     const { headers } = req;
     const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
     if (!isAuth) {
-        res.status(403).json({ error: "Forbidden" });
-        return;
+        const err = new Error("Forbidden");
+        err.status = 403;
+        throw err;
     }
     const token = headers["authorization"].split(" ")[1];
     const user = jwt.verify(token, JWT_KEY);

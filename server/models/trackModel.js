@@ -31,8 +31,8 @@ module.exports = {
             throw e;
         }
     },
-    delete: async (trackId, body) => {
-        const { userId } = body;
+    delete: async (trackId, info) => {
+        const { userId } = info;
         const trx = await knex.transaction();
         try {
             const tracks = await trx("track AS t").select(["t.user_id AS userId"])
@@ -47,7 +47,9 @@ module.exports = {
             }
             else {
                 await trx.rollback();
-                return new Error("lock failed");
+                const err = new Error("lock failed");
+                err.status = 401;
+                throw err;
             }
         }
         catch (e) {
@@ -78,7 +80,9 @@ module.exports = {
             }
             if (newNotes === oldNotes) {
                 await trx.rollback();
-                return new Error("It's already the latest version");
+                const err = new Error("It's already the latest version");
+                err.status = 400;
+                throw err;
             }
 
             const newVersion = version + 1;
@@ -168,7 +172,9 @@ module.exports = {
                 };
             }
             await trx.rollback();
-            return new Error("lock failed");
+            const err = new Error("lock failed");
+            err.status = 401;
+            throw err;
         }
         catch (e) {
             await trx.rollback();
@@ -185,7 +191,9 @@ module.exports = {
                 .andWhere("t.user_id", userId);
             if (lockers.length === 0) {
                 await trx.rollback();
-                return new Error("lock failed");
+                const err = new Error("lock failed");
+                err.status = 401;
+                throw err;
             }
             await trx("track AS t")
                 .update("t.name", name)
@@ -209,7 +217,9 @@ module.exports = {
             const isLocker = parseInt(lockers[0].id) === parseInt(userId);
             if (!isLocker) {
                 trx.rollback();
-                return new Error("lock failed");
+                const err = new Error("lock failed");
+                err.status = 401;
+                throw err;
             }
             await trx("track AS t").update("t.instrument", instrument).where("t.id", trackId);
             await trx.commit();

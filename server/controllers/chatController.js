@@ -4,8 +4,8 @@ module.exports = {
     init: asyncHandler(async (req, res) => {
         let { roomId, paging }  = req.query;
         paging = paging | 0 ;
-        const result = await chatModel.get(roomId, paging);
-        res.json(result);
+        const chats = await chatModel.get(roomId, paging);
+        res.json(chats);
     }),
     create: asyncHandler(async (req, res)=>{
         const { roomId } = req.body;
