@@ -16,13 +16,13 @@ router.route("/midi/track")
     .post(trackController.add);
 
 router.route("/midi/track/:id")
-    .put(trackController.commit);
+    .put(trackController.versionCommit);
 
 router.route("/midi/track/:id/:type")
     .patch(trackController.update);
 
 router.route("/midi/track")
-    .get(trackController.pull);
+    .get(trackController.versionPull);
 
 router.route("/midi/track/:id")
     .delete(trackController.delete);

@@ -3,7 +3,7 @@ const router = express();
 const chatController = require("../../controllers/chatController");
 
 router.route("/chat")
-    .get(chatController.init);
+    .get(chatController.get);
 
 router.route("/chat")
     .post(chatController.create);

@@ -9,6 +9,6 @@ router.route("/user/signin")
     .post(userController.signin);
 
 router.route("/user/profile")
-    .get(userController.profileGet);
+    .get(userController.getProfile);
 
 module.exports = router;

@@ -4,7 +4,7 @@ app.fetchData = (url, data = null, method = "GET", headers = {
     "content-type": "application/json"
 }) => {
     if(method === "GET"){
-        return fetch(url).then(res => res.json());
+        return fetch(url, { headers }).then(res => res.json());
     }
 
     return fetch(url, {
@@ -24,7 +24,7 @@ app.checkToken = async () => {
     const headers = {
         authorization: "Bearer " + token,
     };
-    const res = await fetch("/api/1.0/user/profile", { headers, method: "GET" }).then(res => res.json());
+    const res = await app.fetchData("/api/1.0/user/profile",  null, "GET", headers);
     if (res.error) {
         await app.errorShow(res.error);
         window.localStorage.removeItem("token", "");

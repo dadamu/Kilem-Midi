@@ -15,9 +15,9 @@ router.route("/room/:type")
     .get(roomController.get);
 
 router.route("/room/user")
-    .post(roomController.addUser);
+    .post(roomController.userJoin);
     
 router.route("/room/user")
-    .delete(roomController.deleteUser);
+    .delete(roomController.userExit);
 
 module.exports = router;

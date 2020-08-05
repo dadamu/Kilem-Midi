@@ -27,7 +27,7 @@ module.exports = {
             await googleSignIn(req, res);
         }
     }),
-    profileGet: asyncHandler(async (req, res) => {
+    getProfile: asyncHandler(async (req, res) => {
         profileGet(req, res);
     })
 };

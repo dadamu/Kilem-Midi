@@ -3,7 +3,7 @@ const asyncHandler = require("../../util/asyncHandler");
 const trackDebug = require("debug")("app");
 
 module.exports = {
-    commit: asyncHandler(async (req, res) => {
+    versionCommit: asyncHandler(async (req, res) => {
         const { id } = req.params;
         const { roomId } = req.body;
         const isValid = await trackModel.authorityCheck(id, req.body);
@@ -25,7 +25,7 @@ module.exports = {
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
         res.json({ status: "success" });
     }),
-    pull: asyncHandler(async (req, res) => {
+    versionPull: asyncHandler(async (req, res) => {
         const { trackId, version } = req.query;
         const result = await trackModel.versionPull(trackId, version);
         res.json(result);

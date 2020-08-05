@@ -46,7 +46,7 @@ module.exports = {
         await roomModel.delete(req.body.roomId, user);
         res.status(201).json({ status: "success" });
     }),
-    addUser: asyncHandler(async (req, res) => {
+    userJoin: asyncHandler(async (req, res) => {
         const { token, roomId } = req.body;
         const user = jwt.verify(token, JWT_KEY);
         const check = await roomModel.checkUser(roomId, user);
@@ -67,7 +67,7 @@ module.exports = {
         await roomModel.addUser(roomId, user);
         res.status(201).json({ status: "success" });
     }),
-    deleteUser: asyncHandler(async (req, res) => {
+    userExit: asyncHandler(async (req, res) => {
         const { token, roomId } = req.body;
         const user = jwt.verify(token, JWT_KEY);
         const tracks = await roomModel.deleteUser(roomId, user);

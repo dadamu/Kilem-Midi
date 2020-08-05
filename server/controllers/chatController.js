@@ -1,7 +1,7 @@
 const asyncHandler = require("../../util/asyncHandler");
 const chatModel = require("../models/chatModel");
 module.exports = {
-    init: asyncHandler(async (req, res) => {
+    get: asyncHandler(async (req, res) => {
         let { roomId, paging }  = req.query;
         paging = paging | 0 ;
         const chats = await chatModel.get(roomId, paging);

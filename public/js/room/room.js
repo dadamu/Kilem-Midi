@@ -206,10 +206,7 @@ app.inviteCheck = async () => {
     const headers = {
         authorization: "Bearer " + token,
     };
-    const getRes = await fetch("/api/1.0/room/" + id, {
-        headers,
-        method: "GET"
-    }).then(res => res.json());
+    const getRes = await app.fetchData("/api/1.0/room/" + id, {}, "GET", headers);
     if (getRes.error) {
         app.errorShow(getRes.error);
         window.history.replaceState(null, null, window.location.pathname);
