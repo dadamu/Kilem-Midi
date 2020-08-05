@@ -183,8 +183,7 @@ app.roomnameRender = () => {
 app.filenameChangeListen = () => {
     $("#filename").change(async function () {
         const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/filename`, {
-            filename: $(this).val(),
-            userId: app.userId
+            filename: $(this).val()
         }, "PATCH");
         if (res.error) {
             app.errorShow(res.error);
@@ -206,8 +205,7 @@ app.bpmChangeListen = () => {
             return;
         }
         const res = await app.fetchData(`/api/1.0/midi/file/${app.roomId}/bpm`, {
-            bpm,
-            userId: app.userId
+            bpm
         }, "PATCH");
         if (res.error) {
             app.errorShow(res.error);

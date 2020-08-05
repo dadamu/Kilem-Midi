@@ -1,4 +1,6 @@
 const noteSocket = require("./noteSocket");
+const jwt = require("jsonwebtoken");
+const { JWT_KEY } = process.env;
 const ioDebug = require("debug")("app");
 module.exports = {
     start: (io) => {
@@ -8,9 +10,11 @@ module.exports = {
             ioDebug("Socket Connection");
             socket.join("editor");
             socket.join("chat");
-
+            let user;
             socket.on("init", (info) => {
-                socket.join("editor" + info.userId);
+                user = jwt.verify(info.token, JWT_KEY);
+                socket.kilemUser = user;
+                socket.join("editor" + user.id);
             });
 
             noteSocket.noteListen(socket);

@@ -9,7 +9,7 @@ module.exports = {
     }),
     create: asyncHandler(async (req, res)=>{
         const { roomId } = req.body;
-        const chat = await chatModel.create(req.body);
+        const chat = await chatModel.create(req.body, req.user);
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("chat", { chat });
         res.json({ status: "success"});

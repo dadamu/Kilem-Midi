@@ -2,6 +2,9 @@ const express = require("express");
 const router = express();
 const trackController = require("../../controllers/trackController");
 const fileController = require("../../controllers/fileController");
+const tokenParser = require("../../../util/tokenParser");
+
+router.use(tokenParser);
 
 router.route("/midi/file")
     .post(fileController.save);

@@ -173,7 +173,6 @@ app.trackNameChangeListen = () => {
             return;
         }
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/name`, {
-            userId: app.userId,
             name: newName,
             roomId: app.roomId
         }, "PATCH");

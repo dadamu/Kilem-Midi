@@ -1,17 +1,17 @@
 const knex = require("../../util/mysqlCon").knex;
 const moment = require("moment");
 module.exports = {
-    create: async (info) => {
-        const { roomId, userId, msg } = info;
+    create: async (info, user) => {
+        const { roomId, msg } = info;
         const date = moment().format("YYYY-MM-DD HH:mm:ss");
         const users = await knex("user")
             .select("username")
-            .where("id", userId);
+            .where("id", user.id);
         const name = users[0].username;
-        await knex("chat").insert({ user_id: userId, room_id: roomId, date, msg });
+        await knex("chat").insert({ user_id: user.id, room_id: roomId, date, msg });
         return {
             user: {
-                id: userId,
+                id: user.id,
                 name
             },
             msg,

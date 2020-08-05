@@ -1,14 +1,14 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    saveFile: async (file) => {
-        const { roomId, userId, data } = file;
+    saveFile: async (file, user) => {
+        console.log(user);
+        const { roomId, data } = file;
         await knex("save").update({
             data: JSON.stringify(data)
-        }).where("room_id", roomId).andWhere("user_id", userId);
-        return;
+        }).where("room_id", roomId).andWhere("user_id", user.id);
     },
-    getFile: async (roomId, userId) => {
-        const userFiles = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", userId);
+    getFile: async (roomId, user) => {
+        const userFiles = await knex("save").select(["data"]).where("room_id", roomId).andWhere("user_id", user.id);
         const masterFiles = await knex("room AS r")
             .select(["r.bpm AS bpm", "r.name AS roomname", "r.filename AS filename", "u1.id AS lockerId", "u1.username AS lockerName", "u2.id AS commiterId", "u2.username AS commiterName",
                 "u3.id AS creatorId", "u3.username AS creatorName", "t.active AS active", "t.id AS trackId", "t.name AS trackName",
@@ -33,38 +33,24 @@ module.exports = {
         const masterData = getMasterData(masterFiles);
         return merge(userData, masterData);
     },
-    saveNote: async (inputNote) => {
-        const { trackId, type, roomId, userId, note } = inputNote;
+    saveNote: async (inputNote, user) => {
+        const { trackId, type, roomId, note } = inputNote;
         const trx = await knex.transaction();
         try {
             const saves = await trx("save")
                 .select(["data AS data"])
-                .where("user_id", userId)
+                .where("user_id", user.id)
                 .andWhere("room_id", roomId)
                 .forUpdate();
             const { data } = saves[0];
             const tracks = JSON.parse(data);
-            if (type === "createNote") {
-                if (tracks[trackId].notes[note.posX]) {
-                    tracks[trackId].notes[note.posX].push(note);
-                }
-                else {
-                    tracks[trackId].notes[note.posX] = [note];
-                }
-            }
-            else if (type === "deleteNote") {
-                const noteInPosX = tracks[trackId].notes[note.posX].filter(old => old.pitch != note.pitch);
-                if (noteInPosX.length === 0)
-                    delete tracks[trackId].notes[note.posX];
-                else
-                    tracks[trackId].notes[note.posX] = noteInPosX;
-            }
+            updateTracks(type, tracks, trackId, note);
             await trx("save")
                 .update({
                     data: JSON.stringify(tracks)
                 })
                 .where("room_id", roomId)
-                .andWhere("user_id", userId);
+                .andWhere("user_id", user.id);
             await trx.commit();
             return note;
         }
@@ -73,11 +59,11 @@ module.exports = {
             throw e;
         }
     },
-    update: async (roomId, type, info) => {
+    update: async (roomId, type, info, user) => {
         const users = await knex("room")
             .select(["id"])
             .where("id", roomId)
-            .andWhere("user_id", info.userId);
+            .andWhere("user_id", user.id);
         const isOwner = users.length > 0;
         if (!isOwner) {
             const err = new Error("You are not the room owner");
@@ -91,6 +77,25 @@ module.exports = {
     },
 };
 
+
+function updateTracks(type, tracks, trackId, note){
+    if (type === "createNote") {
+        if (tracks[trackId].notes[note.posX]) {
+            tracks[trackId].notes[note.posX].push(note);
+        }
+        else {
+            tracks[trackId].notes[note.posX] = [note];
+        }
+    }
+    else if (type === "deleteNote") {
+        const noteInPosX = tracks[trackId].notes[note.posX].filter(old => old.pitch != note.pitch);
+        if (noteInPosX.length === 0)
+            delete tracks[trackId].notes[note.posX];
+        else
+            tracks[trackId].notes[note.posX] = noteInPosX;
+    }
+    return tracks;
+}
 
 function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {

@@ -17,7 +17,6 @@ app.clickCommitListen = () => {
             preConfirm: (name) => {
                 return app.fetchData(`/api/1.0/midi/track/${trackId}`, {
                     roomId: app.roomId,
-                    userId: app.userId,
                     name,
                     notes: app.music.getTrack(trackId).get("notes")
                 }, "PUT");
@@ -42,7 +41,7 @@ app.versionChangeListen = () => {
     $("#tracksContent").on("change", ".version-select", async function () {
         const version = $(this).val();
         const trackId = $(this).closest(".track").attr("trackId");
-        const result = await fetch(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`).then(res => res.json());
+        const result = await app.fetchData(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`);
         if (result.error) {
             app.errorShow(result.error);
             return;
@@ -60,8 +59,7 @@ app.versionChangeListen = () => {
 app.addTrack = async () => {
     try {
         await app.fetchData("/api/1.0/midi/track", {
-            roomId: app.roomId,
-            userId: app.userId
+            roomId: app.roomId
         }, "POST");
         app.successShow("Track added");
     }
@@ -89,7 +87,6 @@ app.deleteTrackListen = () => {
         const selectedTrack = $(".track.selected");
         const deleteId = parseInt(selectedTrack.attr("trackId"));
         const data = {
-            userId: app.userId,
             roomId: app.roomId
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, data, "Delete");
@@ -108,7 +105,6 @@ app.lockClickListen = () => {
     $("#tracksContent").on("click", ".lock-icon", async function () {
         const trackId = $(this).closest(".track").attr("trackId");
         const data = {
-            userId: app.userId,
             roomId: app.roomId
         };
         const version = app.music.getTrack(trackId).get("version");
@@ -137,7 +133,7 @@ app.checkDifferFromLatest = async (id, version) => {
     const current = app.music.getTrack(id).get("notes");
     let previous;
     if (version) {
-        const latest = await fetch(`/api/1.0/midi/track?trackId=${id}&version=${version}`).then(res => res.json());
+        const latest = await app.fetchData(`/api/1.0/midi/track?trackId=${id}&version=${version}`);
         previous = latest.notes;
     }
     else {
@@ -154,10 +150,8 @@ app.changeInstrumentListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
         const roomId = app.roomId;
-        const userId = app.userId;
         const data = {
             roomId,
-            userId,
             instrument
         };
         const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");

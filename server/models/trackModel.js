@@ -1,7 +1,7 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    add: async (track) => {
-        const { roomId, userId } = track;
+    add: async (trackInfo, user) => {
+        const { roomId } = trackInfo;
         let id = 0;
         let name = "";
         const trx = await knex.transaction();
@@ -11,7 +11,7 @@ module.exports = {
             name = `Track${tracks.length + 1}`;
             const trackIds = await trx("track").insert({
                 name,
-                user_id: userId,
+                user_id: user.id,
                 room_id: roomId,
             });
             id = trackIds[0];
@@ -21,8 +21,8 @@ module.exports = {
                 name,
                 instrument: "piano",
                 locker: {
-                    id: userId,
-                    name: "test" + userId
+                    id: user.id,
+                    name: "test" + user.id
                 }
             };
         }
@@ -31,13 +31,13 @@ module.exports = {
             throw e;
         }
     },
-    delete: async (trackId, info) => {
-        const { userId } = info;
+    delete: async (trackId, user) => {
         const trx = await knex.transaction();
         try {
             const tracks = await trx("track AS t").select(["t.user_id AS userId"])
                 .where("t.id", trackId).forUpdate();
-            if (tracks[0].userId === parseInt(userId || tracks[0].lock === 0)) {
+            const isAuth = tracks[0].userId === parseInt(user.id || tracks[0].lock === 0);
+            if (isAuth) {
                 await trx("track AS t").update("t.active", 0).where("t.id", trackId);
                 await trx.commit();
                 return {
@@ -57,8 +57,8 @@ module.exports = {
             throw e;
         }
     },
-    commit: async (trackId, track) => {
-        const { userId, name, notes } = track;
+    commit: async (trackId, track, user) => {
+        const { name, notes } = track;
         const newNotes = JSON.stringify(notes);
         const trx = await knex.transaction();
         try {
@@ -89,7 +89,7 @@ module.exports = {
             const insertData = {
                 track_id: trackId,
                 version: newVersion,
-                user_id: userId,
+                user_id: user.id,
                 name,
                 notes: newNotes
             };
@@ -98,8 +98,8 @@ module.exports = {
             return {
                 id: trackId,
                 commiter: {
-                    id: userId,
-                    name: "test" + userId
+                    id: user.id,
+                    name: "test" + user.id
                 },
                 version: {
                     version: newVersion,
@@ -126,13 +126,12 @@ module.exports = {
         }
     },
     authorityCheck: async (trackId, user) => {
-        const { userId } = user;
         const lockers = await knex("track AS t")
             .select(["t.user_id AS id"])
             .where("t.id", trackId);
-        return lockers[0].id === userId;
+        return lockers[0].id === user.id;
     },
-    lockSet: async (trackId, userId) => {
+    lockSet: async (trackId, user) => {
         const trx = await knex.transaction();
         try {
             const lockers = await trx("track AS t")
@@ -140,20 +139,20 @@ module.exports = {
                 .where("t.id", trackId)
                 .forUpdate();
 
-            const isLocker = parseInt(lockers[0].id) === parseInt(userId);
+            const isLocker = parseInt(lockers[0].id) === parseInt(user.id);
             const isLock = lockers[0].id;
             if (!isLock) {
                 await trx("track AS t")
-                    .update("t.user_id", userId)
+                    .update("t.user_id", user.id)
                     .where("t.id", trackId);
                 const nameSelects = await trx("user AS u")
                     .select(["u.username AS name"])
-                    .where("u.id", userId);
+                    .where("u.id", user.id);
                 await trx.commit();
                 return {
                     id: trackId,
                     locker: {
-                        id: userId,
+                        id: user.id,
                         name: nameSelects[0].name
                     }
                 };
@@ -181,14 +180,14 @@ module.exports = {
             throw e;
         }
     },
-    nameChange: async (trackId, changeInfo) => {
+    nameChange: async (trackId, changeInfo, user) => {
         const trx = await knex.transaction();
-        const { userId, name } = changeInfo;
+        const { name } = changeInfo;
         try {
             const lockers = await trx("track AS t")
                 .select(["id"])
                 .where("t.id", trackId)
-                .andWhere("t.user_id", userId);
+                .andWhere("t.user_id", user.id);
             if (lockers.length === 0) {
                 await trx.rollback();
                 const err = new Error("lock failed");
@@ -206,15 +205,15 @@ module.exports = {
             throw e;
         }
     },
-    instrumentSet: async (trackId, changeInfo) => {
+    instrumentSet: async (trackId, changeInfo, user) => {
         const trx = await knex.transaction();
-        const { userId, instrument } = changeInfo;
+        const { instrument } = changeInfo;
         try {
             const lockers = await trx("track AS t")
                 .select(["t.user_id AS id"])
                 .where("t.id", trackId)
                 .forUpdate();
-            const isLocker = parseInt(lockers[0].id) === parseInt(userId);
+            const isLocker = parseInt(lockers[0].id) === parseInt(user.id);
             if (!isLocker) {
                 trx.rollback();
                 const err = new Error("lock failed");

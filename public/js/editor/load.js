@@ -6,8 +6,8 @@ app.loadListen = () => {
 };
 
 app.loadFile = async () => {
-    const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}&userId=${app.userId}`;
-    const response = await fetch(endpoint).then(res => res.json());
+    const endpoint = `/api/1.0/midi/file?roomId=${app.roomId}`;
+    const response = await app.fetchData(endpoint);
     if (response.error) {
         const res = await app.errorShow(response.error);
         if(res.value){
@@ -49,7 +49,6 @@ app.exportFileListen = () => {
 app.saveFile = async () => {
     const endpoint = "/api/1.0/midi/file";
     const data = {};
-    data.userId = app.userId;
     data.roomId = app.roomId;
     const tracks = {};
     Object.entries(app.music.get("tracks")).forEach(([id, track]) => {

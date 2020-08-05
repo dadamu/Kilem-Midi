@@ -8,8 +8,8 @@ app.emit = async (event, Obj) => {
 };
 
 app.socketInit = async () => {
-    app.socket = io("/room" + app.roomId, { query: "user=" + app.userId });
-    app.emit("init", { userId: app.userId });
+    app.socket = io("/room" + app.roomId);
+    app.emit("init", { token: window.localStorage.getItem("token") });
     await app.ioListen();
 };
 

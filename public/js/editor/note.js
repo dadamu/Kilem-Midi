@@ -40,7 +40,6 @@ app.createNote = async (note) => {
     app.playNote(instrument, pitch);
     const noteInfo = {
         type: "createNote",
-        userId: app.userId,
         roomId: app.roomId,
         trackId,
         note: { posX, pitch, length: app.noteLength }
@@ -72,7 +71,6 @@ app.noteDeleteListen = () => {
         const note = app.getNoteInfo(this);
         const noteInfo = {
             type: "deleteNote",
-            userId: app.userId,
             roomId: app.roomId,
             note,
             trackId

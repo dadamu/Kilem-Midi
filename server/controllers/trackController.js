@@ -4,14 +4,14 @@ const appDebug = require("debug")("app");
 
 module.exports = {
     versionCommit: asyncHandler(async (req, res) => {
-        const { id } = req.params;
+        const { id: trackId } = req.params;
         const { roomId } = req.body;
-        const isValid = await trackModel.authorityCheck(id, req.body);
+        const isValid = await trackModel.authorityCheck(trackId, req.user);
         if (!isValid) {
             res.json({ error: "lock failed" });
             return;
         }
-        const track = await trackModel.commit(id, req.body);
+        const track = await trackModel.commit(trackId, req.body, req.user);
         appDebug("Commit Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("commit", { track });
@@ -19,7 +19,7 @@ module.exports = {
     }),
     add: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
-        const track = await trackModel.add(req.body);
+        const track = await trackModel.add(req.body, req.user);
         appDebug("Add Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
@@ -32,8 +32,8 @@ module.exports = {
     }),
     delete: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
-        const { id } = req.params;
-        const result = await trackModel.delete(id, req.body);
+        const { id: trackId } = req.params;
+        const result = await trackModel.delete(trackId, req.user);
         appDebug("Delete Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
@@ -55,8 +55,8 @@ module.exports = {
 
 const lockSet = async (req, res) => {
     const { id: trackId } = req.params;
-    const { roomId, userId } = req.body;
-    const track = await trackModel.lockSet(trackId, userId);
+    const { roomId } = req.body;
+    const track = await trackModel.lockSet(trackId, req.user);
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("lock", { track });
     res.json({ status: "success" });
@@ -65,7 +65,7 @@ const lockSet = async (req, res) => {
 const nameChange = async (req, res) => {
     const { id: trackId } = req.params;
     const { roomId } = req.body;
-    await trackModel.nameChange(trackId, req.body);
+    await trackModel.nameChange(trackId, req.body, req.user);
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("trackNameChange", {
         id: trackId,
@@ -77,7 +77,7 @@ const nameChange = async (req, res) => {
 const instrumentSet = async (req, res) => {
     const { id: trackId } = req.params;
     const { roomId } = req.body;
-    const track = await trackModel.instrumentSet(trackId, req.body);
+    const track = await trackModel.instrumentSet(trackId, req.body, req.user);
     res.json({ status: "success" });
     appDebug("Change Track Instrument Success");
     const io = req.app.get("io");
