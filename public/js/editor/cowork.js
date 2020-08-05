@@ -1,31 +1,31 @@
 /* global app $ Swal */
 
 app.clickCommitListen = () => {
-    $("#tracksContent").on("click", ".version-commit", async function () {
-        const trackId = parseInt($(this).parent().parent().attr("trackId"));
-        const versions = app.music.getTrack(trackId).get("versions");
+    $('#tracksContent').on('click', '.version-commit', async function () {
+        const trackId = parseInt($(this).parent().parent().attr('trackId'));
+        const versions = app.music.getTrack(trackId).get('versions');
         let version = 1;
         if (versions.length > 0) {
             version = versions[versions.length - 1].version + 1;
         }
         const swal = await Swal.fire({
-            title: "Submit version name",
-            icon: "info",
-            input: "text",
+            title: 'Submit version name',
+            icon: 'info',
+            input: 'text',
             inputValue: `version${version}`,
             showCancelButton: true,
             preConfirm: (name) => {
                 return app.fetchData(`/api/1.0/midi/track/${trackId}`, {
                     roomId: app.roomId,
                     name,
-                    notes: app.music.getTrack(trackId).get("notes")
-                }, "PUT");
+                    notes: app.music.getTrack(trackId).get('notes')
+                }, 'PUT');
             }
         });
         if (swal.isDismissed)
             return;
         const res = swal.value;
-        if (res.error === "lock failed") {
+        if (res.error === 'lock failed') {
             app.failedByLock();
             return;
         }
@@ -33,35 +33,35 @@ app.clickCommitListen = () => {
             app.errorShow(res.error);
             return;
         }
-        app.successShow("Saved");
+        app.successShow('Saved');
     });
 };
 
 app.versionChangeListen = () => {
-    $("#tracksContent").on("change", ".version-select", async function () {
+    $('#tracksContent').on('change', '.version-select', async function () {
         const version = $(this).val();
-        const trackId = $(this).closest(".track").attr("trackId");
+        const trackId = $(this).closest('.track').attr('trackId');
         const result = await app.fetchData(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`);
         if (result.error) {
             app.errorShow(result.error);
             return;
         }
-        app.music.getTrack(result.trackId).set("notes", result.notes);
-        if (parseInt($("#midiPanel").attr("trackId")) === parseInt(result.trackId)) {
+        app.music.getTrack(result.trackId).set('notes', result.notes);
+        if (parseInt($('#midiPanel').attr('trackId')) === parseInt(result.trackId)) {
             app.panelLoadTrack(result.trackId);
         }
         app.loadRegionNotesRender(result.trackId);
-        app.successShow("Version changed");
+        app.successShow('Version changed');
         app.saveFile();
     });
 };
 
 app.addTrack = async () => {
     try {
-        await app.fetchData("/api/1.0/midi/track", {
+        await app.fetchData('/api/1.0/midi/track', {
             roomId: app.roomId
-        }, "POST");
-        app.successShow("Track added");
+        }, 'POST');
+        app.successShow('Track added');
     }
     catch (e) {
         app.errorShow(e.message);
@@ -69,27 +69,27 @@ app.addTrack = async () => {
 };
 
 app.addTrackListen = () => {
-    $("#addTrack").click(() => {
+    $('#addTrack').click(() => {
         app.addTrack();
     });
 };
 
 app.deleteTrackListen = () => {
-    $("#deleteTrack").click(async () => {
+    $('#deleteTrack').click(async () => {
         const swal = await Swal.fire({
-            icon: "warning",
-            title: "Really remove track?",
+            icon: 'warning',
+            title: 'Really remove track?',
             showCancelButton: true
         });
         if (swal.isDismissed) {
             return;
         }
-        const selectedTrack = $(".track.selected");
-        const deleteId = parseInt(selectedTrack.attr("trackId"));
+        const selectedTrack = $('.track.selected');
+        const deleteId = parseInt(selectedTrack.attr('trackId'));
         const room = {
             roomId: app.roomId
         };
-        const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, room, "Delete");
+        const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, room, 'Delete');
         if(app.checkFailedByLock(res)){
             return;
         }
@@ -97,26 +97,26 @@ app.deleteTrackListen = () => {
             app.errorShow(res.error);
             return;
         }
-        app.successShow("Track removed");
+        app.successShow('Track removed');
     });
 };
 
 app.lockClickListen = () => {
-    $("#tracksContent").on("click", ".lock-icon", async function () {
-        const trackId = $(this).closest(".track").attr("trackId");
+    $('#tracksContent').on('click', '.lock-icon', async function () {
+        const trackId = $(this).closest('.track').attr('trackId');
         const room = {
             roomId: app.roomId
         };
-        const version = app.music.getTrack(trackId).get("version");
-        const locker = app.music.getTrack(trackId).get("locker");
+        const version = app.music.getTrack(trackId).get('version');
+        const locker = app.music.getTrack(trackId).get('locker');
         if (locker.id === app.userId) {
             const isDiffer = await app.checkDifferFromLatest(trackId, version);
             if (isDiffer) {
-                app.errorShow("Please Save Change First");
+                app.errorShow('Please Save Change First');
                 return;
             }
         }
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, room, "PATCH");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, room, 'PATCH');
         if(app.checkFailedByLock(res)){
             return;
         }
@@ -124,13 +124,13 @@ app.lockClickListen = () => {
             app.errorShow(res.error);
             return;
         }
-        app.successShow("Lock Changed");
+        app.successShow('Lock Changed');
     });
 };
 
 
 app.checkDifferFromLatest = async (id, version) => {
-    const current = app.music.getTrack(id).get("notes");
+    const current = app.music.getTrack(id).get('notes');
     let previous;
     if (version) {
         const latest = await app.fetchData(`/api/1.0/midi/track?trackId=${id}&version=${version}`);
@@ -146,16 +146,16 @@ app.checkDifferFromLatest = async (id, version) => {
 };
 
 app.changeInstrumentListen = () => {
-    $(".tracks-title").on("change", ".instrument-selector", async function () {
-        const trackId = $(this).closest(".track").attr("trackId");
+    $('.tracks-title').on('change', '.instrument-selector', async function () {
+        const trackId = $(this).closest('.track').attr('trackId');
         const instrument = $(this).val();
         const roomId = app.roomId;
         const room = {
             roomId,
             instrument
         };
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, room, "PATCH");
-        const originInstrument = app.music.getTrack(trackId).get("instrument");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, room, 'PATCH');
+        const originInstrument = app.music.getTrack(trackId).get('instrument');
         if(app.checkFailedByLock(res)){
             $(`.track.track-${trackId} .instrument-selector`).val(originInstrument);
             return;

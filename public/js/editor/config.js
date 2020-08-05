@@ -2,13 +2,13 @@
 
 app.setConfig = () => {
     // User config
-    app.token = "";
+    app.token = '';
 
     // Music config
-    app.roomId = parseInt(document.URL.split("/").pop());
+    app.roomId = parseInt(document.URL.split('/').pop());
     app.music = {};
     app.instruments = {};
-    app.instrumentsURL = "/public/instruments/"; //https://kilem.s3-us-west-2.amazonaws.com/instruments/
+    app.instrumentsURL = '/public/instruments/'; //https://kilem.s3-us-west-2.amazonaws.com/instruments/
     // UI config
     app.musicLength = 400;
     app.scaleNumMax = 6;

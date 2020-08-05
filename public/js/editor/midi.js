@@ -28,10 +28,10 @@ class MidiFile {
 
     setTrack(track) {
         const { id } = track;
-        this.tracks[id].set("notes", track.notes);
-        this.tracks[id].set("commiter", track.commiter);
+        this.tracks[id].set('notes', track.notes);
+        this.tracks[id].set('commiter', track.commiter);
         this.tracks[id].addVersion(track.version);
-        this.tracks[id].set("version", track.version.version);
+        this.tracks[id].set('version', track.version.version);
     }
 
     setTracks(tracks) {
@@ -39,11 +39,11 @@ class MidiFile {
         for (let track of Object.values(tracks)) {
             const { id, name, instrument, version, versions, locker, commiter, notes } = track;
             const newTrack = new Track(id, name, instrument);
-            newTrack.set("version", version);
-            newTrack.set("versions", versions);
-            newTrack.set("locker", locker);
-            newTrack.set("commiter", commiter);
-            newTrack.set("notes", notes);
+            newTrack.set('version', version);
+            newTrack.set('versions', versions);
+            newTrack.set('locker', locker);
+            newTrack.set('commiter', commiter);
+            newTrack.set('notes', notes);
             newTracks[track.id] = newTrack;
         }
         return newTracks;
@@ -67,7 +67,7 @@ class MidiFile {
                 });
             }
         }
-        return new Blob([midi.toArray()], { type: "audio/x-midi" });
+        return new Blob([midi.toArray()], { type: 'audio/x-midi' });
     }
 }
 

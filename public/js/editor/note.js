@@ -12,39 +12,39 @@ app.noteOutTrack = (trackId, note) => {
 };
 
 app.noteGridListen = () => {
-    $(".midi-toolbox").on("click", ".note-grid", function () {
-        $(".note-grid.selected").removeClass("selected");
-        $(this).addClass("selected");
-        app.noteGrid = $(this).attr("value");
+    $('.midi-toolbox').on('click', '.note-grid', function () {
+        $('.note-grid.selected').removeClass('selected');
+        $(this).addClass('selected');
+        app.noteGrid = $(this).attr('value');
     });
 };
 
 app.noteLengthListen = () => {
-    $(".midi-toolbox").on("click", ".note-length", function () {
-        $(".note-length.selected").removeClass("selected");
-        $(this).addClass("selected");
-        app.noteLength = $(this).attr("value");
+    $('.midi-toolbox').on('click', '.note-length', function () {
+        $('.note-length.selected').removeClass('selected');
+        $(this).addClass('selected');
+        app.noteLength = $(this).attr('value');
     });
 };
 
 app.createNote = async (note) => {
     const { posX, pitch } = note;
-    const trackId = $("#midiPanel").attr("trackId");
+    const trackId = $('#midiPanel').attr('trackId');
 
-    const notes = app.music.getTrack(trackId).get("notes");
+    const notes = app.music.getTrack(trackId).get('notes');
     const isDuplicated = notes[posX] && notes[posX].filter(midi => midi.pitch === pitch).length > 0;
     if (isDuplicated)
         return;
 
-    const instrument = app.music.getTrack(trackId).get("instrument");
+    const instrument = app.music.getTrack(trackId).get('instrument');
     app.playNote(instrument, pitch);
     const noteInfo = {
-        type: "createNote",
+        type: 'createNote',
         roomId: app.roomId,
         trackId,
         note: { posX, pitch, length: app.noteLength }
     };
-    app.emit("noteUpdate", noteInfo);
+    app.emit('noteUpdate', noteInfo);
     const newNote = { posX, pitch, length: app.noteLength };
     app.regionNoteRender(trackId, newNote);
     app.noteIntoTrack(trackId, newNote);
@@ -52,17 +52,17 @@ app.createNote = async (note) => {
 };
 
 app.notSelectListen = () => {
-    $("#grids").on("click", ".note", async function () {
-        const trackId = $("#midiPanel").attr("trackId");
+    $('#grids').on('click', '.note', async function () {
+        const trackId = $('#midiPanel').attr('trackId');
         const { instrument } = app.music.tracks[trackId];
-        app.playNote(instrument, $(this).attr("pitch"));
+        app.playNote(instrument, $(this).attr('pitch'));
     });
 };
 
 app.noteDeleteListen = () => {
-    $("#grids").on("dblclick", ".note", async function () {
-        const trackId = $("#midiPanel").attr("trackId");
-        const locker = app.music.getTrack(trackId).get("locker");
+    $('#grids').on('dblclick', '.note', async function () {
+        const trackId = $('#midiPanel').attr('trackId');
+        const locker = app.music.getTrack(trackId).get('locker');
         const isOwner = parseInt(app.userId) === locker.id;
         if (!isOwner) {
             app.failedByLock();
@@ -70,12 +70,12 @@ app.noteDeleteListen = () => {
         }
         const note = app.getNoteInfo(this);
         const noteInfo = {
-            type: "deleteNote",
+            type: 'deleteNote',
             roomId: app.roomId,
             note,
             trackId
         };
-        app.emit("noteUpdate", noteInfo);
+        app.emit('noteUpdate', noteInfo);
         app.noteOutTrack(trackId, note);
         app.deleteNoteRender(trackId, note);
     });
@@ -105,12 +105,12 @@ app.svgToNote = (left, top) => {
 };
 
 app.createNoteRender = (trackId, note) => {
-    const panelId = parseInt($("#midiPanel").attr("trackId"));
+    const panelId = parseInt($('#midiPanel').attr('trackId'));
     if (panelId === parseInt(trackId)) {
         const noteDiv = app.createNoteDiv(note);
-        const tailDiv = $("<div></div>").addClass("tail");
+        const tailDiv = $('<div></div>').addClass('tail');
         noteDiv.append(tailDiv);
-        $("#grids").append(noteDiv);
+        $('#grids').append(noteDiv);
         app.setNoteDrag(noteDiv);
         app.setNoteEditWidth(tailDiv);
     }
@@ -121,17 +121,17 @@ app.createNoteDiv = (note) => {
     const pitchHeight = app.pitchHeight;
     const left = note.posX * app.gridsInterval / 64;
     const bottom = (note.pitch - 24) * pitchHeight;
-    const noteDiv = $("<div></div>");
-    noteDiv.addClass("note").width(interval).height(pitchHeight);
-    noteDiv.css("left", left).css("bottom", bottom);
-    noteDiv.attr("pitch", note.pitch);
-    noteDiv.attr("length", note.length);
-    noteDiv.attr("posX", note.posX);
+    const noteDiv = $('<div></div>');
+    noteDiv.addClass('note').width(interval).height(pitchHeight);
+    noteDiv.css('left', left).css('bottom', bottom);
+    noteDiv.attr('pitch', note.pitch);
+    noteDiv.attr('length', note.length);
+    noteDiv.attr('posX', note.posX);
     return noteDiv;
 };
 
 app.deleteNoteRender = (trackId, note) => {
-    const panelId = parseInt($("#midiPanel").attr("trackId"));
+    const panelId = parseInt($('#midiPanel').attr('trackId'));
     $(`.region[trackId=${trackId}] div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
     if (panelId === parseInt(trackId)) {
         $(`#midiPanel div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
@@ -147,9 +147,9 @@ app.noteIntoTrack = (trackId, note) => {
 };
 
 app.addMidiNoteListen = () => {
-    $("#svgGrid").click(function (evt) {
-        const trackId = parseInt($("#midiPanel").attr("trackId"));
-        const locker = app.music.getTrack(trackId).get("locker");
+    $('#svgGrid').click(function (evt) {
+        const trackId = parseInt($('#midiPanel').attr('trackId'));
+        const locker = app.music.getTrack(trackId).get('locker');
         const isOwner = parseInt(app.userId) === locker.id;
         if (!isOwner) {
             app.failedByLock();
@@ -166,23 +166,23 @@ app.addMidiNoteListen = () => {
 
 app.setNoteDrag = (noteDiv) => {
     noteDiv.draggable({
-        cursor: "move",
+        cursor: 'move',
         start: (evt) => {
-            const trackId = $("#midiPanel").attr("trackId");
+            const trackId = $('#midiPanel').attr('trackId');
             const note = app.getNoteInfo(evt.target);
             const noteInfo = {
-                type: "deleteNote",
+                type: 'deleteNote',
                 userId: app.userId,
                 roomId: app.roomId,
                 note,
                 trackId
             };
-            app.emit("noteUpdate", noteInfo);
+            app.emit('noteUpdate', noteInfo);
             app.noteOutTrack(trackId, note);
             app.dragNoteDeleteRender(trackId, note);
         },
         stop: (evt, ui) => {
-            const trackId = $("#midiPanel").attr("trackId");
+            const trackId = $('#midiPanel').attr('trackId');
             const endTop = ui.position.top;
             const endLeft = ui.position.left;
             const resolution = app.gridsInterval * app.noteLength;
@@ -191,18 +191,18 @@ app.setNoteDrag = (noteDiv) => {
 
             const newNote = app.svgToNote(newLeft, aligntop + 1);
             const { pitch: originalPitch } = newNote;
-            const length = parseFloat($(evt.target).attr("length"));
+            const length = parseFloat($(evt.target).attr('length'));
             newNote.length = length;
-            $(evt.target).css("top", aligntop).css("left", newLeft)
-                .attr("posX", newNote.posX).attr("pitch", newNote.pitch);
+            $(evt.target).css('top', aligntop).css('left', newLeft)
+                .attr('posX', newNote.posX).attr('pitch', newNote.pitch);
             
-            const originalNotes = app.music.getTrack(trackId).get("notes");
+            const originalNotes = app.music.getTrack(trackId).get('notes');
             const original = originalNotes[newNote.posX];
             let isDuplicated = original && original.filter(midi => midi.pitch === newNote.pitch).length > 0;
             while (isDuplicated) {
                 newNote.pitch += 1;
                 const top = aligntop - app.pitchHeight * (newNote.pitch - originalPitch);
-                $(evt.target).css("top", top).attr("pitch", newNote.pitch);
+                $(evt.target).css('top', top).attr('pitch', newNote.pitch);
                 if (top < 0) {
                     $(evt.target).remove();
                     return;
@@ -213,13 +213,13 @@ app.setNoteDrag = (noteDiv) => {
             const { instrument } = app.music.tracks[trackId];
             app.playNote(instrument, newNote.pitch);
             const noteInfo = {
-                type: "createNote",
+                type: 'createNote',
                 userId: app.userId,
                 roomId: app.roomId,
                 trackId,
                 note: newNote
             };
-            app.emit("noteUpdate", noteInfo);
+            app.emit('noteUpdate', noteInfo);
             app.regionNoteRender(trackId, newNote);
             app.noteIntoTrack(trackId, newNote);
         }
@@ -230,16 +230,16 @@ app.setNoteDrag = (noteDiv) => {
 app.setNoteEditWidth = (tailDiv) => {
     tailDiv.draggable({
         start: (evt) => {
-            const trackId = $("#midiPanel").attr("trackId");
+            const trackId = $('#midiPanel').attr('trackId');
             const note = app.getNoteInfo($(evt.target).parent());
             const noteInfo = {
-                type: "deleteNote",
+                type: 'deleteNote',
                 userId: app.userId,
                 roomId: app.roomId,
                 note,
                 trackId
             };
-            app.emit("noteUpdate", noteInfo);
+            app.emit('noteUpdate', noteInfo);
             app.noteOutTrack(trackId, note);
             app.dragNoteDeleteRender(trackId, note);
         },
@@ -257,21 +257,21 @@ app.setNoteEditWidth = (tailDiv) => {
         stop: (evt) => {
             const $noteDiv = $(evt.target).parent();
             const width = $noteDiv.width();
-            $(evt.target).css("left", width - 10).css("top", 0);
+            $(evt.target).css('left', width - 10).css('top', 0);
             const length = width / app.gridsInterval;
-            $noteDiv.attr("length", length);
+            $noteDiv.attr('length', length);
             const newNote = app.getNoteInfo($noteDiv);
-            const trackId = $("#midiPanel").attr("trackId");
-            const instrument = app.music.getTrack(trackId).get("instrument");
+            const trackId = $('#midiPanel').attr('trackId');
+            const instrument = app.music.getTrack(trackId).get('instrument');
             app.playNote(instrument, newNote.pitch);
             const noteInfo = {
-                type: "createNote",
+                type: 'createNote',
                 userId: app.userId,
                 roomId: app.roomId,
                 trackId,
                 note: newNote
             };
-            app.emit("noteUpdate", noteInfo);
+            app.emit('noteUpdate', noteInfo);
             app.regionNoteRender(trackId, newNote);
             app.noteIntoTrack(trackId, newNote);
         }
@@ -279,20 +279,20 @@ app.setNoteEditWidth = (tailDiv) => {
 };
 
 app.getNoteInfo = (noteDiv) => {
-    const posX = parseInt($(noteDiv).attr("posX"));
-    const pitch = parseInt($(noteDiv).attr("pitch"));
-    const length = parseFloat($(noteDiv).attr("length"));
+    const posX = parseInt($(noteDiv).attr('posX'));
+    const pitch = parseInt($(noteDiv).attr('pitch'));
+    const length = parseFloat($(noteDiv).attr('length'));
     return { posX, pitch, length };
 };
 
 app.notesRender = (notes) => {
     for (let note of notes) {
         const noteDiv = app.createNoteDiv(note);
-        const tailDiv = $("<div></div>").addClass("tail");
+        const tailDiv = $('<div></div>').addClass('tail');
         noteDiv.append(tailDiv);
-        $("#grids").append(noteDiv);
-        const trackId = $("#midiPanel").attr("trackId");
-        const locker = app.music.getTrack(trackId).get("locker");
+        $('#grids').append(noteDiv);
+        const trackId = $('#midiPanel').attr('trackId');
+        const locker = app.music.getTrack(trackId).get('locker');
         if (parseInt(app.userId) === locker.id) {
             app.setNoteDrag(noteDiv);
             app.setNoteEditWidth(tailDiv);

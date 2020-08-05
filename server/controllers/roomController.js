@@ -1,9 +1,9 @@
-const roomModel = require("../models/roomModel");
-const asyncHandler = require("../../util/asyncHandler");
+const roomModel = require('../models/roomModel');
+const asyncHandler = require('../../util/asyncHandler');
 const { BCRYPT_SALT } = process.env;
-const bcrypt = require("bcrypt");
-const trackModel = require("../models/trackModel");
-const appDebug = require("debug")("app");
+const bcrypt = require('bcrypt');
+const trackModel = require('../models/trackModel');
+const appDebug = require('debug')('app');
 module.exports = {
     get: asyncHandler(async (req, res) => {
         const { type } = req.params;
@@ -17,7 +17,7 @@ module.exports = {
     create: asyncHandler(async (req, res) => {
         const { user } = req; 
         const { room } = req.body;
-        if (Object.hasOwnProperty.call(room, "password")) {
+        if (Object.hasOwnProperty.call(room, 'password')) {
             const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
             const bcryptPass = bcrypt.hashSync(room.password, salt);
             room.password = bcryptPass;
@@ -29,42 +29,42 @@ module.exports = {
     }),
     put: asyncHandler(async (req, res) => {
         await roomModel.update(req.body, req.user);
-        appDebug("update success: ", req.body);
-        res.json({ status: "success" });
+        appDebug('update success: ', req.body);
+        res.json({ status: 'success' });
     }),
     delete: asyncHandler(async (req, res) => {
         const { user } = req; 
         await roomModel.delete(req.body.roomId, user);
-        res.status(201).json({ status: "success" });
+        res.status(201).json({ status: 'success' });
     }),
     userJoin: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const { user } = req; 
         const check = await roomModel.checkUser(roomId, user);
         if (check) {
-            res.status(201).json({ status: "success" });
+            res.status(201).json({ status: 'success' });
             return;
         }
         const roomPassword = await roomModel.getPassword(roomId);
         if (roomPassword) {
-            const password = req.body.password || "";
+            const password = req.body.password || '';
             const passCheck = bcrypt.compareSync(password, roomPassword);
             if (!passCheck) {
-                const err = new Error("Wrong password");
+                const err = new Error('Wrong password');
                 err.status = 401;
                 throw err;
             }
         }
         await roomModel.addUser(roomId, user);
-        res.status(201).json({ status: "success" });
+        res.status(201).json({ status: 'success' });
     }),
     userExit: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const { user } = req; 
         const tracks = await roomModel.deleteUser(roomId, user);
-        const io = req.app.get("io");
+        const io = req.app.get('io');
         for (let track of tracks) {
-            io.of("/room" + roomId).emit("lock", {
+            io.of('/room' + roomId).emit('lock', {
                 track: {
                     id: track.id,
                     locker: {
@@ -74,6 +74,6 @@ module.exports = {
                 }
             });
         }
-        res.status(201).json({ status: "success" });
+        res.status(201).json({ status: 'success' });
     })
 };

@@ -19,23 +19,23 @@ app.loadChats = async (paging) => {
 };
 
 app.chatRoomlListen = () => {
-    $("#chatButton").click(function () {
-        if ($("#chatRoom").hasClass("hidden")) {
-            $("#chatRoom").removeClass("hidden");
-            $("#chatButton").removeClass("notify");
-            const container = $("#chatContainer");
-            container.animate({ scrollTop: container.prop("scrollHeight") }, 100);
-            $(this).addClass("active");
+    $('#chatButton').click(function () {
+        if ($('#chatRoom').hasClass('hidden')) {
+            $('#chatRoom').removeClass('hidden');
+            $('#chatButton').removeClass('notify');
+            const container = $('#chatContainer');
+            container.animate({ scrollTop: container.prop('scrollHeight') }, 100);
+            $(this).addClass('active');
         }
         else {
-            $("#chatRoom").addClass("hidden");
-            $(this).removeClass("active");
+            $('#chatRoom').addClass('hidden');
+            $(this).removeClass('active');
         }
     });
 };
 
 app.loadChatsListen  = () => {
-    $("#chatContainer").scroll(async function(){
+    $('#chatContainer').scroll(async function(){
         const posY = $(this).scrollTop();
         if(posY === 0 && app.chatsNext){
             const chats = await app.loadChats(app.chatsNext);
@@ -47,15 +47,15 @@ app.loadChatsListen  = () => {
 
 
 app.chatSendlListen = () => {
-    $("textarea").keydown(function (e) {
+    $('textarea').keydown(function (e) {
         if (e.keyCode == 13 && !e.shiftKey) {
             e.preventDefault();
         }
     });
-    $("#chatSend").click(() => {
+    $('#chatSend').click(() => {
         send();
     });
-    $("#chatInput").on("keyup", function (e) {
+    $('#chatInput').on('keyup', function (e) {
         if (e.shiftKey && e.keyCode === 13) {
             return;
         }
@@ -65,18 +65,18 @@ app.chatSendlListen = () => {
     });
 
     async function send() {
-        const text = $("#chatInput").val();
+        const text = $('#chatInput').val();
         if (!text) {
             return;
         }
-        $("#chatInput").val("");
+        $('#chatInput').val('');
         const chat = {
             msg: text,
             roomId: app.roomId
         };
-        const result = await app.fetchData("/api/1.0/chat", chat, "POST");
+        const result = await app.fetchData('/api/1.0/chat', chat, 'POST');
         if (result.error) {
-            app.errorShow("failed");
+            app.errorShow('failed');
             return;
         }
     }
@@ -84,8 +84,8 @@ app.chatSendlListen = () => {
 
 
 app.chatRender = (chat, load = false) => {
-    const $container = $("#chatContainer");
-    const change = $container.prop("scrollHeight") - $container.scrollTop();
+    const $container = $('#chatContainer');
+    const change = $container.prop('scrollHeight') - $container.scrollTop();
     const msgDiv = app.chatMsgRender(chat);
     if(load){
         $container.prepend(msgDiv);
@@ -94,19 +94,19 @@ app.chatRender = (chat, load = false) => {
     $container.append(msgDiv);
     
     if (change <= 400){
-        $container.animate({ scrollTop: $container.prop("scrollHeight") }, 0);
+        $container.animate({ scrollTop: $container.prop('scrollHeight') }, 0);
     }
 };
 
 app.chatMsgRender = (chat) => {
-    const msgDiv = $("<div></div>").addClass("chat-msg");
-    const userDiv = $("<div></div>").text(chat.user.name).addClass("chat-user");
-    const msg = filterXSS(chat.msg.split("\n").join("<br>"));
-    const contentDiv = $("<div></div>").html(msg).addClass("chat-content").attr("title", chat.date);
+    const msgDiv = $('<div></div>').addClass('chat-msg');
+    const userDiv = $('<div></div>').text(chat.user.name).addClass('chat-user');
+    const msg = filterXSS(chat.msg.split('\n').join('<br>'));
+    const contentDiv = $('<div></div>').html(msg).addClass('chat-content').attr('title', chat.date);
     msgDiv.append(userDiv, contentDiv);
     if (chat.user.id === app.userId) {
-        userDiv.addClass("chat-mine");
-        contentDiv.addClass("content-mine");
+        userDiv.addClass('chat-mine');
+        contentDiv.addClass('content-mine');
     }
     return msgDiv;
 };

@@ -1,29 +1,29 @@
-const asyncHandler = require("../../util/asyncHandler");
-const userModel = require("../models/userModel");
-require("dotenv").config();
+const asyncHandler = require('../../util/asyncHandler');
+const userModel = require('../models/userModel');
+require('dotenv').config();
 const { BCRYPT_SALT, JWT_KEY } = process.env;
-const validator = require("validator");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
+const validator = require('validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const fetch = require('node-fetch');
 const expire = process.env.TOKEN_EXPIRE; // 30 days by seconds
 
 module.exports = {
     signup: asyncHandler(async (req, res) => {
         const { provider } = req.body;
-        if (provider === "native") {
+        if (provider === 'native') {
             await nativeSignUp(req, res);
         }
-        else if (provider === "google") {
+        else if (provider === 'google') {
             await googleSignUp(req, res);
         }
     }),
     signin: asyncHandler(async (req, res) => {
         const { provider } = req.body;
-        if (provider === "native") {
+        if (provider === 'native') {
             await nativeSignIn(req, res);
         }
-        else if(provider === "google"){
+        else if(provider === 'google'){
             await googleSignIn(req, res);
         }
     }),
@@ -38,7 +38,7 @@ async function nativeSignUp(req, res) {
     const userValid = !validator.isEmpty(username);
     const passValid = !validator.isEmpty(password);
     if (!isEmail || !userValid || !passValid) {
-        const err = new Error("Invalid input");
+        const err = new Error('Invalid input');
         err.status = 400;
         throw err;
     }
@@ -70,7 +70,7 @@ async function googleSignIn(req, res) {
     const userFromGoogle = await getGoogleProfie(accessToken);
     const users = await userModel.get(userFromGoogle.email);
     if (users.length === 0) {
-        const err = new Error("User not Exist");
+        const err = new Error('User not Exist');
         err.status = 400;
         throw err;
     }
@@ -88,11 +88,11 @@ async function getGoogleProfie(accessToken){
         return {
             email: user.email,
             username: user.name,
-            provider: "google"
+            provider: 'google'
         };
     }
     catch(e){
-        const err = new Error("Google invalid token");
+        const err = new Error('Google invalid token');
         err.status = 403;
         throw err;
     }
@@ -104,20 +104,20 @@ async function nativeSignIn(req, res) {
     const passwordValid = !validator.isEmpty(password);
     const isValid = !isEmail || !passwordValid;
     if (isValid) {
-        const err = new Error("Invalid input");
+        const err = new Error('Invalid input');
         err.status = 400;
         throw err;
     }
     const users = await userModel.get(email);
     if (users.length === 0) {
-        const err = new Error("Wrong Email or Password");
+        const err = new Error('Wrong Email or Password');
         err.status = 400;
         throw err;
     }
     const user = users[0];
     const passwordCheck = bcrypt.compareSync(password, user.password);
     if (!passwordCheck) {
-        res.status(400).json({ error: "Wrong Email or Password" });
+        res.status(400).json({ error: 'Wrong Email or Password' });
         return;
     }
     const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
@@ -129,13 +129,13 @@ async function nativeSignIn(req, res) {
 
 function profileGet(req, res) {
     const { headers } = req;
-    const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
+    const isAuth = Object.prototype.hasOwnProperty.call(headers, 'authorization');
     if (!isAuth) {
-        const err = new Error("Forbidden");
+        const err = new Error('Forbidden');
         err.status = 403;
         throw err;
     }
-    const token = headers["authorization"].split(" ")[1];
+    const token = headers['authorization'].split(' ')[1];
     const user = jwt.verify(token, JWT_KEY);
     res.json(user);
 }

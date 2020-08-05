@@ -56,21 +56,21 @@ class Instrument {
         if (str.length >= length)
             return str;
         else
-            return this.padLeft("0" + str, length);
+            return this.padLeft('0' + str, length);
     }
 }
 app.setPiano = (url) => {
-    return new Instrument("GrandPiano", 22, 108, url);
+    return new Instrument('GrandPiano', 22, 108, url);
 };
 app.setGuitar = (url) => {
-    return new Instrument("AcousticGuitar", 40, 72, url);
+    return new Instrument('AcousticGuitar', 40, 72, url);
 };
 app.setBass = (url) => {
-    return new Instrument("DubBass", 25, 60, url);
+    return new Instrument('DubBass', 25, 60, url);
 };
 
 app.setDrums = (url) => {
-    return new Drums("ClassicRock", 36, 56, url);
+    return new Drums('ClassicRock', 36, 56, url);
 };
 
 class Drums extends Instrument {

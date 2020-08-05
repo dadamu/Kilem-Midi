@@ -1,13 +1,13 @@
 /* global Swal */
 const app = {};
-app.fetchData = (url, data = null, method = "GET", headers = {
-    "user-agent": "Mozilla/4.0 MDN Example",
-    "content-type": "application/json"
+app.fetchData = (url, data = null, method = 'GET', headers = {
+    'user-agent': 'Mozilla/4.0 MDN Example',
+    'content-type': 'application/json'
 }) => {
-    const token = window.localStorage.getItem("token");
+    const token = window.localStorage.getItem('token');
     if(token)
-        headers["authorization"] = "Bearer " + token;
-    if(method === "GET"){
+        headers['authorization'] = 'Bearer ' + token;
+    if(method === 'GET'){
         return fetch(url, { headers }).then(res => res.json());
     }
 
@@ -20,16 +20,16 @@ app.fetchData = (url, data = null, method = "GET", headers = {
 };
 
 app.checkToken = async () => {
-    const token = window.localStorage.getItem("token");
+    const token = window.localStorage.getItem('token');
     if (!token) {
-        await app.errorShow("Please login first");
-        window.location.href = "/";
+        await app.errorShow('Please login first');
+        window.location.href = '/';
     }
-    const res = await app.fetchData("/api/1.0/user/profile");
+    const res = await app.fetchData('/api/1.0/user/profile');
     if (res.error) {
         await app.errorShow(res.error);
-        window.localStorage.removeItem("token", "");
-        window.location.href = "/";
+        window.localStorage.removeItem('token', '');
+        window.location.href = '/';
     }
     else {
         app.userId = res.id;
@@ -39,14 +39,14 @@ app.checkToken = async () => {
 
 app.errorShow = (text) => {
     return Swal.fire({
-        icon: "error",
-        title: "Error",
+        icon: 'error',
+        title: 'Error',
         text
     });
 };
 
 app.checkFailedByLock = (res) => {
-    if (res.error === "lock failed") {
+    if (res.error === 'lock failed') {
         app.failedByLock();
         return true;
     }
@@ -55,8 +55,8 @@ app.checkFailedByLock = (res) => {
 
 app.failedByLock = () => {
     Swal.fire({
-        title: "Failed",
-        icon: "error",
+        title: 'Failed',
+        icon: 'error',
         html: `
             <br>
             <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
@@ -68,19 +68,19 @@ app.failedByLock = () => {
 app.successShow = (text) => {
     const Toast = Swal.mixin({
         toast: true,
-        position: "top",
+        position: 'top',
         showConfirmButton: false,
         timer: 1000,
         timerProgressBar: true,
-        background: "#666",
+        background: '#666',
         onOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
         }
     });
 
     return Toast.fire({
-        icon: "success",
+        icon: 'success',
         title: text
     });
 };
