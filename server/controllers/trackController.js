@@ -1,6 +1,6 @@
 const trackModel = require("../models/trackModel");
 const asyncHandler = require("../../util/asyncHandler");
-const trackDebug = require("debug")("app");
+const appDebug = require("debug")("app");
 
 module.exports = {
     versionCommit: asyncHandler(async (req, res) => {
@@ -12,7 +12,7 @@ module.exports = {
             return;
         }
         const track = await trackModel.commit(id, req.body);
-        trackDebug("Commit Track Success");
+        appDebug("Commit Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("commit", { track });
         res.json({ status: "success" });
@@ -20,7 +20,7 @@ module.exports = {
     add: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const track = await trackModel.add(req.body);
-        trackDebug("Add Track Success");
+        appDebug("Add Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
         res.json({ status: "success" });
@@ -34,7 +34,7 @@ module.exports = {
         const { roomId } = req.body;
         const { id } = req.params;
         const result = await trackModel.delete(id, req.body);
-        trackDebug("Delete Track Success");
+        appDebug("Delete Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).emit("deleteTrack", { track: result });
         res.json({ status: "success" });
@@ -79,7 +79,7 @@ const instrumentSet = async (req, res) => {
     const { roomId } = req.body;
     const track = await trackModel.instrumentSet(trackId, req.body);
     res.json({ status: "success" });
-    trackDebug("Change Track Instrument Success");
+    appDebug("Change Track Instrument Success");
     const io = req.app.get("io");
     io.of("/room" + roomId).emit("instrumentSet", { track });
 };

@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const viewsPath = "./views/";
 require("dotenv").config();
 const ioController = require("./server/controllers/ioController");
+const appDebug = require("debug")("app");
 const { API_VERSION } = process.env;
 
 app.set("io", io);
@@ -44,6 +45,7 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use("/api", (err, req, res, next) => {
+    appDebug("Error happened");
     if (err instanceof jwt.JsonWebTokenError) {
         res.status(403).json({ error: "Invalid access" });
         return;

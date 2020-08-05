@@ -33,7 +33,7 @@ app.UIListen = () => {
 };
 
 app.createRoomListen = () => {
-    $(document).on("change").on("change", ".swal2-checkbox input[type='checkbox']", function () {
+    $(document).on("change", ".swal2-checkbox input[type='checkbox']", function () {
         if (this.checked) {
             $("#createPassword").removeClass("hidden");
             return;
@@ -41,7 +41,6 @@ app.createRoomListen = () => {
         $("#createPassword").addClass("hidden");
     });
     $("#createRoomButton").click(async function () {
-        const token = window.localStorage.getItem("token");
         const swalRes = await Swal.fire({
             title: "Create Room",
             html: `
@@ -79,8 +78,7 @@ app.createRoomListen = () => {
                     room.password = $(target).find("#password").val();
                 }
                 return app.fetchData("/api/1.0/room", {
-                    room,
-                    token
+                    room
                 }, "POST");
             }
         });
@@ -93,7 +91,6 @@ app.createRoomListen = () => {
             return;
         }
         const addData = {};
-        addData.token = token;
         addData.roomId = createRes.roomId;
         const addRes = await app.fetchData("/api/1.0/room/user", addData, "POST");
         if (addRes.error) {
@@ -192,17 +189,15 @@ app.inviteCheck = async () => {
     if (!urlParams.has("invite")) {
         return;
     }
-    const token = window.localStorage.getItem("token");
     const id = urlParams.get("invite");
-    const headers = {
-        authorization: "Bearer " + token,
-    };
-    const getRes = await app.fetchData("/api/1.0/room/" + id, {}, "GET", headers);
+    const getRes = await app.fetchData("/api/1.0/room/" + id);
     if (getRes.error) {
         app.errorShow(getRes.error);
         window.history.replaceState(null, null, window.location.pathname);
         return;
     }
+
+    const token = window.localStorage.getItem("token");
     const isPrivate = getRes.data[0].password;
     const data = {
         roomId: id,
@@ -280,7 +275,7 @@ app.editRoomListen = () => {
         let name = $(this).find(".line-name").text();
         let filename = $(this).find(".line-filename").text();
         let intro = $(this).find(".line-intro").html();
-        const res = await Swal.fire({
+        const swalRes = await Swal.fire({
             title: "Edit Room Info",
             html: `
                 <br>
@@ -303,11 +298,12 @@ app.editRoomListen = () => {
                 return app.fetchData("/api/1.0/room", data, "PUT");
             }
         });
-        if (res.isDismissed) {
+        if (swalRes.isDismissed) {
             return;
         }
-        if (res.error) {
-            app.errorShow(res.error);
+        if (swalRes.value.error) {
+            app.errorShow(swalRes.value.error);
+            return;
         }
         app.successShow("Edited");
         const room = {

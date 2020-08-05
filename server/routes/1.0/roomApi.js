@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express();
 const roomController = require("../../controllers/roomController");
+const tokenParser = require("../../../util/tokenParser");
+
+router.use(tokenParser);
 
 router.route("/room")
     .post(roomController.create);
