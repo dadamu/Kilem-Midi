@@ -1,6 +1,4 @@
-/* global $ Swal filterXSS */
-const app = {};
-
+/* global $ Swal filterXSS app */
 app.init = async () => {
     app.paging = {
         public: 0,

@@ -1,4 +1,4 @@
-const app = {};
+/* global app */
 
 app.setConfig = () => {
     // User config

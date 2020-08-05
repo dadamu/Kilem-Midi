@@ -1,4 +1,5 @@
-/* global app Swal */
+/* global Swal */
+const app = {};
 app.fetchData = (url, data = null, method = "GET", headers = {
     "user-agent": "Mozilla/4.0 MDN Example",
     "content-type": "application/json"
