@@ -1,6 +1,4 @@
-/* global $ */
-const app = {};
-
+/* global $ app */
 app.init = () => {
     if(window.localStorage.getItem("token")){
         window.location.href = "/room";

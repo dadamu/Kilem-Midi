@@ -1,29 +1,21 @@
 const roomModel = require("../models/roomModel");
 const asyncHandler = require("../../util/asyncHandler");
-const jwt = require("jsonwebtoken");
-const { JWT_KEY, BCRYPT_SALT } = process.env;
+const { BCRYPT_SALT } = process.env;
 const bcrypt = require("bcrypt");
 const trackModel = require("../models/trackModel");
+const appDebug = require("debug")("app");
 module.exports = {
     get: asyncHandler(async (req, res) => {
         const { type } = req.params;
         let { paging, keyword } = req.query;
-        const { headers } = req;
-        paging = paging | 0;
-        const isAuth = Object.prototype.hasOwnProperty.call(headers, "authorization");
-        if (!isAuth) {
-            const err = new Error("Forbidden");
-            err.status = 403;
-            throw err;
-        }
-        const token = headers["authorization"].split(" ")[1];
-        const user = jwt.verify(token, JWT_KEY);
+        const { user } = req;
+        paging = paging | 0;    
         const requirement = { user, paging, keyword };
         const rooms = await roomModel.get(type, requirement);
         res.json(rooms);
     }),
     create: asyncHandler(async (req, res) => {
-        const user = jwt.verify(req.body.token, JWT_KEY);
+        const { user } = req; 
         const { room } = req.body;
         if (Object.hasOwnProperty.call(room, "password")) {
             const salt = bcrypt.genSaltSync(parseInt(BCRYPT_SALT));
@@ -38,17 +30,18 @@ module.exports = {
         res.status(201).json({ roomId });
     }),
     put: asyncHandler(async (req, res) => {
-        await roomModel.update(req.body);
+        await roomModel.update(req.body, req.user);
+        appDebug("update success: ", req.body);
         res.json({ status: "success" });
     }),
     delete: asyncHandler(async (req, res) => {
-        const user = jwt.verify(req.body.token, JWT_KEY);
+        const { user } = req; 
         await roomModel.delete(req.body.roomId, user);
         res.status(201).json({ status: "success" });
     }),
     userJoin: asyncHandler(async (req, res) => {
-        const { token, roomId } = req.body;
-        const user = jwt.verify(token, JWT_KEY);
+        const { roomId } = req.body;
+        const { user } = req; 
         const check = await roomModel.checkUser(roomId, user);
         if (check) {
             res.status(201).json({ status: "success" });
@@ -60,7 +53,7 @@ module.exports = {
             const passCheck = bcrypt.compareSync(password, roomPassword);
             if (!passCheck) {
                 const err = new Error("Wrong password");
-                err.status = 403;
+                err.status = 401;
                 throw err;
             }
         }
@@ -68,8 +61,8 @@ module.exports = {
         res.status(201).json({ status: "success" });
     }),
     userExit: asyncHandler(async (req, res) => {
-        const { token, roomId } = req.body;
-        const user = jwt.verify(token, JWT_KEY);
+        const { roomId } = req.body;
+        const { user } = req; 
         const tracks = await roomModel.deleteUser(roomId, user);
         const io = req.app.get("io");
         for (let track of tracks) {

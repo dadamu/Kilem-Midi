@@ -18,8 +18,7 @@ module.exports = {
         }
         else if (type === "my") {
             const { user } = requirement;
-            const { id: userId } = user;
-            query = query.clone().where("user_id", userId);
+            query = query.clone().where("user_id", user.id);
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
@@ -27,9 +26,8 @@ module.exports = {
         }
         else if (type === "in") {
             const { user } = requirement;
-            const { id: userId } = user;
             query = query.clone().innerJoin("save AS s", "s.room_id", "r.id")
-                .where("s.user_id", userId).andWhereNot("r.user_id", userId);
+                .where("s.user_id", user.id).andWhereNot("r.user_id", user.id);
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
@@ -91,19 +89,18 @@ module.exports = {
     delete: async (roomId, user) => {
         const deletedNum = await knex("room").where("id", roomId).andWhere("user_id", user.id).del();
         if (deletedNum === 0) {
-            const err = new Error("You are not the room owner");
+            const err = new Error("Failed");
             err.status = 403;
             throw err;
         }
     },
-    update: async (content) => {
-        const updatedNum = await knex("room").update(content).where("id", content.id);
+    update: async (info, user) => {
+        const updatedNum = await knex("room").update(info).where("id", info.id).where("user_id", user.id);
         if (updatedNum === 0) {
             const err = new Error("Failed");
             err.status = 400;
             throw err;
         }
-        return true;
     },
     hasRoom: async (roomId) => {
         const room = await knex("room").where({ id: roomId });

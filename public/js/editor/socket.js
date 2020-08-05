@@ -59,7 +59,7 @@ app.ioListen = async () => {
             $(`.track.track-${track.id} .track-name`).addClass("editable").removeAttr("disabled");
         }
         else {
-            $(`.track.track-${track.id} .track-name`).removeClass("editable");
+            $(`.track.track-${track.id} .track-name`).removeClass("editable").attr("disabled", true);
         }
         if (parseInt($("#midiPanel").attr("trackId")) === parseInt(track.id)) {
             app.panelLoadTrack(track.id);

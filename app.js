@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const viewsPath = "./views/";
 require("dotenv").config();
 const ioController = require("./server/controllers/ioController");
+const appDebug = require("debug")("app");
 const { API_VERSION } = process.env;
 
 app.set("io", io);
@@ -23,13 +24,13 @@ app.use("/public", serveStatic("./public", {
         res.setHeader("Cache-Control", "no-cache");
     }
 }));
-app.use("/", require("./server/routes/front_route"));
 
+app.use("/", require("./server/routes/frontRoute"));
 app.use("/api/" + API_VERSION, [
-    require("./server/routes/1.0/user_api"),
-    require("./server/routes/1.0/midi_api"),
-    require("./server/routes/1.0/room_api"),
-    require("./server/routes/1.0/chat_api")
+    require("./server/routes/1.0/userApi"),
+    require("./server/routes/1.0/midiApi"),
+    require("./server/routes/1.0/roomApi"),
+    require("./server/routes/1.0/chatApi")
 ]);
 
 app.use("/api", (req, res, next) => {
@@ -44,6 +45,7 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use("/api", (err, req, res, next) => {
+    appDebug("Error happened");
     if (err instanceof jwt.JsonWebTokenError) {
         res.status(403).json({ error: "Invalid access" });
         return;

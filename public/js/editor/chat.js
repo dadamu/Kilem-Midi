@@ -12,7 +12,7 @@ app.initChatRender = async () => {
 };
 
 app.loadChats = async (paging) => {
-    const res = await fetch(`/api/1.0/chat?roomId=${app.roomId}&paging=${paging}`).then(res => res.json());
+    const res = await app.fetchData(`/api/1.0/chat?roomId=${app.roomId}&paging=${paging}`);
     const { data: chats } = res;
     app.chatsNext = res.next;
     return chats;
