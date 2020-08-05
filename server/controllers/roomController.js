@@ -23,10 +23,8 @@ module.exports = {
             room.password = bcryptPass;
         }
         const roomId = await roomModel.create(room, user);
-        await trackModel.add({
-            roomId, 
-            userId: user.id
-        });
+        console.log(user);
+        await trackModel.add(roomId, user);
         res.status(201).json({ roomId });
     }),
     put: asyncHandler(async (req, res) => {

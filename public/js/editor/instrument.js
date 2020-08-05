@@ -35,8 +35,8 @@ class Instrument {
         this.audio[pitch] = {};
         if (pitchShift === 0) {
             const fileNum = this.getFileNum(pitch);
-            const getData = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
-            const blob = await getData.blob();
+            const source = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
+            const blob = await source.blob();
             const buffer = await blob.arrayBuffer();
             this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
         }
@@ -93,8 +93,8 @@ class Drums extends Instrument {
             return;
         }
         const fileNum = this.getFileNum(pitch);
-        const getData = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
-        const blob = await getData.blob();
+        const source = await fetch(`${this.url}${this.name}/${fileNum}-${this.name}.ogg`);
+        const blob = await source.blob();
         const buffer = await blob.arrayBuffer();
         if (buffer.byteLength <= 183) {
             return;

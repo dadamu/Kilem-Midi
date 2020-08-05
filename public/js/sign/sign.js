@@ -5,8 +5,8 @@ app.signListen = () => {
     $("#nativeSignin").click(async () => {
         const email = $("#signin .email").val();
         const password = $("#signin .password").val();
-        const data = { email, password, provider: "native" };
-        const res = await app.fetchData("/api/1.0/user/signin", data, "POST");
+        const signInfo = { email, password, provider: "native" };
+        const res = await app.fetchData("/api/1.0/user/signin", signInfo, "POST");
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -20,8 +20,8 @@ app.signListen = () => {
         const email = $("#signup .email").val();
         const username = $("#signup .username").val();
         const password = $("#signup .password").val();
-        const data = { email, username, password, provider: "native" };
-        const res = await app.fetchData("/api/1.0/user/signup", data, "POST");
+        const signInfo = { email, username, password, provider: "native" };
+        const res = await app.fetchData("/api/1.0/user/signup", signInfo, "POST");
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -57,11 +57,11 @@ app.googleInit = () => {
 
 app.googleSignin = (element) => {
     app.googleAuth.attachClickHandler((element), {}, async function (googleUser) {
-        const data = {
+        const signInfo = {
             accessToken: googleUser.getAuthResponse().id_token,
             provider: "google"
         };
-        const res = await app.fetchData("/api/1.0/user/signin", data, "POST");
+        const res = await app.fetchData("/api/1.0/user/signin", signInfo, "POST");
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -76,11 +76,11 @@ app.googleSignin = (element) => {
 
 app.googleSignup = (element) => {
     app.googleAuth.attachClickHandler((element), {}, async function (googleUser) {
-        const data = {
+        const signInfo = {
             accessToken: googleUser.getAuthResponse().id_token,
             provider: "google"
         };
-        const res = await app.fetchData("/api/1.0/user/signup", data, "POST");
+        const res = await app.fetchData("/api/1.0/user/signup", signInfo, "POST");
         if (res.error) {
             app.errorShow(res.error);
             return;

@@ -13,9 +13,9 @@ app.initChatRender = async () => {
 
 app.loadChats = async (paging) => {
     const res = await app.fetchData(`/api/1.0/chat?roomId=${app.roomId}&paging=${paging}`);
-    const { data: chats } = res;
+    const { msgs } = res;
     app.chatsNext = res.next;
-    return chats;
+    return msgs;
 };
 
 app.chatRoomlListen = () => {
@@ -40,7 +40,7 @@ app.loadChatsListen  = () => {
         if(posY === 0 && app.chatsNext){
             const chats = await app.loadChats(app.chatsNext);
             chats.forEach(chat => app.chatRender(chat, true) );
-            $(this).scrollTop(23 * 56);       
+            $(this).scrollTop((chats.length + 3) * 56);       
         }
     });
 };
@@ -70,12 +70,11 @@ app.chatSendlListen = () => {
             return;
         }
         $("#chatInput").val("");
-        const data = {
+        const chat = {
             msg: text,
-            userId: app.userId,
             roomId: app.roomId
         };
-        const result = await app.fetchData("/api/1.0/chat", data, "POST");
+        const result = await app.fetchData("/api/1.0/chat", chat, "POST");
         if (result.error) {
             app.errorShow("failed");
             return;
@@ -85,17 +84,17 @@ app.chatSendlListen = () => {
 
 
 app.chatRender = (chat, load = false) => {
+    const $container = $("#chatContainer");
+    const change = $container.prop("scrollHeight") - $container.scrollTop();
     const msgDiv = app.chatMsgRender(chat);
-    const container = $("#chatContainer");
     if(load){
-        container.prepend(msgDiv);
+        $container.prepend(msgDiv);
         return;
     }
-    container.append(msgDiv);
-    const pos = container.scrollTop() + container.height();
-    const max = container.prop("scrollHeight") - 150;
-    if (pos >= max){
-        container.animate({ scrollTop: container.prop("scrollHeight") }, 0);
+    $container.append(msgDiv);
+    
+    if (change <= 400){
+        $container.animate({ scrollTop: $container.prop("scrollHeight") }, 0);
     }
 };
 

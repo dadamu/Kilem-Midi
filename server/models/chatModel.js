@@ -38,10 +38,10 @@ module.exports = {
                     name: item.username
                 },
                 msg: item.msg,
-                date: moment(item.data).format("YYYY-MM-DD HH:mm:ss")
+                date: moment(item.date).format("YYYY-MM-DD HH:mm:ss")
             };
         });
-        result.data = chatmsgs.reverse();
+        result.msgs = chatmsgs.reverse();
         return result;
     }
 };

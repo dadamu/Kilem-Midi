@@ -19,7 +19,7 @@ module.exports = {
     }),
     add: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
-        const track = await trackModel.add(req.body, req.user);
+        const track = await trackModel.add(roomId, req.user);
         appDebug("Add Track Success");
         const io = req.app.get("io");
         io.of("/room" + roomId).to("editor").emit("addTrack", track);
@@ -33,10 +33,10 @@ module.exports = {
     delete: asyncHandler(async (req, res) => {
         const { roomId } = req.body;
         const { id: trackId } = req.params;
-        const result = await trackModel.delete(trackId, req.user);
+        const track = await trackModel.delete(trackId, req.user);
         appDebug("Delete Track Success");
         const io = req.app.get("io");
-        io.of("/room" + roomId).emit("deleteTrack", { track: result });
+        io.of("/room" + roomId).emit("deleteTrack", { track });
         res.json({ status: "success" });
     }),
     update: asyncHandler(async (req, res) => {

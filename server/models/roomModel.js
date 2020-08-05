@@ -14,7 +14,7 @@ module.exports = {
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = rooms;
+            result.rooms = rooms;
         }
         else if (type === "my") {
             const { user } = requirement;
@@ -22,7 +22,7 @@ module.exports = {
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = rooms;
+            result.rooms = rooms;
         }
         else if (type === "in") {
             const { user } = requirement;
@@ -31,7 +31,7 @@ module.exports = {
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = rooms;
+            result.rooms = rooms;
         }
         else if (type === "search") {
             let { keyword } = requirement;
@@ -42,7 +42,7 @@ module.exports = {
             const count = await query.clone().count("* AS total");
             maxPaging = Math.ceil(count[0].total / num);
             const rooms = await query.clone().offset(paging * num).limit(num).orderBy("r.id", "desc");
-            result.data = rooms;
+            result.rooms = rooms;
         }
         else {
             const roomId = type;
@@ -66,7 +66,7 @@ module.exports = {
             if (rooms[0].password) {
                 rooms[0].password = true;
             }
-            result.data = rooms;
+            result.rooms = rooms;
             return result;
         }
 

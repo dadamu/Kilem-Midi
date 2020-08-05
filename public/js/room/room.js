@@ -140,12 +140,11 @@ app.roomListen = () => {
             return;
         }
         const id = $(this).closest(".room").attr("id");
-        const token = window.localStorage.getItem("token");
-        const data = {
-            roomId: id,
-            token
+        
+        const room = {
+            roomId: id
         };
-        const res = await app.fetchData("/api/1.0/room", data, "DELETE");
+        const res = await app.fetchData("/api/1.0/room", room, "DELETE");
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -166,12 +165,10 @@ app.roomListen = () => {
             return;
         }
         const id = $(this).closest(".room").attr("id");
-        const token = window.localStorage.getItem("token");
-        const data = {
-            roomId: id,
-            token
+        const room = {
+            roomId: id
         };
-        const res = await app.fetchData("/api/1.0/room/user", data, "DELETE");
+        const res = await app.fetchData("/api/1.0/room/user", room, "DELETE");
         if (res.error) {
             app.errorShow(res.error);
             return;
@@ -194,14 +191,11 @@ app.inviteCheck = async () => {
         window.history.replaceState(null, null, window.location.pathname);
         return;
     }
-
-    const token = window.localStorage.getItem("token");
-    const isPrivate = getRes.data[0].password;
-    const data = {
+    const isPrivate = getRes.rooms[0].password;
+    const room = {
         roomId: id,
-        token
-    };
 
+    };
     let res;
     if (isPrivate) {
         let swalConfig = {
@@ -213,8 +207,8 @@ app.inviteCheck = async () => {
         swalConfig.preConfirm = () => {
             const target = Swal.getPopup();
             const password = $(target).find("#password").val();
-            data.password = password;
-            return app.fetchData("/api/1.0/room/user", data, "POST");
+            room.password = password;
+            return app.fetchData("/api/1.0/room/user", room, "POST");
         };
         const swalRes = await Swal.fire(swalConfig);
 
@@ -224,7 +218,7 @@ app.inviteCheck = async () => {
         }
         res = swalRes.value;
     }
-    res = await app.fetchData("/api/1.0/room/user", data, "POST");
+    res = await app.fetchData("/api/1.0/room/user", room, "POST");
 
     if (res.error) {
         app.errorShow(res.error);
@@ -288,12 +282,12 @@ app.editRoomListen = () => {
                 name = $(swal).find("#name").val();
                 filename = $(swal).find("#filename").val();
                 intro = $(swal).find("#intro").val();
-                const data = {
+                const room = {
                     id,
                     name,
                     intro
                 };
-                return app.fetchData("/api/1.0/room", data, "PUT");
+                return app.fetchData("/api/1.0/room", room, "PUT");
             }
         });
         if (swalRes.isDismissed) {
@@ -365,7 +359,7 @@ app.renderRooms = async (type, paging) => {
         endpoint = `/api/1.0/room/search?paging=${paging}&keyword=${keyword}`;
     }
     const res = await app.fetchData(endpoint);
-    const { data: rooms, next, previous } = res;
+    const { rooms, next, previous } = res;
     const $typeRooms = $(`#${type}Rooms`);
     $typeRooms.find(".rooms .room").remove();
     const isNoRooms = rooms.length === 0;

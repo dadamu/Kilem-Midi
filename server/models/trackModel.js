@@ -1,7 +1,6 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    add: async (trackInfo, user) => {
-        const { roomId } = trackInfo;
+    add: async (roomId, user) => {
         let id = 0;
         let name = "";
         const trx = await knex.transaction();
@@ -86,14 +85,14 @@ module.exports = {
             }
 
             const newVersion = version + 1;
-            const insertData = {
+            const insertVersion = {
                 track_id: trackId,
                 version: newVersion,
                 user_id: user.id,
                 name,
                 notes: newNotes
             };
-            await trx("version").insert(insertData);
+            await trx("version").insert(insertVersion);
             await trx.commit();
             return {
                 id: trackId,

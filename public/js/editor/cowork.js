@@ -86,10 +86,10 @@ app.deleteTrackListen = () => {
         }
         const selectedTrack = $(".track.selected");
         const deleteId = parseInt(selectedTrack.attr("trackId"));
-        const data = {
+        const room = {
             roomId: app.roomId
         };
-        const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, data, "Delete");
+        const res = await app.fetchData(`/api/1.0/midi/track/${deleteId}`, room, "Delete");
         if(app.checkFailedByLock(res)){
             return;
         }
@@ -104,7 +104,7 @@ app.deleteTrackListen = () => {
 app.lockClickListen = () => {
     $("#tracksContent").on("click", ".lock-icon", async function () {
         const trackId = $(this).closest(".track").attr("trackId");
-        const data = {
+        const room = {
             roomId: app.roomId
         };
         const version = app.music.getTrack(trackId).get("version");
@@ -116,7 +116,7 @@ app.lockClickListen = () => {
                 return;
             }
         }
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, data, "PATCH");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/lock`, room, "PATCH");
         if(app.checkFailedByLock(res)){
             return;
         }
@@ -150,11 +150,11 @@ app.changeInstrumentListen = () => {
         const trackId = $(this).closest(".track").attr("trackId");
         const instrument = $(this).val();
         const roomId = app.roomId;
-        const data = {
+        const room = {
             roomId,
             instrument
         };
-        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, data, "PATCH");
+        const res = await app.fetchData(`/api/1.0/midi/track/${trackId}/instrument`, room, "PATCH");
         const originInstrument = app.music.getTrack(trackId).get("instrument");
         if(app.checkFailedByLock(res)){
             $(`.track.track-${trackId} .instrument-selector`).val(originInstrument);

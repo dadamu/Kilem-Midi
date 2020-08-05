@@ -1,10 +1,9 @@
 const knex = require("../../util/mysqlCon").knex;
 module.exports = {
-    saveFile: async (file, user) => {
-        console.log(user);
-        const { roomId, data } = file;
+    saveFile: async (fileInfo, user) => {
+        const { roomId, tracks } = fileInfo;
         await knex("save").update({
-            data: JSON.stringify(data)
+            data: JSON.stringify(tracks)
         }).where("room_id", roomId).andWhere("user_id", user.id);
     },
     getFile: async (roomId, user) => {
@@ -59,7 +58,7 @@ module.exports = {
             throw e;
         }
     },
-    update: async (roomId, type, info, user) => {
+    update: async (roomId, type, roomInfo, user) => {
         const users = await knex("room")
             .select(["id"])
             .where("id", roomId)
@@ -71,7 +70,7 @@ module.exports = {
             throw err;
         }
         await knex("room")
-            .update(type, info[type])
+            .update(type, roomInfo[type])
             .where("id", roomId);
         return true;
     },

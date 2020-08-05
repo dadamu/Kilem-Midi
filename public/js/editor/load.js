@@ -48,16 +48,16 @@ app.exportFileListen = () => {
 
 app.saveFile = async () => {
     const endpoint = "/api/1.0/midi/file";
-    const data = {};
-    data.roomId = app.roomId;
+    const save = {};
+    save.roomId = app.roomId;
     const tracks = {};
     Object.entries(app.music.get("tracks")).forEach(([id, track]) => {
         if(track.locker.id === app.userId){
             tracks[id] = track;
         }
     });
-    data.data = tracks;
-    const result = await app.fetchData(endpoint, data, "POST");
+    save.tracks = tracks;
+    const result = await app.fetchData(endpoint, save, "POST");
     if (result.error) {
         app.errorShow(result.error);
         return;
