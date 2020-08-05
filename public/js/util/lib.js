@@ -3,6 +3,9 @@ app.fetchData = (url, data = null, method = "GET", headers = {
     "user-agent": "Mozilla/4.0 MDN Example",
     "content-type": "application/json"
 }) => {
+    const token = window.localStorage.getItem("token");
+    if(token)
+        headers["authorization"] = "Bearer " + token;
     if(method === "GET"){
         return fetch(url, { headers }).then(res => res.json());
     }
@@ -21,10 +24,7 @@ app.checkToken = async () => {
         await app.errorShow("Please login first");
         window.location.href = "/";
     }
-    const headers = {
-        authorization: "Bearer " + token,
-    };
-    const res = await app.fetchData("/api/1.0/user/profile",  null, "GET", headers);
+    const res = await app.fetchData("/api/1.0/user/profile");
     if (res.error) {
         await app.errorShow(res.error);
         window.localStorage.removeItem("token", "");

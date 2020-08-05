@@ -4,7 +4,7 @@ const app = {};
 app.init = async () => {
     app.paging = {
         public: 0,
-        mine: 0,
+        my: 0,
         in: 0
     };
     await app.checkToken();
@@ -14,9 +14,9 @@ app.init = async () => {
 };
 
 app.initRender = async () => {
-    const publicRooms = app.renderRoom("public", 0);
-    const myRooms = app.renderRoom("my", 0);
-    const inRooms = app.renderRoom("in", 0);
+    const publicRooms = app.renderRooms("public", 0);
+    const myRooms = app.renderRooms("my", 0);
+    const inRooms = app.renderRooms("in", 0);
     app.topNavRender();
     await Promise.all([publicRooms, myRooms, inRooms]);
     return;
@@ -113,26 +113,15 @@ app.roomListen = () => {
         if (thisCell.hasClass("is-collapsed")) {
             cell.not(thisCell).removeClass("is-expanded").addClass("is-collapsed").addClass("is-inactive");
             thisCell.removeClass("is-collapsed").removeClass("is-inactive").addClass("is-expanded");
-
-            if (cell.not(thisCell).hasClass("is-inactive")) {
-                // do nothing
-            } else {
+            if (!cell.not(thisCell).hasClass("is-inactive")) {
                 cell.not(thisCell).addClass("is-inactive");
             }
-
         } else {
             thisCell.removeClass("is-expanded").addClass("is-collapsed");
             cell.not(thisCell).removeClass("is-inactive");
         }
     });
-
-    //close card when click on cross
-    rooms.on("click", ".js-collapser", function () {
-        const cell = $(".room");
-        const thisCell = $(this).closest(".room");
-        thisCell.removeClass("is-expanded").addClass("is-collapsed");
-        cell.not(thisCell).removeClass("is-inactive");
-    });
+    
 
     rooms.on("click", ".join", function () {
         const id = $(this).closest(".room").attr("id");
@@ -167,8 +156,9 @@ app.roomListen = () => {
             return;
         }
         $(this).closest(".room").remove();
-        app.renderRoom("my", 0);
-        app.renderRoom("public", 0);
+        app.renderRooms("my", 0);
+        app.renderRooms("public", 0);
+        $(".room").removeClass("is-inactive");
     });
 
     rooms.on("click", ".exit", async function () {
@@ -192,7 +182,8 @@ app.roomListen = () => {
             return;
         }
         $(this).closest(".room").remove();
-        app.renderRoom("in", 0);
+        app.renderRooms("in", 0);
+        $(".room").removeClass("is-inactive");
     });
 };
 
@@ -264,7 +255,7 @@ app.pagingListen = () => {
         else {
             type = "in";
         }
-        app.renderRoom(type, ++app.paging.public);
+        app.renderRooms(type, ++app.paging[type]);
     });
     rooms.on("click", ".previous", function () {
         const id = $(this).closest("section").attr("id");
@@ -278,7 +269,7 @@ app.pagingListen = () => {
         else {
             type = "in";
         }
-        app.renderRoom(type, --app.paging.public);
+        app.renderRooms(type, --app.paging[type]);
     });
 };
 
@@ -295,13 +286,15 @@ app.editRoomListen = () => {
                 <br>
                 <label>name</label><input type='text' id='name' class='swal2-input' maxlength='15' value='${name}'></input>
                 <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='15' value='${filename}'></input>
-                <label>intro</label><textarea id='intro' style='resize: none;' class='swal2-textarea' wrap="hard" cols='10'>${intro.split("<br>").join("\n")}</textarea>`,
+                <label>intro</label><textarea id='intro' style='resize: none;' class='swal2-textarea' wrap="hard" cols='10'>${intro.split("<br>").join("\n")}</textarea>
+                `,
             showCancelButton: true,
             confirmButtonText: "Edit",
             preConfirm: () => {
-                name = Swal.getPopup().querySelector("#name").value;
-                filename = Swal.getPopup().querySelector("#filename").value;
-                intro = Swal.getPopup().querySelector("#intro").value;
+                const swal = Swal.getPopup();
+                name = $(swal).find("#name").val();
+                filename = $(swal).find("#filename").val();
+                intro = $(swal).find("#intro").val();
                 const data = {
                     id,
                     name,
@@ -317,37 +310,26 @@ app.editRoomListen = () => {
             app.errorShow(res.error);
         }
         app.successShow("Edited");
-        const newMy = app.roomTempGen({
+        const room = {
             id,
             filename,
             name,
             username,
             intro
-        });
-        const $newMy = $(newMy);
-        const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
-        const deleteButton = $("<button></button>").addClass("button").addClass("delete").text("delete");
-        $newMy.find(".control").append(enterButton, deleteButton);
+        };
+        const $newMy = app.genarateRoom(room, "my");
         $(this).closest(".room").replaceWith($newMy);
         const $oldPublic = $("#publicRooms").find(`div#${id}`);
-        if($oldPublic.length === 1){
-            const newPublic = app.roomTempGen({
-                id,
-                filename,
-                name,
-                username,
-                intro
-            });
-            const $newPublic = $(newPublic);
-            const joinButton = $("<button></button>").addClass("button").addClass("join").text("join");
-            $newPublic.find(".control").append(joinButton);
+        if ($oldPublic.length === 1) {
+            const $newPublic = app.genarateRoom(room, "public");
             $oldPublic.replaceWith($newPublic);
         }
+        $(".room").removeClass("is-inactive");
     });
 };
 
-app.roomTempGen = (room) => {
-    if(!room.intro){
+app.genarateRoomTemp = (room) => {
+    if (!room.intro) {
         room.intro = "none";
     }
     return `<div id="${room.id}" class="room is-collapsed">
@@ -381,68 +363,80 @@ app.roomTempGen = (room) => {
     </div>`;
 };
 
-app.renderRoom = async (type, paging) => {
+app.renderRooms = async (type, paging) => {
     const keyword = $("#search").val();
-    const token = window.localStorage.getItem("token");
-    const headers = {
-        authorization: "Bearer " + token,
-    };
     let endpoint = `/api/1.0/room/${type}?paging=${paging}`;
-    if (type === "public" && keyword !== "") {
+    const isSearch = type === "public" && keyword !== "";
+    if (isSearch) {
         endpoint = `/api/1.0/room/search?paging=${paging}&keyword=${keyword}`;
     }
-    const res = await fetch(endpoint, { headers, method: "GET" }).then(res => res.json());
+    const res = await app.fetchData(endpoint);
     const { data: rooms, next, previous } = res;
-    const typeRooms = `#${type}Rooms`;
-    $(`${typeRooms} .rooms .room`).remove();
-    if (rooms.length === 0) {
-        $(`${typeRooms} .next`).addClass("hidden");
-        $(`${typeRooms} .previous`).addClass("hidden");
-        if ($(`${typeRooms} .rooms`).find(".no-content").length === 0) {
-            $(`${typeRooms} .rooms`).append("<div class='no-content'>No Content</div>");
-        }
+    const $typeRooms = $(`#${type}Rooms`);
+    $typeRooms.find(".rooms .room").remove();
+    const isNoRooms = rooms.length === 0;
+    if (isNoRooms) {
+        app.renderNoContent($typeRooms);
         return;
     }
-    $(`${typeRooms} .rooms .no-content`).remove();
-    $(`${typeRooms} .next`).removeClass("hidden");
-    $(`${typeRooms} .previous`).removeClass("hidden");
+    $typeRooms.find(".rooms .no-content").remove();
+    $typeRooms.find(".next").removeClass("hidden");
+    $typeRooms.find(".previous").removeClass("hidden");
     for (let room of rooms) {
-        const roomDiv = $(app.roomTempGen(room));
-        if (type === "my") {
-            const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
-            const deleteButton = $("<button></button>").addClass("button").addClass("delete").text("delete");
-            roomDiv.find(".control").append(enterButton, deleteButton);
-        }
-        if (type === "in") {
-            const enterButton = $("<button></button>").addClass("button").addClass("enter").text("enter");
-            const exitButton = $("<button></button>").addClass("button").addClass("exit").text("exit");
-            roomDiv.find(".control").append(enterButton, exitButton);
-        }
-        if (type === "public") {
-            const joinButton = $("<button></button>").addClass("button").addClass("join").text("join");
-            roomDiv.find(".control").append(joinButton);
-        }
-        $(`${typeRooms} .rooms`).append(roomDiv);
+        const $room = app.genarateRoom(room, type);
+        $typeRooms.find(".rooms").append($room);
     }
+    app.setPageButton($typeRooms, next, previous);
+
+};
+
+app.genarateRoom = (room, type) => {
+    const $room = $(app.genarateRoomTemp(room));
+    if (type === "my") {
+        const $enter = $("<button></button>").addClass("button").addClass("enter").text("enter");
+        const $delete = $("<button></button>").addClass("button").addClass("delete").text("delete");
+        $room.find(".control").append($enter, $delete);
+    }
+    else if (type === "in") {
+        const $enter = $("<button></button>").addClass("button").addClass("enter").text("enter");
+        const $exit = $("<button></button>").addClass("button").addClass("exit").text("exit");
+        $room.find(".control").append($enter, $exit);
+    }
+    else if (type === "public") {
+        const $join = $("<button></button>").addClass("button").addClass("join").text("join");
+        $room.find(".control").append($join);
+    }
+    return $room;
+};
+
+app.setPageButton = ($typeRooms, next, previous) => {
     if (typeof previous === "undefined") {
-        $(`${typeRooms} .previous`).addClass("hidden");
+        $typeRooms.find(".previous").addClass("hidden");
     }
     else {
-        $(`${typeRooms} .previous`).removeClass("hidden");
+        $typeRooms.find(".previous").removeClass("hidden");
     }
 
     if (typeof next === "undefined") {
-        $(`${typeRooms} .next`).addClass("hidden");
+        $typeRooms.find(".next").addClass("hidden");
     }
     else {
-        $(`${typeRooms} .next`).removeClass("hidden");
+        $typeRooms.find(".next").removeClass("hidden");
     }
-    app.paging.type = paging;
+};
+
+app.renderNoContent = ($typeRooms) => {
+    $typeRooms.find(".next").addClass("hidden");
+    $typeRooms.find(".previous").addClass("hidden");
+    const isNoContent = $typeRooms.find(".no-content").length === 0;
+    if (isNoContent) {
+        $typeRooms.find(".rooms").append("<div class='no-content'>No Content</div>");
+    }
 };
 
 app.searchListen = () => {
     $("#search").change(function () {
-        app.renderRoom("public", 0);
+        app.renderRooms("public", 0);
     });
 };
 
