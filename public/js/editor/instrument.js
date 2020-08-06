@@ -15,14 +15,14 @@ class Instrument {
     }
 
     async getFiles() {
-        const pTasks = [];
+        const tasks = [];
         const pitchWaitQueue = [];
         const start = Math.floor((this.minPitch - 1) / 3) * 3 + 1;
         for (let pitch = start; pitch <= this.maxPitch; pitch++) {
             const task = this.getFileTask(pitch, pitchWaitQueue);
-            pTasks.push(task);
+            tasks.push(task);
         }
-        await Promise.all(pTasks);
+        await Promise.all(tasks);
         //other pitch depends on file
         for (let pitch of pitchWaitQueue) {
             const { pitchShift } = this.audio[pitch];
@@ -79,13 +79,13 @@ class Drums extends Instrument {
     }
 
     async getFiles() {
-        const pTask = [];
+        const tasks = [];
         const start = this.minPitch;
         for (let pitch = start; pitch <= this.maxPitch; pitch++) {
             const task = this.getFileTask(pitch);
-            pTask.push(task);
+            tasks.push(task);
         }
-        await Promise.all(pTask);
+        await Promise.all(tasks);
     }
     async getFileTask(pitch) {
         this.audio[pitch] = {};
@@ -103,3 +103,10 @@ class Drums extends Instrument {
         return;
     }
 }
+
+app.initInstruments = () => {
+    app.instruments.piano = app.setPiano(app.instrumentsURL);
+    app.instruments.bass = app.setBass(app.instrumentsURL);
+    app.instruments.guitar = app.setGuitar(app.instrumentsURL);
+    app.instruments.drums = app.setDrums(app.instrumentsURL);
+};

@@ -144,7 +144,7 @@ module.exports = {
                 await trx('track AS t')
                     .update('t.user_id', user.id)
                     .where('t.id', trackId);
-                const nameSelects = await trx('user AS u')
+                const names = await trx('user AS u')
                     .select(['u.username AS name'])
                     .where('u.id', user.id);
                 await trx.commit();
@@ -152,7 +152,7 @@ module.exports = {
                     id: trackId,
                     locker: {
                         id: user.id,
-                        name: nameSelects[0].name
+                        name: names[0].name
                     }
                 };
             }

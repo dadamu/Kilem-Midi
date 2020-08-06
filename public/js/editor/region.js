@@ -1,5 +1,10 @@
 /* global app $ */
 
+app.initRegionRender = () => {
+    app.initRegionNotesRender();
+    app.initRegionWidthRender();
+};
+
 app.regionNoteRender = (trackId, note) => {
     const region = $(`.region.track-${trackId}`);
     const pitchHeight = region.height() / (app.keysNum);
@@ -19,10 +24,17 @@ app.regionNoteDelete = (trackId, note) => {
     $(`.region.track-${trackId} div[posX="${note.posX}"][pitch=${note.pitch}]`).remove();
 };
 
-app.initRegionNoteRender = () => {
+app.initRegionNotesRender = () => {
     for (let track of Object.values(app.music.get('tracks'))) {
         app.loadRegionNotesRender(track.id);
     }
+};
+
+app.initRegionWidthRender = () => {
+    const interval = app.regionInterval;
+    const length = app.musicLength;
+    const width = interval * length;
+    $('#tracksRegion').width(width);
 };
 
 app.loadRegionNotesRender = (trackId) => {

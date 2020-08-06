@@ -84,7 +84,8 @@ async function googleSignIn(req, res) {
 
 async function getGoogleProfie(accessToken){
     try{
-        const user = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`).then(res => res.json());
+        const user = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`)
+            .then(res => res.json());
         return {
             email: user.email,
             username: user.name,

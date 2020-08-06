@@ -8,6 +8,12 @@ app.midiPanelListen = () => {
     app.panelCancelListen();
 };
 
+app.initMidiPanelRender = () => {
+    app.initGridsRender();
+    app.initSvgGridsRender();
+    app.initKeysRender();
+};
+
 app.openMidiPanelListen = () => {
     $('#midiPanelButton').click(() => {
         if ($('#midiPanel').hasClass('hidden')) {
@@ -18,7 +24,7 @@ app.openMidiPanelListen = () => {
             }
             $('#midiPanelButton').addClass('active');
             $('#midiPanel').removeClass('hidden');
-            app.panelLoadTrack(trackId);
+            app.panelLoadRender(trackId);
             app.activeKeyRender(app.music.getTrack(trackId).get('instrument'));
             app.isMidiEditorOpen = true;
             app.setCurrentPlayhead(app.currentTime);
@@ -36,7 +42,7 @@ app.openMidiPanel = () => {
         $('#midiPanelButton').addClass('active');
         const trackId = $('.track.selected').attr('trackId');
         $('#midiPanel').removeClass('hidden');
-        app.panelLoadTrack(trackId);
+        app.panelLoadRender(trackId);
         app.activeKeyRender(app.music.getTrack(trackId).get('instrument'));
         app.isMidiEditorOpen = true;
         app.setCurrentPlayhead(app.currentTime);
@@ -118,7 +124,7 @@ app.midiPlayheadDragListen = () => {
     });
 };
 
-app.panelLoadTrack = (trackId) => {
+app.panelLoadRender = (trackId) => {
     $('#grids .note').remove();
     if (!$('#midiPanel').hasClass('hidden')) {
         $('#midiPanel').attr('trackId', trackId);
@@ -157,7 +163,7 @@ app.panelCancelListen = () => {
     });
 };
 
-app.initSvgGrids = async () => {
+app.initSvgGridsRender = async () => {
     const gridsWidth = app.gridsInterval * app.musicLength;
     const pitchHeight = app.pitchHeight;
     const musicLength = app.musicLength;
@@ -176,12 +182,10 @@ app.initKeysRender = () => {
         keysHtml += app.midiKeysTemplate(i);
     }
     $('#keys').html(keysHtml);
-    return;
 };
 
 app.initGridsRender = () => {
     const gridsWidth = app.gridsInterval * app.musicLength;
     $('#grids').width(gridsWidth);
-    return;
 };
 

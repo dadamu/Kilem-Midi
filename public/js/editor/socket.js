@@ -27,7 +27,7 @@ app.ioListen = async () => {
         app.music.setTrack(track);
         app.addVersionOption(track);
         if (parseInt($('.track.selected').attr('trackId')) === parseInt(track.id)) {
-            app.panelLoadTrack(track.id);
+            app.panelLoadRender(track.id);
         }
         app.loadRegionNotesRender(track.id);
         app.saveFile();
@@ -41,7 +41,7 @@ app.ioListen = async () => {
         $(`.region.track-${track.id}`).remove();
         $('.track').first().addClass('selected');
         $('.region').first().addClass('selected');
-        app.panelLoadTrack($('.region').last().attr('trackId'));
+        app.panelLoadRender($('.region').last().attr('trackId'));
         app.saveFile();
         if (parseInt($('#midiPanel').attr('trackId')) === parseInt(track.id)) {
             $('#midiPanel').addClass('hidden');
@@ -62,7 +62,7 @@ app.ioListen = async () => {
             $(`.track.track-${track.id} .track-name`).removeClass('editable').attr('disabled', true);
         }
         if (parseInt($('#midiPanel').attr('trackId')) === parseInt(track.id)) {
-            app.panelLoadTrack(track.id);
+            app.panelLoadRender(track.id);
         }
         app.saveFile();
     });

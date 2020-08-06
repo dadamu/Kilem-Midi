@@ -13,6 +13,15 @@ app.controlListen = () => {
     app.iconParentHoverListen();
 };
 
+app.initControlRender = () => {
+    app.bpmRender();
+    app.filenameRender();
+    app.roomnameRender();
+    app.controlRulerRender();
+    app.controlLoopRender();
+    app.initRulerRender();
+};
+
 app.iconParentHoverListen = () => {
     $('body').on('mouseenter', '.icon-container', function () {
         $(this).children().addClass('hover');
@@ -394,10 +403,20 @@ app.inviteButtonListen = () => {
     });
 };
 
-app.initControlRender = () => {
-    app.bpmRender();
-    app.filenameRender();
-    app.roomnameRender();
-    app.controlRulerRender();
-    app.controlLoopRender();
+
+app.initRulerRender = () => {
+    const length = app.musicLength;
+    const interval = app.regionInterval;
+    const rulerScale = $('#rulerScale');
+    for (let i = 0; i < length + 1; i++) {
+        const scaleNum = (i * interval).toString();
+        let scale;
+        if (i !== length) {
+            scale = $('<span></span>').css('left', scaleNum).addClass('scale').text((i + 1).toString());
+        }
+        $(rulerScale).append(scale);
+    }
+    $('#ruler').width((length) * interval);
+    return;
 };
+

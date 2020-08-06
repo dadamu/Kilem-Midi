@@ -6,31 +6,7 @@ app.trackListen = () => {
     app.trackEditListen();
 };
 
-app.initRulerRender = () => {
-    const length = app.musicLength;
-    const interval = app.regionInterval;
-    const rulerScale = $('#rulerScale');
-    for (let i = 0; i < length + 1; i++) {
-        const scaleNum = (i * interval).toString();
-        let scale;
-        if (i !== length) {
-            scale = $('<span></span>').css('left', scaleNum).addClass('scale').text((i + 1).toString());
-        }
-        $(rulerScale).append(scale);
-    }
-    $('#ruler').width((length) * interval);
-    return;
-};
-
-app.initRegionRender = () => {
-    const interval = app.regionInterval;
-    const length = app.musicLength;
-    const width = interval * length;
-    $('#tracksRegion').width(width);
-    return;
-};
-
-app.initiTrackRender = () => {
+app.initTrackRender = () => {
     if(Object.values(app.music.get('tracks')).length === 0){
         return;
     }
@@ -38,7 +14,6 @@ app.initiTrackRender = () => {
         app.addTrackRender(key, track.name, track.instrument, track.version.version);
     }
     app.trackSelect($('.track').first());
-    app.openMidiPanel();
 };
 
 app.lockerRender = (locker) => {
@@ -101,7 +76,6 @@ app.addTrackRender = (trackId, trackName, instrument = 'piano', version = 0) => 
     $('#tracksContent').append(trackDiv);
     if($('.track.selected').length === 0){
         app.trackSelect(trackDiv);
-        app.openMidiPanel();
     }
 };
 
@@ -158,7 +132,7 @@ app.trackSelect = (target) => {
 
     const trackName = $(`.track.track-${id} .track-name`).text();
     $('#midiPanel #trackName').text(trackName);
-    app.panelLoadTrack(id);
+    app.panelLoadRender(id);
     app.activeKeyRender(app.music.getTrack(id).get('instrument'));
 };
 

@@ -1,16 +1,20 @@
 /* global $ app */
 app.init = async () => {
-    app.setConfig();
-    await app.checkToken();
-    await app.setFile();
-    app.instruments.piano = app.setPiano(app.instrumentsURL);
-    app.instruments.bass = app.setBass(app.instrumentsURL);
-    app.instruments.guitar = app.setGuitar(app.instrumentsURL);
-    app.instruments.drums = app.setDrums(app.instrumentsURL);
-    app.initRender();
-    await app.socketInit();
-    app.UIListen();
-    app.saveFile();
+    try {
+        app.setConfig();
+        await app.checkToken();
+        await app.setFile();
+        app.initInstruments();
+        app.initRender();
+        app.socketInit();
+        app.UIListen();
+        app.saveFile();
+        app.openMidiPanel();
+    }
+    catch(e){
+        await app.errorShow('Something wrong, Please reload');
+        window.location.reload();
+    }
 };
 
 app.UIListen = () => {
@@ -24,15 +28,11 @@ app.UIListen = () => {
 };
 
 app.initRender = () => {
-    app.initRegionRender();
-    app.initRulerRender();
-    app.initKeysRender();
-    app.initGridsRender();
-    app.initSvgGrids();
-    app.initiTrackRender();
-    app.initChatRender();
-    app.initRegionNoteRender();
     app.initControlRender();
+    app.initTrackRender();
+    app.initRegionRender();
+    app.initMidiPanelRender();
+    app.initChatRender();
 };
 
 $(document).ready(app.init);

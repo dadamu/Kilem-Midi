@@ -1,5 +1,14 @@
 /* global app $ Swal */
 
+app.coworkListen = () => {
+    app.addTrackListen();
+    app.changeInstrumentListen();
+    app.lockClickListen();
+    app.deleteTrackListen();
+    app.clickCommitListen();
+    app.versionChangeListen();
+};
+
 app.clickCommitListen = () => {
     $('#tracksContent').on('click', '.version-commit', async function () {
         const trackId = parseInt($(this).parent().parent().attr('trackId'));
@@ -48,7 +57,7 @@ app.versionChangeListen = () => {
         }
         app.music.getTrack(result.trackId).set('notes', result.notes);
         if (parseInt($('#midiPanel').attr('trackId')) === parseInt(result.trackId)) {
-            app.panelLoadTrack(result.trackId);
+            app.panelLoadRender(result.trackId);
         }
         app.loadRegionNotesRender(result.trackId);
         app.successShow('Version changed');
@@ -166,13 +175,4 @@ app.changeInstrumentListen = () => {
             return;
         }
     });
-};
-
-app.coworkListen = () => {
-    app.addTrackListen();
-    app.changeInstrumentListen();
-    app.lockClickListen();
-    app.deleteTrackListen();
-    app.clickCommitListen();
-    app.versionChangeListen();
 };
