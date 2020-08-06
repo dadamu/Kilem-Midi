@@ -46,16 +46,16 @@ app.lockerRender = (locker) => {
     const iconDiv = $('<span></span>').addClass('lock-icon').addClass('icon-container');
     if (locker) {
         if (!locker.id) {
-            $(iconDiv).html('<i class=\'fas fa-lock-open\'></i>');
+            $(iconDiv).html('<i class="fas fa-lock-open"></i>');
             lockDiv.append(iconDiv);
         }
         else if (locker.id === app.userId) {
-            $(iconDiv).html('<i class=\'fas fa-key\'></i>').css('color', 'yellow').attr('data-title', 'mine');
+            $(iconDiv).html('<i class="fas fa-key"></i>').css('color', 'yellow').attr('data-title', 'mine');
             lockDiv.append(iconDiv);
         }
         else {
             const lockerDiv = $('<span></span>').addClass('locker-name');
-            $(iconDiv).html('<i class=\'fas fa-lock\'></i>').attr('data-title', locker.name);
+            $(iconDiv).html('<i class="fas fa-lock"></i>').attr('data-title', locker.name);
             lockDiv.append(iconDiv, lockerDiv);
         }
     }

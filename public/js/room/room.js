@@ -31,7 +31,7 @@ app.UIListen = () => {
 };
 
 app.createRoomListen = () => {
-    $(document).on('change', '.swal2-checkbox input[type=\'checkbox\']', function () {
+    $(document).on('change', '.swal2-checkbox input[type="checkbox"]', function () {
         if (this.checked) {
             $('#createPassword').removeClass('hidden');
             return;
@@ -60,7 +60,7 @@ app.createRoomListen = () => {
                 const target = Swal.getPopup();
                 const name = $(target).find('#name').val();
                 const filename = $(target).find('#filename').val();
-                const isPrivate = $(target).find('.swal2-checkbox input[type=\'checkbox\']').prop('checked');
+                const isPrivate = $(target).find('.swal2-checkbox input[type="checkbox"]').prop('checked');
                 const intro = $(target).find('#intro').val();
                 if (!name || !filename) {
                     app.errorShow('All fields are required');
@@ -202,7 +202,7 @@ app.inviteCheck = async () => {
             title: 'Join Room?',
             showCancelButton: true,
             confirmButtonText: 'Join',
-            html: '<br><label>password</div><input id=\'password\' type=\'password\' class=\'swal2-input\'></input>'
+            html: '<br><label>password</div><input id="password" type="password" class="swal2-input"></input>'
         };
         swalConfig.preConfirm = () => {
             const target = Swal.getPopup();
@@ -418,7 +418,7 @@ app.renderNoContent = ($typeRooms) => {
     $typeRooms.find('.previous').addClass('hidden');
     const isNoContent = $typeRooms.find('.no-content').length === 0;
     if (isNoContent) {
-        $typeRooms.find('.rooms').append('<div class=\'no-content\'>No Content</div>');
+        $typeRooms.find('.rooms').append('<div class="no-content">No Content</div>');
     }
 };
 

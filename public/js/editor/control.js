@@ -370,8 +370,8 @@ app.loopControlListen = () => {
         app.loopstart = app.posToTime(start, app.regionInterval);
         app.loopend = app.posToTime(end, app.regionInterval);
 
-        const tail = $('<div class=\'tail\'></div>');
-        const head = $('<div class=\'head\'></div>');
+        const tail = $('<div class="tail"></div>');
+        const head = $('<div class="head"></div>');
         $('#loopControl').append(head, tail);
         app.setLoopHeadDrag(head);
         app.setLoopTailDrag(tail);
