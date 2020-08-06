@@ -11,7 +11,7 @@ app.initTrackRender = () => {
         return;
     }
     for (let [key, track] of Object.entries(app.music.get('tracks'))) {
-        app.addTrackRender(key, track.name, track.instrument, track.version.version);
+        app.addTrackRender(key, track.name, track.instrument, track.version.id);
     }
     app.trackSelect($('.track').first());
 };
@@ -39,11 +39,11 @@ app.lockerRender = (locker) => {
 
 app.addVersionOption = (track) => {
     const { id, version } = track;
-    const option = $('<option></option>').text(version.name).val(version.version);
+    const option = $('<option></option>').text(version.name).val(version.id);
     const select = $(`.track.track-${id} .version-select`);
     $(`.track.track-${id} option[value='0']`).remove();
     select.append(option);
-    select.val(version.version);
+    select.val(version.id);
 };
 
 app.addTrackRender = (trackId, trackName, instrument = 'piano', version = 0) => {
@@ -83,8 +83,8 @@ app.trackVersionRender = (trackId) => {
     const commitButton = $('<button></button>').addClass('version-commit').text('save');
     const selector = $('<select></select>').addClass('version-select');
     const versions = app.music.getTrack(trackId).get('versions');
-    for (let version of versions) {
-        const option = $('<option></option>').text(version.name).val(version.version);
+    for (let version of versions) {   
+        const option = $('<option></option>').text(version.name).val(version.id);
         selector.append(option);
     }
     if (versions.length === 0) {
@@ -93,7 +93,7 @@ app.trackVersionRender = (trackId) => {
         $(selector).val(0);
     }
     else {
-        $(selector).val(versions[versions.length - 1].version);
+        $(selector).val(versions[versions.length - 1].id);
     }
     const versionDiv = $('<div></div>').addClass('version-control');
     versionDiv.append(selector, commitButton);

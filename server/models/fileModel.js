@@ -17,7 +17,8 @@ module.exports = {
             .leftJoin('user AS u1', 'u1.id', 't.user_id')
             .leftJoin('user AS u2', 'u2.id', 'v.user_id')
             .leftJoin('user AS u3', 'u3.id', 'r.user_id')
-            .where('r.id', roomId);
+            .where('r.id', roomId)
+            .andWhere('t.active', 1);
         let userData;
         if (userFiles.length === 0) {
             const err = new Error('Access denied');
@@ -77,7 +78,7 @@ module.exports = {
 };
 
 
-function updateTracks(type, tracks, trackId, note){
+function updateTracks(type, tracks, trackId, note) {
     if (type === 'createNote') {
         if (tracks[trackId].notes[note.posX]) {
             tracks[trackId].notes[note.posX].push(note);
@@ -100,7 +101,7 @@ function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {
         for (let track of Object.values(user)) {
             let { id, version, notes, commiter } = track;
-            version = version.version || 0;
+            version = version || 0;
             const masterTrack = master.tracks[id];
             if (masterTrack) {
                 if (version >= masterTrack.version) {
@@ -114,61 +115,64 @@ function merge(user, master) {
     return master;
 }
 
-function getMasterData(data) {
-    const result = {};
-    result.roomname = data[0].roomname;
-    result.bpm = data[0].bpm;
-    result.filename = data[0].filename;
-    result.creator = {
-        id: data[0].creatorId,
-        name: data[0].creatorName
+function getMasterData(rawMaster) {
+    const master = {};
+    master.roomname = rawMaster[0].roomname;
+    master.bpm = rawMaster[0].bpm;
+    master.filename = rawMaster[0].filename;
+    master.creator = {
+        id: rawMaster[0].creatorId,
+        name: rawMaster[0].creatorName
     };
-    result.tracks = {};
+    master.tracks = {};
+    const { trackMap, versionMap } = generateTrackInfoMaps(rawMaster);
+    for (let track of Object.values(trackMap)) {
+        const { trackId } = track;
+        if (!trackId) {
+            master.tracks = {};
+            return master;
+        }
+        master.tracks[trackId] = {};
+        master.tracks[trackId].id = track.trackId;
+        master.tracks[trackId].name = track.trackName;
+
+        master.tracks[trackId].locker = { id: track.lockerId, name: track.lockerName };
+        if (master.tracks[trackId].commiter)
+            master.tracks[trackId].commiter = { id: track.commiterId, name: track.commiterName };
+        else {
+            master.tracks[trackId].commiter = {};
+        }
+
+        master.tracks[trackId].instrument = track.instrument;
+        master.tracks[trackId].notes = JSON.parse(track.notes) || {};
+
+        master.tracks[trackId].version = track.version || 0;
+        master.tracks[trackId].versions = versionMap[trackId];
+    }
+    return master;
+}
+
+function generateTrackInfoMaps(tracks) {
     const trackMap = {};
-    const versionsMap = [];
-    // create Map
-    data.forEach(track => {
+    const versionMap = [];
+    tracks.forEach(track => {
         const { trackId } = track;
         if (trackMap[trackId]) {
             if (trackMap[trackId].version < track.version) {
                 trackMap[trackId] = track;
             }
-            versionsMap[trackId].push({ version: track.version, name: track.versionName });
+            versionMap[trackId].push({ id: track.version, name: track.versionName });
         }
         else {
             trackMap[trackId] = track;
             if (track.version) {
-                versionsMap[trackId] = [{ version: track.version, name: track.versionName }];
+                versionMap[trackId] = [{ id: track.version, name: track.versionName }];
             }
             else {
-                versionsMap[trackId] = [];
+                versionMap[trackId] = [];
             }
         }
     });
-    for (let track of Object.values(trackMap)) {
-        const { trackId } = track;
-        if (!trackId) {
-            result.tracks = {};
-            return result;
-        }
-        if (!track.active)
-            continue;
-        result.tracks[trackId] = {};
-        result.tracks[trackId].id = track.trackId;
-        result.tracks[trackId].name = track.trackName;
 
-        result.tracks[trackId].locker = { id: track.lockerId, name: track.lockerName };
-        if (result.tracks[trackId].commiter)
-            result.tracks[trackId].commiter = { id: track.commiterId, name: track.commiterName };
-        else {
-            result.tracks[trackId].commiter = {};
-        }
-
-        result.tracks[trackId].instrument = track.instrument;
-        result.tracks[trackId].notes = JSON.parse(track.notes) || {};
-
-        result.tracks[trackId].version = track.version || 0;
-        result.tracks[trackId].versions = versionsMap[trackId];
-    }
-    return result;
+    return { trackMap, versionMap };
 }

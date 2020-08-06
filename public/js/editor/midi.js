@@ -37,6 +37,7 @@ class MidiFile {
     setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
+            console.log(track);
             const { id, name, instrument, version, versions, locker, commiter, notes } = track;
             const newTrack = new Track(id, name, instrument);
             newTrack.set('version', version);

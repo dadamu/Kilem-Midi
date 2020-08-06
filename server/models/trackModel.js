@@ -101,7 +101,7 @@ module.exports = {
                     name: 'test' + user.id
                 },
                 version: {
-                    version: newVersion,
+                    id: newVersion,
                     name: name
                 },
                 notes

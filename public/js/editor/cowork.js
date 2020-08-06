@@ -15,7 +15,7 @@ app.clickCommitListen = () => {
         const versions = app.music.getTrack(trackId).get('versions');
         let version = 1;
         if (versions.length > 0) {
-            version = versions[versions.length - 1].version + 1;
+            version = versions[versions.length - 1].id + 1;
         }
         const swal = await Swal.fire({
             title: 'Submit version name',
@@ -48,9 +48,9 @@ app.clickCommitListen = () => {
 
 app.versionChangeListen = () => {
     $('#tracksContent').on('change', '.version-select', async function () {
-        const version = $(this).val();
+        const versionId = $(this).val();
         const trackId = $(this).closest('.track').attr('trackId');
-        const result = await app.fetchData(`/api/1.0/midi/track?trackId=${trackId}&version=${version}`);
+        const result = await app.fetchData(`/api/1.0/midi/track?trackId=${trackId}&version=${versionId}`);
         if (result.error) {
             app.errorShow(result.error);
             return;
