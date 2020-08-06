@@ -5,9 +5,9 @@ app.fetchData = (url, data = null, method = 'GET', headers = {
     'content-type': 'application/json'
 }) => {
     const token = window.localStorage.getItem('token');
-    if(token)
+    if (token)
         headers['authorization'] = 'Bearer ' + token;
-    if(method === 'GET'){
+    if (method === 'GET') {
         return fetch(url, { headers }).then(res => res.json());
     }
 
@@ -59,9 +59,9 @@ app.failedByLock = () => {
         icon: 'error',
         html: `
             <br>
-            <img style='display: block;border: 1px #FFF solid; width: 90%; margin: auto;' src='/public/img/sample/check-lock.jpg' />
-            <div style='padding-left:20px; margin-top: 20px;'>You can only edit your own track, Please check the track status.</div>
-            `
+            <img style="display: block;border: 1px #FFF solid; width: 90%; margin: auto;" src="/public/img/sample/check-lock.jpg" />
+            <div style="padding-left:20px; margin-top: 20px;">You can only edit your own track, Please check the track status.</div>
+        `
     });
 };
 

@@ -43,17 +43,18 @@ app.createRoomListen = () => {
             title: 'Create Room',
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='15' autocomplete='off'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='15' autocomplete='off'></input>
-                <label for='swal2-checkbox' class='swal2-checkbox' style='display: flex;justify-content:flex-start;'>
-                    <input type='checkbox'  style='margin-left: 0;'></input>
-                    <span class='swal2-label'>isPrivate</span>
+                <label>name</label><input type="text" id="name" class="swal2-input" maxlength="15" autocomplete="off"></input>
+                <label>filename</label><input type="text" id="filename" class="swal2-input" maxlength="15" autocomplete="off"></input>
+                <label for="swal2-checkbox" class="swal2-checkbox" style="display: flex;justify-content:flex-start;">
+                    <input type="checkbox"  style="margin-left: 0;"></input>
+                    <span class="swal2-label">isPrivate</span>
                 </label>
-                <div id='createPassword' class='hidden'>
+                <div id="createPassword" class="hidden">
                     <label>password</label>
-                    <input type='password' id='password' class='swal2-input' maxlength='15' autocomplete='off'></input>
+                    <input type="password" id="password" class="swal2-input" maxlength="15" autocomplete="off"></input>
                 </div>
-                <label>intro</label><textarea id='intro' class='swal2-textarea'></textarea>`,
+                <label>intro</label><textarea id="intro" class="swal2-textarea"></textarea>
+                `,
             showCancelButton: true,
             confirmButtonText: 'Create',
             preConfirm: () => {
@@ -116,7 +117,7 @@ app.roomListen = () => {
             cell.not(thisCell).removeClass('is-inactive');
         }
     });
-    
+
 
     rooms.on('click', '.join', function () {
         const id = $(this).closest('.room').attr('id');
@@ -140,7 +141,7 @@ app.roomListen = () => {
             return;
         }
         const id = $(this).closest('.room').attr('id');
-        
+
         const room = {
             roomId: id
         };
@@ -271,10 +272,10 @@ app.editRoomListen = () => {
             title: 'Edit Room Info',
             html: `
                 <br>
-                <label>name</label><input type='text' id='name' class='swal2-input' maxlength='15' value='${name}'></input>
-                <label>filename</label><input type='text' id='filename' class='swal2-input' maxlength='15' value='${filename}'></input>
-                <label>intro</label><textarea id='intro' style='resize: none;' class='swal2-textarea' wrap="hard" cols='10'>${intro.split('<br>').join('\n')}</textarea>
-                `,
+                <label>name</label><input type="text" id="name" class="swal2-input" maxlength="15" value="${name}"></input>
+                <label>filename</label><input type="text" id="filename" class="swal2-input" maxlength="15" value="${filename}"></input>
+                <label>intro</label><textarea id="intro" style="resize: none;" class="swal2-textarea" wrap="hard" cols="10">${intro.split('<br>').join('\n')}</textarea>
+            `,
             showCancelButton: true,
             confirmButtonText: 'Edit',
             preConfirm: () => {
