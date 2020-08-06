@@ -23,7 +23,6 @@ module.exports = {
             room.password = bcryptPass;
         }
         const roomId = await roomModel.create(room, user);
-        console.log(user);
         await trackModel.add(roomId, user);
         res.status(201).json({ roomId });
     }),
