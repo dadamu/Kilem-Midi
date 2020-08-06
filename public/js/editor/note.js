@@ -99,8 +99,8 @@ app.svgToNote = (left, top) => {
     let bottom = height - top;
     const posFromLeft = Math.floor(left / app.gridsInterval * 64);
     const posFromBottom = Math.floor(bottom / app.pitchHeight);
-    const posX = Math.floor(posFromLeft / (64 * app.noteGrid)) * (64 * app.noteGrid);
-    const pitch = posFromBottom + 12 * (app.scaleNumMin + 1);
+    let posX = Math.floor(posFromLeft / (64 * app.noteGrid)) * (64 * app.noteGrid);
+    let pitch = posFromBottom + 12 * (app.scaleNumMin + 1);
     return { posX, pitch };
 };
 
@@ -168,62 +168,88 @@ app.setNoteDrag = (noteDiv) => {
     noteDiv.draggable({
         cursor: 'move',
         start: (evt) => {
-            const trackId = $('#midiPanel').attr('trackId');
+            this.trackId = $('#midiPanel').attr('trackId');
             const note = app.getNoteInfo(evt.target);
+            this.oldNote = note;
             const noteInfo = {
                 type: 'deleteNote',
                 userId: app.userId,
                 roomId: app.roomId,
                 note,
-                trackId
+                trackId: this.trackId
             };
             app.emit('noteUpdate', noteInfo);
-            app.noteOutTrack(trackId, note);
-            app.dragNoteDeleteRender(trackId, note);
+            app.noteOutTrack(this.trackId, note);
+            app.dragNoteDeleteRender(this.trackId, note);
         },
-        stop: (evt, ui) => {
-            const trackId = $('#midiPanel').attr('trackId');
-            const endTop = ui.position.top;
-            const endLeft = ui.position.left;
-            const resolution = app.gridsInterval * app.noteLength;
-            const aligntop = Math.round(endTop / app.pitchHeight) * app.pitchHeight;
-            const newLeft = Math.round(endLeft / resolution) * resolution;
-
-            const newNote = app.svgToNote(newLeft, aligntop + 1);
+        drag: (evt, ui) => {
+            const top = evt.pageY + $('#grids').scrollTop() - $('#grids').offset().top;
+            const left = evt.pageX + $('#grids').scrollLeft() - $('#grids').offset().left - $(evt.target).attr('length') / 2 * app.gridsInterval;
+            const alignPos = app.convertNotePos(left, top, this.oldNote.length);
+            ui.position = { top: alignPos.top, left: alignPos.left };
+        },
+        stop: (evt) => {
+            const endTop = app.pxToNum($(evt.target).css('top') + 1);
+            const endLeft = app.pxToNum($(evt.target).css('left'));
+            const newNote = app.svgToNote(endLeft, endTop);
             const { pitch: originalPitch } = newNote;
+
             const length = parseFloat($(evt.target).attr('length'));
             newNote.length = length;
-            $(evt.target).css('top', aligntop).css('left', newLeft)
-                .attr('posX', newNote.posX).attr('pitch', newNote.pitch);
-            
-            const originalNotes = app.music.getTrack(trackId).get('notes');
-            const original = originalNotes[newNote.posX];
-            let isDuplicated = original && original.filter(midi => midi.pitch === newNote.pitch).length > 0;
+            $(evt.target).attr('posX', newNote.posX).attr('pitch', newNote.pitch);
+            const originalNotes = app.music.getTrack(this.trackId).get('notes');
+            const notesOnPosX = originalNotes[newNote.posX];
+            let isDuplicated = notesOnPosX && notesOnPosX.filter(midi => midi.pitch === newNote.pitch).length > 0;
             while (isDuplicated) {
                 newNote.pitch += 1;
-                const top = aligntop - app.pitchHeight * (newNote.pitch - originalPitch);
+                const top = endTop - app.pitchHeight * (newNote.pitch - originalPitch);
                 $(evt.target).css('top', top).attr('pitch', newNote.pitch);
                 if (top < 0) {
                     $(evt.target).remove();
                     return;
                 }
-                isDuplicated = original && original.filter(midi => midi.pitch === newNote.pitch).length > 0;
+                isDuplicated = notesOnPosX && notesOnPosX.filter(midi => midi.pitch === newNote.pitch).length > 0;
             }
 
-            const { instrument } = app.music.tracks[trackId];
+            const { instrument } = app.music.tracks[this.trackId];
             app.playNote(instrument, newNote.pitch);
             const noteInfo = {
                 type: 'createNote',
                 userId: app.userId,
                 roomId: app.roomId,
-                trackId,
+                trackId: this.trackId,
                 note: newNote
             };
             app.emit('noteUpdate', noteInfo);
-            app.regionNoteRender(trackId, newNote);
-            app.noteIntoTrack(trackId, newNote);
+            app.regionNoteRender(this.trackId, newNote);
+            app.noteIntoTrack(this.trackId, newNote);
         }
     });
+};
+
+app.convertNotePos = (left, top, length) => {
+    const resolution = app.gridsInterval * app.noteLength;
+    let aligntop = Math.round(top / app.pitchHeight) * app.pitchHeight;
+    let alignLeft = Math.round(left / resolution) * resolution;
+    if (aligntop < 0) {
+        aligntop = 0;
+    }
+
+    if (aligntop > app.keysNum * app.pitchHeight) {
+        aligntop = (app.keysNum - 1) * app.pitchHeight;
+    }
+
+    if (alignLeft < 0) {
+        alignLeft = 0;
+    }
+
+    if (alignLeft > app.musicLength * app.gridsInterval) {
+        alignLeft = Math.floor((app.musicLength - length) / app.noteGrid) * app.noteGrid * app.gridsInterval;
+    }
+    return {
+        top: aligntop,
+        left: alignLeft
+    };
 };
 
 
@@ -245,7 +271,7 @@ app.setNoteEditWidth = (tailDiv) => {
         },
         drag: (evt, ui) => {
             const { left } = ui.position;
-            const $noteDiv =  $(evt.target).parent();
+            const $noteDiv = $(evt.target).parent();
             const resolution = app.gridsInterval * app.noteGrid;
             const change = parseInt(Math.round((left + 5) / resolution)) * resolution;
             if (change <= 0) {

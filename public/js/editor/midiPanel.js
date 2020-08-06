@@ -41,6 +41,9 @@ app.openMidiPanel = () => {
     if ($('#midiPanel').hasClass('hidden')) {
         $('#midiPanelButton').addClass('active');
         const trackId = $('.track.selected').attr('trackId');
+        if(!trackId){
+            return;
+        }
         $('#midiPanel').removeClass('hidden');
         app.panelLoadRender(trackId);
         app.activeKeyRender(app.music.getTrack(trackId).get('instrument'));

@@ -6,7 +6,6 @@ module.exports = {
             noteDebug(noteInfo);
             const user = socket.kilemUser;
             const note = await fileModel.saveNote(noteInfo, user);
-            
             socket.broadcast.to('editor' + user.id).emit(noteInfo.type, {
                 trackId: noteInfo.trackId,
                 note

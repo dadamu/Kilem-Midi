@@ -125,4 +125,9 @@ app.ioListen = async () => {
             app.midiPlay();
         }
     });
+
+    app.on('kilemError', async(data) => {
+        const { error } = data;
+        app.errorShow(error);
+    });
 };

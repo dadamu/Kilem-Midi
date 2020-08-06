@@ -7,6 +7,7 @@ module.exports = {
         io.of((nsp, query, next) => {
             next(null, true);
         }).on('connection', (socket) => {
+
             ioDebug('Socket Connection');
             socket.join('editor');
             socket.join('chat');
@@ -16,8 +17,13 @@ module.exports = {
                 socket.kilemUser = user;
                 socket.join('editor' + user.id);
             });
-
             noteSocket.noteListen(socket);
+            socket.on('error', () => {
+                socket.emit('kilemError', {
+                    error: 'Failed'
+                });
+            });
+
         });
     }
 };

@@ -11,8 +11,11 @@ app.setConfig = () => {
     app.instrumentsURL = '/public/instruments/'; //https://kilem.s3-us-west-2.amazonaws.com/instruments/
     // UI config
     app.musicLength = 400;
+    app.maxPosX = app.musicLength * 64;
     app.scaleNumMax = 6;
     app.scaleNumMin = 1;
+    app.minPitch = (app.scaleNumMin + 1) * 12;
+    app.maxPitch = (app.scaleNumMax + 1) * 12 + 1;
     app.keysNum = (app.scaleNumMax - app.scaleNumMin + 1) * 12;
     app.regionInterval = 120;
     app.gridsInterval = 250;
@@ -109,4 +112,8 @@ app.midiKeysTemplate = (num) => {
         <div class="white-key key" pitch="${num * 12 + offset}">C${num}</div>
     </div>
 `;
+};
+
+app.pxToNum = (px) => {
+    return parseFloat(px.replace('px', ''));
 };

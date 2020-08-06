@@ -12,6 +12,7 @@ app.init = async () => {
         app.openMidiPanel();
     }
     catch(e){
+        console.log(e);
         await app.errorShow('Something wrong, Please reload');
         window.location.reload();
     }
