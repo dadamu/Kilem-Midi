@@ -91,7 +91,7 @@ app.svgToNote = (left, top) => {
     const posFromLeft = Math.floor(left / app.gridsInterval * app.MUSIC_RESOLUTION);
     const posFromBottom = Math.floor(bottom / app.pitchHeight);
     let posX = Math.floor(posFromLeft / (app.MUSIC_RESOLUTION * app.noteGrid)) * (app.MUSIC_RESOLUTION * app.noteGrid);
-    let pitch = posFromBottom + 12 * (app.scaleNumMin + 1);
+    let pitch = posFromBottom + app.minPitch;
     return { posX, pitch };
 };
 
@@ -246,7 +246,8 @@ app.setNoteEditWidth = (tailDiv) => {
             const { left } = ui.position;
             const $noteDiv = $(evt.target).parent();
             const resolution = app.gridsInterval * app.noteGrid;
-            const posChange = parseInt(Math.round((left + 5) / resolution)) * resolution;
+            const tailWidth = 10;
+            const posChange = parseInt(Math.round((left + tailWidth) / resolution)) * resolution;
             if (posChange <= 0) {
                 $noteDiv.width(resolution);
                 return;
