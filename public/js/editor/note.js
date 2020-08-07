@@ -77,7 +77,8 @@ app.playNote = async (instrument, pitch) => {
         const { buffer, pitchShift } = app.instruments[instrument].audio[pitch];
         source.buffer = buffer;
         if (pitchShift) {
-            source.detune.value = pitchShift * 100;
+            const pitchValue = 100;
+            source.detune.value = pitchShift * pitchValue;
         }
         const duration = 0.5;
         app.fadeAudio(source, duration);
@@ -87,9 +88,9 @@ app.playNote = async (instrument, pitch) => {
 app.svgToNote = (left, top) => {
     const height = app.pitchHeight * app.keysNum;
     let bottom = height - top;
-    const posFromLeft = Math.floor(left / app.gridsInterval * 64);
+    const posFromLeft = Math.floor(left / app.gridsInterval * app.MUSIC_RESOLUTION);
     const posFromBottom = Math.floor(bottom / app.pitchHeight);
-    let posX = Math.floor(posFromLeft / (64 * app.noteGrid)) * (64 * app.noteGrid);
+    let posX = Math.floor(posFromLeft / (app.MUSIC_RESOLUTION * app.noteGrid)) * (app.MUSIC_RESOLUTION * app.noteGrid);
     let pitch = posFromBottom + 12 * (app.scaleNumMin + 1);
     return { posX, pitch };
 };
@@ -109,8 +110,8 @@ app.createNoteRender = (trackId, note) => {
 app.createNoteDiv = (note) => {
     const interval = app.gridsInterval * note.length;
     const pitchHeight = app.pitchHeight;
-    const left = note.posX * app.gridsInterval / 64;
-    const bottom = (note.pitch - 24) * pitchHeight;
+    const left = note.posX * app.gridsInterval / app.MUSIC_RESOLUTION;
+    const bottom = (note.pitch - app.minPitch) * pitchHeight;
     const noteDiv = $('<div></div>');
     noteDiv.addClass('note').width(interval).height(pitchHeight);
     noteDiv.css('left', left).css('bottom', bottom);
@@ -245,17 +246,18 @@ app.setNoteEditWidth = (tailDiv) => {
             const { left } = ui.position;
             const $noteDiv = $(evt.target).parent();
             const resolution = app.gridsInterval * app.noteGrid;
-            const change = parseInt(Math.round((left + 5) / resolution)) * resolution;
-            if (change <= 0) {
+            const posChange = parseInt(Math.round((left + 5) / resolution)) * resolution;
+            if (posChange <= 0) {
                 $noteDiv.width(resolution);
                 return;
             }
-            $noteDiv.width(change);
+            $noteDiv.width(posChange);
         },
         stop: (evt) => {
             const $noteDiv = $(evt.target).parent();
             const width = $noteDiv.width();
-            $(evt.target).css('left', width - 10).css('top', 0);
+            const tailWidth = 10;
+            $(evt.target).css('left', width - tailWidth).css('top', 0);
             const length = width / app.gridsInterval;
             $noteDiv.attr('length', length);
             const newNote = app.getNoteInfo($noteDiv);

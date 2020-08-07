@@ -71,16 +71,19 @@ app.loopButtonListen = () => {
 app.midiPlay = () => {
     if (!app.isplaying) {
         const bpm = app.music.get('bpm');
-        const resolution = 60 /bpm / 16 * 1000;
+        const resolution = app.getPlayResolution(bpm) / 2;
         const tracks = app.music.get('tracks');
         app.isplaying = true;
-        const maxTime = app.musicLength * 4 / (bpm / 60) * 1000;
+        const maxTime = app.musicLength * app.STANDARD_NOTE * 60 / bpm * 1000;
         app.playInterval = setInterval(() => {
             if (app.currentTime >= maxTime) {
                 clearInterval(app.playInterval);
                 app.isplaying = false;
+                $('#playButton').removeClass('active');
+                $('#playButton i').removeClass('fas fa-pause').addClass('fas fa-play');
             }
-            if (app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2)) {
+            const isLoopingEnd = app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2);
+            if (isLoopingEnd) {
                 app.currentTime = app.loopstart;
             }
 
@@ -103,14 +106,16 @@ app.playTracks = (bpm, tracks) => {
 app.regionPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.regionInterval;
-    const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
+    const posX = app.timeToPosX(currentTime, bpm);
+    const playOffset = app.posXToPx(posX, intervalX);
     $('#regionPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
 };
 
 app.midiPlayheadTrans = (bpm) => {
     const currentTime = app.currentTime;
     const intervalX = app.gridsInterval;
-    const playOffset = intervalX * bpm / 4 * currentTime / 60 / 1000;
+    const posX = app.timeToPosX(currentTime, bpm);
+    const playOffset = app.posXToPx(posX, intervalX);
     $('#midiPlayhead').css('-webkit-transform', `translateX(${playOffset}px)`);
 };
 
@@ -141,7 +146,7 @@ app.setPlayingTracks = () => {
 };
 
 app.playTrack = (bpm, track) => {
-    const posX = Math.floor(app.currentTime / (60 / bpm * 1000) * 16);
+    const posX = app.timeToPosX(app.currentTime, bpm);
     if (track.notes[posX]) {
         app.playTrackNotes(bpm, track.instrument, track.notes[posX]);
     }
@@ -154,9 +159,9 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
             source.buffer = buffer;
             if (pitchShift) {
-                source.detune.value = pitchShift * 100;
+                source.detune.value = pitchShift * app.PITCH_SHIFT_VALUE;
             }
-            const time = (1 / (bpm / 60)) * (4 * note.length);
+            const time = 60 / bpm * app.STANDARD_NOTE * note.length;
             app.fadeAudio(source, time);
         }
     }
@@ -166,7 +171,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
 app.fadeAudio = function (source, time) {
     const currentTime = app.audioCtx.currentTime;
     const gain = app.audioCtx.createGain();
-    gain.gain.linearRampToValueAtTime(0, currentTime + time * 120 / 100);
+    gain.gain.linearRampToValueAtTime(0, currentTime + time);
 
     source.connect(gain);
     gain.connect(app.audioCtx.destination);
@@ -240,14 +245,10 @@ app.controlRulerRender = () => {
 
 app.controlLoopRender = () => {
     app.loopstart = 0;
-    app.loopend = app.posToTime(4 * app.regionInterval, app.regionInterval);
-    $('#loopControl').width(app.regionInterval * 4).height('100%');
+    app.loopend = app.posToTime(app.STANDARD_NOTE * app.regionInterval, app.regionInterval);
+    $('#loopControl').width(app.regionInterval * app.STANDARD_NOTE).height('100%');
     app.setLoopHeadDrag($('#loopControl .head'));
     app.setLoopTailDrag($('#loopControl .tail'));
-};
-
-app.posToTime = (pos, interval) => {
-    return pos * 4 / interval * 60 / app.music.get('bpm') * 1000;
 };
 
 app.setLoopHeadDrag = (div) => {
@@ -255,13 +256,13 @@ app.setLoopHeadDrag = (div) => {
         axis: 'x',
         start: () => {
             let start = $('#loopControl').css('left');
-            let oWidth = $('#loopControl').width();
-            this.start = parseFloat(start.replace('px', ''));
-            this.oWidth = oWidth;
+            let originalWidth = $('#loopControl').width();
+            this.start = app.pxToNum(start);
+            this.originalWidth = originalWidth;
         },
         drag: (evt) => {
             let curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-            const resolution = app.regionInterval / 4;
+            const resolution = app.regionInterval / app.STANDARD_NOTE;
             this.width;
             if (curr <= 0) {
                 curr = 0;
@@ -269,16 +270,16 @@ app.setLoopHeadDrag = (div) => {
             let widthChange = this.start - curr;
             curr = Math.round(curr / resolution) * resolution;
             if (Math.abs(widthChange) >= resolution) {
-                this.width = Math.round(widthChange / resolution) * resolution + this.oWidth;
+                this.width = Math.round(widthChange / resolution) * resolution + this.originalWidth;
             }
             else if (curr === 0) {
-                this.width = this.oWidth;
+                this.width = this.originalWidth;
             }
             else {
-                this.width = resolution + this.oWidth;
+                this.width = resolution + this.originalWidth;
             }
 
-            if (curr > this.start + this.oWidth - resolution) {
+            if (curr > this.start + this.originalWidth - resolution) {
                 $('#loopControl').width(resolution);
                 return;
             }
@@ -288,8 +289,9 @@ app.setLoopHeadDrag = (div) => {
         stop: (evt) => {
             $(evt.target).css('left', 0).css('top', 0);
             let start = $('#loopControl').css('left');
-            $('#loopControl .tail').css('left', parseInt(this.width) - 10).css('top', 0);
-            start = start.replace('px', '');
+            const headWidth = 10;
+            $('#loopControl .tail').css('left', parseInt(this.width) - headWidth).css('top', 0);
+            start = app.pxToNum(start);
             app.loopstart = app.posToTime(start, app.regionInterval);
         }
     });
@@ -300,10 +302,10 @@ app.setLoopTailDrag = (div) => {
         axis: 'x',
         drag: (evt) => {
             let start = $('#loopControl').css('left');
-            start = parseFloat(start.replace('px', ''));
+            start = app.pxToNum(start);
             const curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
             let width = curr - start;
-            const resolution = app.regionInterval / 4;
+            const resolution = app.regionInterval / app.STANDARD_NOTE;
             if (width > resolution) {
                 this.width = Math.round(width / resolution) * resolution;
                 $('#loopControl').width(this.width);
@@ -318,10 +320,11 @@ app.setLoopTailDrag = (div) => {
             this.width = resolution;
         },
         stop: (evt) => {
-            $(evt.target).css('left', parseInt(this.width) - 10).css('top', 0);
+            const tailWidth = 10;
+            $(evt.target).css('left', parseInt(this.width) - tailWidth).css('top', 0);
             $('#loopControl head').css('left', 0). css('top', 0);
             let start = $('#loopControl').css('left');
-            start = parseFloat(start.replace('px', ''));
+            start = app.pxToNum(start);
             const end = start + this.width;
             app.loopend = app.posToTime(end, app.regionInterval);
         }
@@ -344,7 +347,7 @@ app.loopControlListen = () => {
     $('#rulerGirds').mousedown(function (evt) {
         $('#loopControl').remove();
         const x = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-        const resolution = app.regionInterval / 4;
+        const resolution = app.regionInterval / app.STANDARD_NOTE;
         const start = Math.round(x / resolution) * resolution;
         const newLoop = $('<div></div>').attr('id', 'loopControl').addClass('loop-control').css('left', start).height('100%').width(resolution);
         if (!app.islooping) {
@@ -354,7 +357,7 @@ app.loopControlListen = () => {
 
         $('#tracksRegion').bind('mousemove', function (evt) {
             const x = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-            const resolution = app.regionInterval / 4;
+            const resolution = app.regionInterval / app.STANDARD_NOTE;
             const current = Math.round(x / resolution) * resolution;
             let width = Math.abs(current - start);
             if(Math.abs(current - start) < resolution){
@@ -373,7 +376,7 @@ app.loopControlListen = () => {
             return;
 
         let start = $('#loopControl').css('left');
-        start = parseFloat(start.replace('px', ''));
+        start = app.pxToNum(start);
         const width = $('#loopControl').width();
         const end = start + width;
         app.loopstart = app.posToTime(start, app.regionInterval);
@@ -408,15 +411,14 @@ app.initRulerRender = () => {
     const length = app.musicLength;
     const interval = app.regionInterval;
     const rulerScale = $('#rulerScale');
-    for (let i = 0; i < length + 1; i++) {
-        const scaleNum = (i * interval).toString();
+    for (let posByWholeNote = 0; posByWholeNote < length + 1; posByWholeNote++) {
+        const scaleNum = (posByWholeNote * interval).toString();
         let scale;
-        if (i !== length) {
-            scale = $('<span></span>').css('left', scaleNum).addClass('scale').text((i + 1).toString());
+        if (posByWholeNote !== length) {
+            scale = $('<span></span>').css('left', scaleNum).addClass('scale').text((posByWholeNote + 1).toString());
         }
         $(rulerScale).append(scale);
     }
     $('#ruler').width((length) * interval);
-    return;
 };
 

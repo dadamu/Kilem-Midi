@@ -21,7 +21,7 @@ module.exports = {
                 instrument: 'piano',
                 locker: {
                     id: user.id,
-                    name: 'test' + user.id
+                    name: user.username
                 }
             };
         }
@@ -130,6 +130,7 @@ module.exports = {
         const lockers = await knex('track AS t')
             .select(['t.user_id AS id'])
             .where('t.id', trackId);
+        console.log(lockers, user);
         return lockers[0].id === user.id;
     },
     lockSet: async (trackId, user) => {
@@ -196,7 +197,6 @@ module.exports = {
                 .update('t.name', name)
                 .where('t.id', trackId);
             await trx.commit();
-            return;
         }
         catch (e) {
             await trx.rollback();

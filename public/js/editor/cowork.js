@@ -18,7 +18,7 @@ app.clickCommitListen = () => {
             version = versions[versions.length - 1].id + 1;
         }
         const swal = await Swal.fire({
-            title: 'Submit version name',
+            title: 'Please submit version name',
             icon: 'info',
             input: 'text',
             inputValue: `version${version}`,
