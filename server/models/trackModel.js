@@ -35,7 +35,7 @@ module.exports = {
         try {
             const tracks = await trx('track AS t').select(['t.user_id AS userId'])
                 .where('t.id', trackId).forUpdate();
-            const isAuth = tracks[0].userId === parseInt(user.id || tracks[0].lock === 0);
+            const isAuth = tracks[0].userId === user.id || tracks[0].lock === 0;
             if (isAuth) {
                 await trx('track AS t').update('t.active', 0).where('t.id', trackId);
                 await trx.commit();
@@ -77,7 +77,9 @@ module.exports = {
                 version = 0;
                 oldNotes = '{}';
             }
-            if (newNotes === oldNotes) {
+
+            const isLatest = newNotes === oldNotes;
+            if (isLatest) {
                 await trx.rollback();
                 const err = new Error('It\'s already the latest version');
                 err.status = 400;
@@ -98,7 +100,7 @@ module.exports = {
                 id: trackId,
                 commiter: {
                     id: user.id,
-                    name: 'test' + user.id
+                    name: user.username
                 },
                 version: {
                     id: newVersion,
@@ -138,21 +140,18 @@ module.exports = {
                 .where('t.id', trackId)
                 .forUpdate();
 
-            const isLocker = parseInt(lockers[0].id) === parseInt(user.id);
+            const isLocker = lockers[0].id === user.id;
             const isLock = lockers[0].id;
             if (!isLock) {
                 await trx('track AS t')
                     .update('t.user_id', user.id)
                     .where('t.id', trackId);
-                const names = await trx('user AS u')
-                    .select(['u.username AS name'])
-                    .where('u.id', user.id);
                 await trx.commit();
                 return {
                     id: trackId,
                     locker: {
                         id: user.id,
-                        name: names[0].name
+                        name: user.username
                     }
                 };
             }
@@ -210,9 +209,8 @@ module.exports = {
         try {
             const lockers = await trx('track AS t')
                 .select(['t.user_id AS id'])
-                .where('t.id', trackId)
-                .forUpdate();
-            const isLocker = parseInt(lockers[0].id) === parseInt(user.id);
+                .where('t.id', trackId);
+            const isLocker = lockers[0].id === user.id;
             if (!isLocker) {
                 trx.rollback();
                 const err = new Error('lock failed');

@@ -1,4 +1,4 @@
-/* global app */
+/* global app $ */
 
 app.setConfig = () => {
     // User config
@@ -116,4 +116,11 @@ app.midiKeysTemplate = (num) => {
 
 app.pxToNum = (px) => {
     return parseFloat(px.replace('px', ''));
+};
+
+app.getTrackId = () => {
+    return $('.track.selected').attr('trackId');
+};
+app.getPanelId = () => {
+    return $('#midiPanel').attr('trackId');
 };

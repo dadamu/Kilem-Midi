@@ -26,7 +26,8 @@ app.ioListen = async () => {
         const { track } = data;
         app.music.setTrack(track);
         app.addVersionOption(track);
-        if (parseInt($('.track.selected').attr('trackId')) === parseInt(track.id)) {
+        const isSelected = app.getTrack === track.id;
+        if (isSelected) {
             app.panelLoadRender(track.id);
         }
         app.loadRegionNotesRender(track.id);
@@ -61,7 +62,8 @@ app.ioListen = async () => {
         else {
             $(`.track.track-${track.id} .track-name`).removeClass('editable').attr('disabled', true);
         }
-        if (parseInt($('#midiPanel').attr('trackId')) === parseInt(track.id)) {
+        const isSelected = app.getTrackId() === track.id;
+        if (isSelected) {
             app.panelLoadRender(track.id);
         }
         app.saveFile();

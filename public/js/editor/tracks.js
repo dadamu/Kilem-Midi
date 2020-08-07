@@ -54,16 +54,8 @@ app.addTrackRender = (trackId, trackName, instrument = 'piano', version = 0) => 
     const trackDiv = $('<div></div>').addClass(`track track-${trackId}`).attr('trackId', trackId).attr('version', version);
     const infoDiv = $('<div></div>').addClass('track-info');
     const trackNameDiv = $('<input></input>').addClass('track-name').val(trackName).attr('disabled', true);
-    const instrumentDiv = $('<div></div>').addClass('instrument');
-    const instrumentSelect = $('<select></select>').addClass('instrument-selector');
-    const pianoOption = $('<option>Piano</option>').val('piano');
-    const guitarOption = $('<option>Guitar</option>').val('guitar');
-    const bassOption = $('<option>Bass</option>').val('bass');
-    const drumsOption = $('<option>Drums</option>').val('drums');
-    const icon = $('<img></img>').attr('src', '/public/img/toolbox/piano.svg').addClass('icon');
-    $(instrumentSelect).append(pianoOption, guitarOption, bassOption, drumsOption).val(instrument);
-    $(instrumentDiv).append(icon, instrumentSelect);
-    infoDiv.append(trackNameDiv, instrumentDiv);
+    const $instrument = app.generateInstrumentSelect(instrument);
+    infoDiv.append(trackNameDiv, $instrument);
 
     const versionControl = app.trackVersionRender(trackId);
     const track = app.music.getTrack(trackId);
@@ -77,6 +69,19 @@ app.addTrackRender = (trackId, trackName, instrument = 'piano', version = 0) => 
     if($('.track.selected').length === 0){
         app.trackSelect(trackDiv);
     }
+};
+
+app.generateInstrumentSelect = (instrument) => {
+    const $instrument = $('<div></div>').addClass('instrument');
+    const $select = $('<select></select>').addClass('instrument-selector');
+    const $piano = $('<option>Piano</option>').val('piano');
+    const $guitar = $('<option>Guitar</option>').val('guitar');
+    const $bass = $('<option>Bass</option>').val('bass');
+    const $drums = $('<option>Drums</option>').val('drums');
+    const $icon = $('<img></img>').attr('src', '/public/img/toolbox/piano.svg').addClass('icon');
+    $($select).append($piano, $guitar, $bass, $drums).val(instrument);
+    $($instrument).append($icon, $select);
+    return $instrument;
 };
 
 app.trackVersionRender = (trackId) => {

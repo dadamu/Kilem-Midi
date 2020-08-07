@@ -17,7 +17,7 @@ app.initMidiPanelRender = () => {
 app.openMidiPanelListen = () => {
     $('#midiPanelButton').click(() => {
         if ($('#midiPanel').hasClass('hidden')) {
-            const trackId = $('.track.selected').attr('trackId');
+            const trackId = app.getTrackId();
             if(!trackId){
                 app.errorShow('Please select a track');
                 return;
@@ -40,7 +40,7 @@ app.openMidiPanelListen = () => {
 app.openMidiPanel = () => {
     if ($('#midiPanel').hasClass('hidden')) {
         $('#midiPanelButton').addClass('active');
-        const trackId = $('.track.selected').attr('trackId');
+        const trackId = app.getTrackId();
         if(!trackId){
             return;
         }
@@ -149,7 +149,7 @@ app.setCurrentPlayhead = (current) => {
 
 app.clickKeysListen = () => {
     $('#keys').on('click', '.key', async function () {
-        const trackId = $('#midiPanel').attr('trackId');
+        const trackId = app.getTrackId();
         const instrument = app.music.getTrack(trackId).get('instrument');
         const target = this;
         const pitch = $(target).attr('pitch');

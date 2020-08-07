@@ -11,7 +11,7 @@ app.coworkListen = () => {
 
 app.clickCommitListen = () => {
     $('#tracksContent').on('click', '.version-commit', async function () {
-        const trackId = parseInt($(this).parent().parent().attr('trackId'));
+        const trackId = app.getTrackId();
         const versions = app.music.getTrack(trackId).get('versions');
         let version = 1;
         if (versions.length > 0) {
@@ -49,7 +49,7 @@ app.clickCommitListen = () => {
 app.versionChangeListen = () => {
     $('#tracksContent').on('change', '.version-select', async function () {
         const versionId = $(this).val();
-        const trackId = $(this).closest('.track').attr('trackId');
+        const trackId = app.getTrackId();
         const result = await app.fetchData(`/api/1.0/midi/track?trackId=${trackId}&version=${versionId}`);
         if (result.error) {
             app.errorShow(result.error);
@@ -156,7 +156,7 @@ app.checkDifferFromLatest = async (id, version) => {
 
 app.changeInstrumentListen = () => {
     $('.tracks-title').on('change', '.instrument-selector', async function () {
-        const trackId = $(this).closest('.track').attr('trackId');
+        const trackId = app.getTrackId();
         const instrument = $(this).val();
         const roomId = app.roomId;
         const room = {

@@ -31,13 +31,12 @@ class MidiFile {
         this.tracks[id].set('notes', track.notes);
         this.tracks[id].set('commiter', track.commiter);
         this.tracks[id].addVersion(track.version);
-        this.tracks[id].set('version', track.version.version);
+        this.tracks[id].set('version', track.version.id);
     }
 
     setTracks(tracks) {
         const newTracks = {};
         for (let track of Object.values(tracks)) {
-            console.log(track);
             const { id, name, instrument, version, versions, locker, commiter, notes } = track;
             const newTrack = new Track(id, name, instrument);
             newTrack.set('version', version);

@@ -8,17 +8,17 @@ module.exports = {
     },
     getFile: async (roomId, user) => {
         const userFiles = await knex('save').select(['data']).where('room_id', roomId).andWhere('user_id', user.id);
+        const activeTrack = knex('track AS t').where('t.active', 1).as('t');
         const masterFiles = await knex('room AS r')
             .select(['r.bpm AS bpm', 'r.name AS roomname', 'r.filename AS filename', 'u1.id AS lockerId', 'u1.username AS lockerName', 'u2.id AS commiterId', 'u2.username AS commiterName',
                 'u3.id AS creatorId', 'u3.username AS creatorName', 't.active AS active', 't.id AS trackId', 't.name AS trackName',
                 'v.version AS version', 'v.name AS versionName', 'v.notes AS notes', 't.instrument AS instrument'])
-            .leftJoin('track AS t', 't.room_id', 'r.id')
+            .leftJoin(activeTrack, 't.room_id', 'r.id')
             .leftJoin('version AS v', 't.id', 'v.track_id')
             .leftJoin('user AS u1', 'u1.id', 't.user_id')
             .leftJoin('user AS u2', 'u2.id', 'v.user_id')
             .leftJoin('user AS u3', 'u3.id', 'r.user_id')
-            .where('r.id', roomId)
-            .andWhere('t.active', 1);
+            .where('r.id', roomId);
         let userData;
         if (userFiles.length === 0) {
             const err = new Error('Access denied');
