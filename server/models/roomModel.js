@@ -8,7 +8,10 @@ module.exports = {
             .innerJoin('user AS u', 'r.user_id', 'u.id');
         const result = {};
         let maxPaging;
-        const { paging } = requirement;
+        let { paging } = requirement;
+        if(paging < 0 || typeof paging !== 'number'){
+            paging = 0;
+        }
         if (type === 'public') {
             query = query.clone().where('r.is_private', 0);
             const count = await query.clone().count('* AS total');

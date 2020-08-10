@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { NODE_ENV, BCRYPT_SALT } = process.env;
 const { knex } = require('../util/mysqlCon');
-const { users } = require('./fakeData');
+const { users, rooms } = require('./fakeData');
 const bcrypt = require('bcrypt');
 async function truncateFakeData() {
     if (NODE_ENV !== 'test') {
@@ -31,11 +31,13 @@ async function truncateFakeData() {
 
 async function createFakeData() {
     await createFakeUser();
+    await createFakeRoom();
+    await createFakeJoined();
     console.log('create fake data success');
 }
 
 async function createFakeUser() {
-    const encryped_users = users.map(user => {
+    const encrypedUsers = users.map(user => {
         return {
             id: user.id,
             provider: user.provider,
@@ -44,10 +46,22 @@ async function createFakeUser() {
             password: user.password ? bcrypt.hashSync(user.password, parseInt(BCRYPT_SALT)) : null,
         };
     });
-    return knex('user').insert(encryped_users);
+    return knex('user').insert(encrypedUsers);
 }
 
+async function createFakeRoom() {
+    const insertRooms = rooms.public.concat(rooms.private);
+    return knex('room').insert(insertRooms);
+}
 
+async function createFakeJoined() {
+    return knex('save').insert(rooms.joined.map(room => {
+        return {
+            user_id: 1,
+            room_id: room.id,
+        };
+    }));
+}
 
 module.exports = {
     truncateFakeData,
