@@ -6,7 +6,7 @@ module.exports = {
             const insert = await knex('user').insert(userInfo);
             const user = {
                 id: insert[0],
-                username: userInfo.username
+                username: userInfo.username,
             };
             return user;
         }

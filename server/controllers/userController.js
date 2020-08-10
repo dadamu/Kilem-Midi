@@ -17,14 +17,24 @@ module.exports = {
         else if (provider === 'google') {
             await googleSignUp(req, res);
         }
+        else{
+            const err = new Error('Invalid input');
+            err.status = 400;
+            throw err;
+        }
     }),
     signin: asyncHandler(async (req, res) => {
         const { provider } = req.body;
         if (provider === 'native') {
             await nativeSignIn(req, res);
         }
-        else if(provider === 'google'){
+        else if (provider === 'google') {
             await googleSignIn(req, res);
+        }
+        else {
+            const err = new Error('Invalid input');
+            err.status = 400;
+            throw err;
         }
     }),
     getProfile: asyncHandler(async (req, res) => {
@@ -34,6 +44,11 @@ module.exports = {
 
 async function nativeSignUp(req, res) {
     let { email, username, password, provider } = req.body;
+    if(!username || !email || !password) {
+        const err = new Error('Invalid input');
+        err.status = 400;
+        throw err;
+    }
     const isEmail = validator.isEmail(email);
     const userValid = !validator.isEmpty(username);
     const passValid = !validator.isEmpty(password);
@@ -48,7 +63,7 @@ async function nativeSignUp(req, res) {
     const userInfo = { email, username, password: bcryptPassword, provider };
     const user = await userModel.signup(userInfo);
     const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
-    res.json({
+    res.status(201).json({
         accessToken,
         user
     });
@@ -82,8 +97,8 @@ async function googleSignIn(req, res) {
     });
 }
 
-async function getGoogleProfie(accessToken){
-    try{
+async function getGoogleProfie(accessToken) {
+    try {
         const user = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`)
             .then(res => res.json());
         return {
@@ -92,7 +107,7 @@ async function getGoogleProfie(accessToken){
             provider: 'google'
         };
     }
-    catch(e){
+    catch (e) {
         const err = new Error('Google invalid token');
         err.status = 403;
         throw err;
@@ -101,6 +116,11 @@ async function getGoogleProfie(accessToken){
 
 async function nativeSignIn(req, res) {
     let { email, password } = req.body;
+    if(!email || !password) {
+        const err = new Error('Invalid input');
+        err.status = 400;
+        throw err;
+    }
     const isEmail = validator.isEmail(email);
     const passwordValid = !validator.isEmpty(password);
     const isValid = !isEmail || !passwordValid;
@@ -121,6 +141,7 @@ async function nativeSignIn(req, res) {
         res.status(400).json({ error: 'Wrong Email or Password' });
         return;
     }
+    delete user.password;
     const accessToken = jwt.sign(payloadGen(user), JWT_KEY);
     res.json({
         accessToken,

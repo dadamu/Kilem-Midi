@@ -10,7 +10,8 @@ const viewsPath = './views/';
 require('dotenv').config();
 const ioController = require('./server/controllers/ioController');
 const appDebug = require('debug')('app');
-const { API_VERSION } = process.env;
+const { API_VERSION, NODE_ENV, HOST_PORT, PORT_TEST } = process.env;
+const port = NODE_ENV == 'test' ? PORT_TEST : HOST_PORT;
 
 app.set('io', io);
 ioController.start(io);
@@ -59,6 +60,9 @@ app.use('/api', (err, req, res, next) => {
     res.status(err.status).json({ error: err.message });
 });
 
-http.listen(process.env.HOST_PORT, () => {
-    console.log('kilem-midi listening on port ' + process.env.HOST_PORT);
+http.listen(port, () => {
+    console.log('kilem-midi listening on port ' + port);
 });
+
+
+module.exports = http;
