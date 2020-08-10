@@ -5,7 +5,7 @@ const { BCRYPT_SALT, JWT_KEY } = process.env;
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
+const google = require('../../util/google');
 const expire = process.env.TOKEN_EXPIRE; // 30 days by seconds
 
 module.exports = {
@@ -71,10 +71,10 @@ async function nativeSignUp(req, res) {
 
 async function googleSignUp(req, res) {
     let { accessToken } = req.body;
-    const userFromGoogle = await getGoogleProfie(accessToken);
+    const userFromGoogle = await google.getGoogleProfile(accessToken);
     const user = await userModel.signup(userFromGoogle);
     const token = jwt.sign(payloadGen(user), JWT_KEY);
-    res.json({
+    res.status(201).json({
         accessToken: token,
         user
     });
@@ -82,7 +82,7 @@ async function googleSignUp(req, res) {
 
 async function googleSignIn(req, res) {
     let { accessToken } = req.body;
-    const userFromGoogle = await getGoogleProfie(accessToken);
+    const userFromGoogle = await google.getGoogleProfile(accessToken);
     const users = await userModel.get(userFromGoogle.email);
     if (users.length === 0) {
         const err = new Error('User not Exist');
@@ -91,28 +91,13 @@ async function googleSignIn(req, res) {
     }
     const user = users[0];
     const token = jwt.sign(payloadGen(user), JWT_KEY);
+    delete user.password;
     res.json({
         accessToken: token,
         user
     });
 }
 
-async function getGoogleProfie(accessToken) {
-    try {
-        const user = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${accessToken}`)
-            .then(res => res.json());
-        return {
-            email: user.email,
-            username: user.name,
-            provider: 'google'
-        };
-    }
-    catch (e) {
-        const err = new Error('Google invalid token');
-        err.status = 403;
-        throw err;
-    }
-}
 
 async function nativeSignIn(req, res) {
     let { email, password } = req.body;
@@ -123,8 +108,8 @@ async function nativeSignIn(req, res) {
     }
     const isEmail = validator.isEmail(email);
     const passwordValid = !validator.isEmpty(password);
-    const isValid = !isEmail || !passwordValid;
-    if (isValid) {
+    const isValid = isEmail && passwordValid;
+    if (!isValid) {
         const err = new Error('Invalid input');
         err.status = 400;
         throw err;

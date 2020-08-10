@@ -6,7 +6,7 @@ const { users } = require('../../fakeData');
 
 const userSample = users[0];
 describe('native user signin test', () => {
-    const signupAPI = `/api/${API_VERSION}/user/signin`;
+    const signinAPI = `/api/${API_VERSION}/user/signin`;
     it('valid signin', async () => {
         const userSignin = {
             provider: users[0].provider,
@@ -14,7 +14,7 @@ describe('native user signin test', () => {
             password: users[0].password
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -28,8 +28,10 @@ describe('native user signin test', () => {
     });
     it('signin without all info', async () => {
         const res = await requester
-            .post(signupAPI)
-            .send({})
+            .post(signinAPI)
+            .send({
+                provider: 'native'
+            })
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400);
@@ -41,7 +43,7 @@ describe('native user signin test', () => {
             password: users[0].password
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -54,7 +56,7 @@ describe('native user signin test', () => {
             password: users[0].password
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -67,7 +69,7 @@ describe('native user signin test', () => {
             email: users[0].email
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -81,7 +83,7 @@ describe('native user signin test', () => {
             password: ''
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -95,7 +97,21 @@ describe('native user signin test', () => {
             password: users[0].password
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
+            .send(userSignin)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400);
+        expect(res.body).to.have.own.property('error');
+    });
+    it('signin with invalid email', async () => {
+        const userSignin = {
+            provider: users[0].provider,
+            email: '1231.123.123',
+            password: users[0].password
+        };
+        const res = await requester
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -109,7 +125,7 @@ describe('native user signin test', () => {
             password: ''
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -123,7 +139,7 @@ describe('native user signin test', () => {
             password: users[0].password + 'wrong'
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -137,7 +153,7 @@ describe('native user signin test', () => {
             password: users[0].password
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -151,7 +167,7 @@ describe('native user signin test', () => {
             password: null
         };
         const res = await requester
-            .post(signupAPI)
+            .post(signinAPI)
             .send(userSignin)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
@@ -160,4 +176,13 @@ describe('native user signin test', () => {
         expect(res.body).to.have.own.property('error');
     });
 
+    it('signin without provider', async () => {
+        const res = await requester
+            .post(signinAPI)
+            .send({})
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400);
+        expect(res.body).to.have.own.property('error');
+    });
 });

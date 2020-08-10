@@ -20,6 +20,7 @@ describe('native user signup test', () => {
             .expect(201);
         expect(res.body).to.have.all.keys('accessToken', 'user');
         const { id } = res.body.user;
+        expect(id).to.be.a('number');
         const userExpect = {
             id,
             username: userSample.username
@@ -192,6 +193,16 @@ describe('native user signup test', () => {
         const res = await requester
             .post(signupAPI)
             .send(userSample)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(400);
+        expect(res.body).to.have.own.property('error');
+    });
+
+    it('signup without provider', async () => {
+        const res = await requester
+            .post(signupAPI)
+            .send({})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(400);

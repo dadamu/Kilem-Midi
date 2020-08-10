@@ -7,7 +7,7 @@
     "test": "set NODE_ENV=test&&mocha --recursive --exit",
     "lint": "eslint --fix --ext .js .",
     "debug": "@powershell -Command $env:DEBUG='app';nodemon",
-    "cover": "set NODE_ENV=test&&nyc mocha --recursive --timeout 1000 --exit"
+    "cover": "set NODE_ENV=test&&nyc mocha --recursive --timeout 2000 --exit"
   },
   "repository": {
     "type": "git",

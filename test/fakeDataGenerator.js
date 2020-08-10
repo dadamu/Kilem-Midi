@@ -31,6 +31,7 @@ async function truncateFakeData() {
 
 async function createFakeData() {
     await createFakeUser();
+    console.log('create fake data success');
 }
 
 async function createFakeUser() {
