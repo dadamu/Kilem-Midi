@@ -6,7 +6,7 @@ app.setConfig = () => {
     app.MUSIC_INTERVAL_KEYS = 12;
     app.PITCH_OFFSET = 12;
     app.PITCH_SHIFT_VALUE = 100;
-    app.STANDARD_NOTE = 4;
+    app.STANDARD_NOTE = 1 / 4;
     // Music config
     app.roomId = parseInt(document.URL.split('/').pop());
     app.music = {};
@@ -144,10 +144,10 @@ app.posXToPx = (posX, interval) => {
 };
 
 app.posToTime = (pos, interval) => {
-    return pos * app.STANDARD_NOTE / interval * 60 / app.music.get('bpm') * 1000;
+    return pos / app.STANDARD_NOTE / interval * 60 / app.music.get('bpm') * 1000;
 };
 
 app.getPlayResolution = (bpm) => {
-    const playGrid = 16;
-    return  60 / bpm / app.MUSIC_RESOLUTION * playGrid * 1000;
+    const playGrid = app.MUSIC_RESOLUTION * app.STANDARD_NOTE;
+    return  60 / bpm / playGrid * 1000;
 };

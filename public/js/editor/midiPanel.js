@@ -71,11 +71,11 @@ app.regionPlayheadDragListen = () => {
         start: () => {
             const currentTime = app.currentTime;
             const intervalX = app.regionInterval;
-            this.initialX = intervalX * app.music.get('bpm') / 4 * currentTime / 60 / 1000;
+            this.initialX = intervalX * app.music.get('bpm') * app.STANDARD_NOTE * currentTime / 60 / 1000;
         },
         drag: (evt, ui) => {
             const bpm = app.music.get('bpm');
-            const max = app.gridsInterval * app.musicLength;
+            const max = app.regionInterval * app.musicLength;
             let curr = ui.position.left + this.initialX;
             if (curr < 0) {
                 curr = 0;
@@ -85,7 +85,7 @@ app.regionPlayheadDragListen = () => {
                 curr = max;
                 return;
             }
-            app.currentTime = curr / bpm / app.regionInterval * 60 * 1000 * 4;
+            app.currentTime = curr / bpm / app.regionInterval * 60 * 1000 / app.STANDARD_NOTE;
             app.regionPlayheadTrans(bpm);
             if ($('#midiPanel').hasClass('hidden'))
                 return;

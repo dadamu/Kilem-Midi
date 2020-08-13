@@ -71,10 +71,10 @@ app.loopButtonListen = () => {
 app.midiPlay = () => {
     if (!app.isplaying) {
         const bpm = app.music.get('bpm');
-        const resolution = app.getPlayResolution(bpm) / 2;
+        const resolution = app.getPlayResolution(bpm);
         const tracks = app.music.get('tracks');
         app.isplaying = true;
-        const maxTime = app.musicLength * app.STANDARD_NOTE * 60 / bpm * 1000;
+        const maxTime = app.musicLength / app.STANDARD_NOTE * 60 / bpm * 1000;
         app.playInterval = setInterval(() => {
             if (app.currentTime >= maxTime) {
                 clearInterval(app.playInterval);
@@ -82,17 +82,17 @@ app.midiPlay = () => {
                 $('#playButton').removeClass('active');
                 $('#playButton i').removeClass('fas fa-pause').addClass('fas fa-play');
             }
-            const isLoopingEnd = app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution * 2);
+            const isLoopingEnd = app.islooping && (app.currentTime >= app.loopend && app.currentTime <= app.loopend + resolution);
             if (isLoopingEnd) {
                 app.currentTime = app.loopstart;
             }
-
             app.regionPlayheadTrans(bpm);
             if (app.isMidiEditorOpen) {
                 app.midiPlayheadTrans(bpm);
             }
             app.playTracks(bpm, tracks);
             app.currentTime += resolution;
+            
         }, resolution);
     }
 };
@@ -161,7 +161,7 @@ app.playTrackNotes = (bpm, instrument, notes) => {
             if (pitchShift) {
                 source.detune.value = pitchShift * app.PITCH_SHIFT_VALUE;
             }
-            const time = 60 / bpm * app.STANDARD_NOTE * note.length;
+            const time = 60 / bpm / app.STANDARD_NOTE * note.length;
             app.fadeAudio(source, time);
         }
     }
@@ -245,8 +245,8 @@ app.controlRulerRender = () => {
 
 app.controlLoopRender = () => {
     app.loopstart = 0;
-    app.loopend = app.posToTime(app.STANDARD_NOTE * app.regionInterval, app.regionInterval);
-    $('#loopControl').width(app.regionInterval * app.STANDARD_NOTE).height('100%');
+    app.loopend = app.posToTime( app.regionInterval / app.STANDARD_NOTE, app.regionInterval);
+    $('#loopControl').width(app.regionInterval / app.STANDARD_NOTE).height('100%');
     app.setLoopHeadDrag($('#loopControl .head'));
     app.setLoopTailDrag($('#loopControl .tail'));
 };
@@ -262,7 +262,7 @@ app.setLoopHeadDrag = (div) => {
         },
         drag: (evt) => {
             let curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-            const resolution = app.regionInterval / app.STANDARD_NOTE;
+            const resolution = app.regionInterval * app.STANDARD_NOTE;
             this.width;
             if (curr <= 0) {
                 curr = 0;
@@ -305,7 +305,7 @@ app.setLoopTailDrag = (div) => {
             start = app.pxToNum(start);
             const curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
             let width = curr - start;
-            const resolution = app.regionInterval / app.STANDARD_NOTE;
+            const resolution = app.regionInterval * app.STANDARD_NOTE;
             if (width > resolution) {
                 this.width = Math.round(width / resolution) * resolution;
                 $('#loopControl').width(this.width);
@@ -347,7 +347,7 @@ app.loopControlListen = () => {
     $('#rulerGirds').mousedown(function (evt) {
         $('#loopControl').remove();
         const x = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-        const resolution = app.regionInterval / app.STANDARD_NOTE;
+        const resolution = app.regionInterval * app.STANDARD_NOTE;
         const start = Math.round(x / resolution) * resolution;
         const newLoop = $('<div></div>').attr('id', 'loopControl').addClass('loop-control').css('left', start).height('100%').width(resolution);
         if (!app.islooping) {
@@ -357,7 +357,7 @@ app.loopControlListen = () => {
 
         $('#tracksRegion').bind('mousemove', function (evt) {
             const x = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-            const resolution = app.regionInterval / app.STANDARD_NOTE;
+            const resolution = app.regionInterval * app.STANDARD_NOTE;
             const current = Math.round(x / resolution) * resolution;
             let width = Math.abs(current - start);
             if(Math.abs(current - start) < resolution){

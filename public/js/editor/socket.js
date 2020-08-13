@@ -9,11 +9,13 @@ app.emit = async (event, Obj) => {
 
 app.socketInit = async () => {
     app.socket = io('/room' + app.roomId);
-    app.emit('init', { token: window.localStorage.getItem('token') });
     await app.ioListen();
 };
 
 app.ioListen = async () => {
+    app.on('connect', ()=> {
+        app.emit('init', { token: window.localStorage.getItem('token') });
+    });
     app.on('addTrack', (track) => {
         const { id, name, instrument, locker } = track;
         app.music.addTrack(new Track(id, name, instrument));
