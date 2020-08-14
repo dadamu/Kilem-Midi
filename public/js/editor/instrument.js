@@ -1,4 +1,4 @@
-/* global app */
+/* global app Swal*/
 class Instrument {
     constructor(name, minPitch, maxPitch, url) {
         this.name = name;
@@ -7,11 +7,10 @@ class Instrument {
         this.sounds = {};
         this.audio = {};
         this.url = url;
-        this.generate();
     }
 
     async generate() {
-        this.getFiles();
+        await this.getFiles();
     }
 
     async getFiles() {
@@ -100,13 +99,27 @@ class Drums extends Instrument {
             return;
         }
         this.audio[pitch].buffer = await app.audioCtx.decodeAudioData(buffer);
-        return;
     }
 }
 
-app.initInstruments = () => {
+app.initInstruments = async () => {
     app.instruments.piano = app.setPiano(app.instrumentsURL);
     app.instruments.bass = app.setBass(app.instrumentsURL);
     app.instruments.guitar = app.setGuitar(app.instrumentsURL);
     app.instruments.drums = app.setDrums(app.instrumentsURL);
+    Swal.fire({
+        icon: 'info',
+        title: 'Loading',
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+            Swal.showLoading();
+        },
+    });
+    await Promise.all([
+        app.instruments.piano.generate(),
+        app.instruments.bass.generate(),
+        app.instruments.guitar.generate(),
+        app.instruments.drums.generate()
+    ]);
+    Swal.close();
 };
