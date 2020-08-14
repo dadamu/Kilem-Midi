@@ -11,7 +11,7 @@ app.setConfig = () => {
     app.roomId = parseInt(document.URL.split('/').pop());
     app.music = {};
     app.instruments = {};
-    app.instrumentsURL = 'http://d2gns8ujq6es9q.cloudfront.net/instruments/'; //http://d2gns8ujq6es9q.cloudfront.net/instruments/
+    app.instrumentsURL = 'https://d2gns8ujq6es9q.cloudfront.net/instruments/'; //https://d2gns8ujq6es9q.cloudfront.net/instruments/
     // UI config
     app.musicLength = 400;
     app.maxPosX = app.musicLength * 64;
