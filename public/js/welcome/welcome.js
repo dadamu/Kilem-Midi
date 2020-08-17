@@ -1,5 +1,9 @@
 /* global $ app */
 app.init = () => {
+    const isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
+    if (!isChrome) {
+        app.errorShow('It only supports Chrome browser.');
+    }
     if (window.localStorage.getItem('token')) {
         window.location.href = '/room';
     }
@@ -12,7 +16,7 @@ app.init = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('test')) {
         const type = urlParams.get('test');
-        if (type === 'kilem'){
+        if (type === 'kilem') {
             $('#signin .email').val('kilem@kilem.com');
             $('#signin .password').val('Kilem123');
         }
