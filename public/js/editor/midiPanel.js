@@ -79,6 +79,7 @@ app.regionPlayheadDragListen = () => {
             let curr = ui.position.left + this.initialX;
             if (curr < 0) {
                 curr = 0;
+                ui.position.left = 0;
                 return;
             }
             if (curr > max) {

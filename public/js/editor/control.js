@@ -412,7 +412,7 @@ app.initRulerRender = () => {
     const interval = app.regionInterval;
     const rulerScale = $('#rulerScale');
     for (let posByWholeNote = 0; posByWholeNote < length + 1; posByWholeNote++) {
-        const scaleNum = (posByWholeNote * interval).toString();
+        const scaleNum = posByWholeNote * interval;
         let scale;
         if (posByWholeNote !== length) {
             scale = $('<span></span>').css('left', scaleNum).addClass('scale').text((posByWholeNote + 1).toString());
