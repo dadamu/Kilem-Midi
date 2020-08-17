@@ -2,7 +2,11 @@
 
 Kilem-Midi 是個線上共同編輯音樂平台。
 
+*目前只支援Chrome瀏覽器*
+
 URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
+
+
 
 ## Featrues and Website Demo
 
