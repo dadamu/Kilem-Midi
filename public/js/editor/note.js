@@ -174,7 +174,7 @@ app.setNoteDrag = (noteDiv) => {
             ui.position = { top: alignPos.top, left: alignPos.left };
         },
         stop: function(evt){
-            const endTop = app.pxToNum($(evt.target).css('top') + 1);
+            const endTop = app.pxToNum($(evt.target).css('top')) + 1;
             const endLeft = app.pxToNum($(evt.target).css('left'));
             const newNote = app.svgToNote(endLeft, endTop);
             const { pitch: originalPitch } = newNote;
