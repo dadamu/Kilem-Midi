@@ -7,6 +7,9 @@ app.init = async () => {
     };
     await app.checkToken();
     await app.initRender();
+    if (app.username === 'kilem') {
+        app.setDefaultForTest();
+    }
     app.inviteCheck();
     app.UIListen();
 };
@@ -17,7 +20,6 @@ app.initRender = async () => {
     const inRooms = app.renderRooms('in', 0);
     app.topNavRender();
     await Promise.all([publicRooms, myRooms, inRooms]);
-    return;
 };
 
 
@@ -28,6 +30,25 @@ app.UIListen = () => {
     app.createRoomListen();
     app.editRoomListen();
     app.searchListen();
+};
+
+app.setDefaultForTest = () => {
+    const rooms = $('.rooms');
+    const thisRoom = $('#inRooms').find('.room').get(0);
+    const $thisRoom = $(thisRoom);
+    if ($thisRoom.hasClass('is-collapsed')) {
+        rooms.not($thisRoom).removeClass('is-expanded').addClass('is-collapsed').addClass('is-inactive');
+        $thisRoom.removeClass('is-collapsed').removeClass('is-inactive').addClass('is-expanded');
+        if (!rooms.not($thisRoom).hasClass('is-inactive')) {
+            rooms.not($thisRoom).addClass('is-inactive');
+        }
+    } else {
+        $thisRoom.removeClass('is-expanded').addClass('is-collapsed');
+        rooms.not($thisRoom).removeClass('is-inactive');
+    }
+    $('body').animate({
+        scrollTop: 880
+    }, 1000);
 };
 
 app.createRoomListen = () => {
