@@ -45,6 +45,14 @@ app.errorShow = (text) => {
     });
 };
 
+app.warningShow = (text) => {
+    return Swal.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text
+    });
+};
+
 app.checkFailedByLock = (res) => {
     if (res.error === 'lock failed') {
         app.failedByLock();

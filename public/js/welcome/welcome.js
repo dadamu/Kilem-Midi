@@ -2,7 +2,7 @@
 app.init = () => {
     const isChrome = /chrome/.test(navigator.userAgent.toLowerCase());
     if (!isChrome) {
-        app.errorShow('It only supports Chrome browser.');
+        app.warningShow('It only supports Chrome browser.');
     }
     if (window.localStorage.getItem('token')) {
         window.location.href = '/room';
