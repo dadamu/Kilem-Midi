@@ -158,7 +158,7 @@ app.addMidiNoteListen = () => {
 app.setNoteDrag = (noteDiv) => {
     noteDiv.draggable({
         cursor: 'move',
-        start: (evt) => {
+        start: function(evt) {
             this.trackId = app.getTrackId();
             const note = app.getNoteInfo(evt.target);
             this.oldNote = note;
@@ -167,13 +167,13 @@ app.setNoteDrag = (noteDiv) => {
             app.noteOutTrack(this.trackId, note);
             app.dragNoteDeleteRender(this.trackId, note);
         },
-        drag: (evt, ui) => {
+        drag: function(evt, ui) {
             const top = evt.pageY + $('#grids').scrollTop() - $('#grids').offset().top;
             const left = evt.pageX + $('#grids').scrollLeft() - $('#grids').offset().left - $(evt.target).attr('length') / 2 * app.gridsInterval;
             const alignPos = app.convertNotePos(left, top, this.oldNote.length);
             ui.position = { top: alignPos.top, left: alignPos.left };
         },
-        stop: (evt) => {
+        stop: function(evt){
             const endTop = app.pxToNum($(evt.target).css('top') + 1);
             const endLeft = app.pxToNum($(evt.target).css('left'));
             const newNote = app.svgToNote(endLeft, endTop);

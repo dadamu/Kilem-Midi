@@ -254,13 +254,13 @@ app.controlLoopRender = () => {
 app.setLoopHeadDrag = (div) => {
     div.draggable({
         axis: 'x',
-        start: () => {
+        start: function(){
             let start = $('#loopControl').css('left');
             let originalWidth = $('#loopControl').width();
             this.start = app.pxToNum(start);
             this.originalWidth = originalWidth;
         },
-        drag: (evt) => {
+        drag: function(evt){
             let curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
             const resolution = app.regionInterval * app.STANDARD_NOTE;
             this.width;
@@ -286,7 +286,7 @@ app.setLoopHeadDrag = (div) => {
             $('#loopControl').width(this.width);
             $('#loopControl').css('left', curr);
         },
-        stop: (evt) => {
+        stop: function(evt){
             $(evt.target).css('left', 0).css('top', 0);
             let start = $('#loopControl').css('left');
             const headWidth = 10;
@@ -300,7 +300,7 @@ app.setLoopHeadDrag = (div) => {
 app.setLoopTailDrag = (div) => {
     div.draggable({
         axis: 'x',
-        drag: (evt) => {
+        drag: function(evt){
             let start = $('#loopControl').css('left');
             start = app.pxToNum(start);
             const curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
@@ -319,7 +319,7 @@ app.setLoopTailDrag = (div) => {
             }
             this.width = resolution;
         },
-        stop: (evt) => {
+        stop: function(evt){
             const tailWidth = 10;
             $(evt.target).css('left', parseInt(this.width) - tailWidth).css('top', 0);
             $('#loopControl head').css('left', 0). css('top', 0);
