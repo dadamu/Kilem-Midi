@@ -46,9 +46,9 @@ app.setDefaultForTest = () => {
         $thisRoom.removeClass('is-expanded').addClass('is-collapsed');
         rooms.not($thisRoom).removeClass('is-inactive');
     }
-    $('body').animate({
+    $('html, body').animate({
         scrollTop: 880
-    }, 1000);
+    }, 1500);
 };
 
 app.createRoomListen = () => {

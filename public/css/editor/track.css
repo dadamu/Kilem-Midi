@@ -52,7 +52,7 @@
     padding-right: 10px;
     padding-left: 10px;
     width: 7em;
-    margin-right: 20px;
+    margin-right: 5px;
 }
 
 .lock-icon{
@@ -124,8 +124,8 @@
 }
 
 img.icon{
-    height: 100%;
-    margin-right: 15px;
+    height: 20px;
+    margin-right: 10px;
 }
 
 .instrument-selector{
