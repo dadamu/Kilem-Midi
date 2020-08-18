@@ -184,8 +184,8 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 
 ### Others
 
-* Third party login: Google Oauth
-* Design Parttern: MVC
+* Google Oauth third party login
+* MVC design pattern 
 
 
 ## Structure
