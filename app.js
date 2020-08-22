@@ -46,8 +46,8 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use('/api', (err, req, res, next) => {
-    appDebug('Error happened');
     if (err instanceof jwt.JsonWebTokenError) {
+        appDebug('Invalid access');
         res.status(403).json({ error: 'Invalid access' });
         return;
     }
@@ -57,6 +57,7 @@ app.use('/api', (err, req, res, next) => {
         res.json({ error: 'Internal server error' });
         return;
     }
+    appDebug(err.message);
     res.status(err.status).json({ error: err.message });
 });
 
