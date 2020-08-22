@@ -220,7 +220,7 @@ app.inviteCheck = async () => {
     };
     let res;
     if (isPrivate) {
-        let swalConfig = {
+        const swalConfig = {
             title: 'Join Room?',
             showCancelButton: true,
             confirmButtonText: 'Join',
@@ -285,7 +285,7 @@ app.pagingListen = () => {
 app.editRoomListen = () => {
     $('#myRooms').on('dblclick', '.room__expander', async function () {
         const id = $(this).closest('.room').attr('id');
-        let username = $(this).find('.line-username').text();
+        const username = $(this).find('.line-username').text();
         let name = $(this).find('.line-name').text();
         let filename = $(this).find('.line-filename').text();
         let intro = $(this).find('.line-intro').html();
@@ -392,7 +392,7 @@ app.renderRooms = async (type, paging) => {
     $typeRooms.find('.rooms .no-content').remove();
     $typeRooms.find('.next').removeClass('hidden');
     $typeRooms.find('.previous').removeClass('hidden');
-    for (let room of rooms) {
+    for (const room of rooms) {
         const $room = app.genarateRoom(room, type);
         $typeRooms.find('.rooms').append($room);
     }

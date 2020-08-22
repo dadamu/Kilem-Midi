@@ -10,7 +10,7 @@ app.initTrackRender = () => {
     if(Object.values(app.music.get('tracks')).length === 0){
         return;
     }
-    for (let [key, track] of Object.entries(app.music.get('tracks'))) {
+    for (const [key, track] of Object.entries(app.music.get('tracks'))) {
         app.addTrackRender(key, track.name, track.instrument, track.version.id);
     }
     app.trackSelect($('.track').first());
@@ -88,7 +88,7 @@ app.trackVersionRender = (trackId) => {
     const commitButton = $('<button></button>').addClass('version-commit').text('save');
     const selector = $('<select></select>').addClass('version-select');
     const versions = app.music.getTrack(trackId).get('versions');
-    for (let version of versions) {   
+    for (const version of versions) {   
         const option = $('<option></option>').text(version.name).val(version.id);
         selector.append(option);
     }

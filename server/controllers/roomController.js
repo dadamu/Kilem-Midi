@@ -62,7 +62,7 @@ module.exports = {
         const { user } = req; 
         const tracks = await roomModel.deleteUser(roomId, user);
         const io = req.app.get('io');
-        for (let track of tracks) {
+        for (const track of tracks) {
             io.of('/room' + roomId).emit('lock', {
                 track: {
                     id: track.id,

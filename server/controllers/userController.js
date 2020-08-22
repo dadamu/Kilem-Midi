@@ -70,7 +70,7 @@ async function nativeSignUp(req, res) {
 }
 
 async function googleSignUp(req, res) {
-    let { accessToken } = req.body;
+    const { accessToken } = req.body;
     const userFromGoogle = await google.getGoogleProfile(accessToken);
     const user = await userModel.signup(userFromGoogle);
     const token = jwt.sign(payloadGen(user), JWT_KEY);
@@ -81,7 +81,7 @@ async function googleSignUp(req, res) {
 }
 
 async function googleSignIn(req, res) {
-    let { accessToken } = req.body;
+    const { accessToken } = req.body;
     const userFromGoogle = await google.getGoogleProfile(accessToken);
     const users = await userModel.get(userFromGoogle.email);
     if (users.length === 0) {
@@ -100,7 +100,7 @@ async function googleSignIn(req, res) {
 
 
 async function nativeSignIn(req, res) {
-    let { email, password } = req.body;
+    const { email, password } = req.body;
     if(!email || !password) {
         const err = new Error('Invalid input');
         err.status = 400;
