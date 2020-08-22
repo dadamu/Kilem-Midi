@@ -23,7 +23,7 @@ class Instrument {
         }
         await Promise.all(tasks);
         //other pitch depends on file
-        for (let pitch of pitchWaitQueue) {
+        for (const pitch of pitchWaitQueue) {
             const { pitchShift } = this.audio[pitch];
             this.audio[pitch].buffer = this.audio[pitch - pitchShift].buffer;
         }

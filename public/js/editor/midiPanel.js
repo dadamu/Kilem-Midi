@@ -134,7 +134,7 @@ app.panelLoadRender = (trackId) => {
         $('#midiPanel').attr('trackId', trackId);
         const track = app.music.getTrack(trackId);
         if (track) {
-            for (let notes of Object.values(track.get('notes'))) {
+            for (const notes of Object.values(track.get('notes'))) {
                 app.notesRender(notes);
             }
         }

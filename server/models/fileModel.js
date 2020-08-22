@@ -99,7 +99,7 @@ function updateTracks(type, tracks, trackId, note) {
 
 function merge(user, master) {
     if (Object.keys(master.tracks).length > 0) {
-        for (let track of Object.values(user)) {
+        for (const track of Object.values(user)) {
             let { id, version, notes, commiter } = track;
             version = version || 0;
             const masterTrack = master.tracks[id];
@@ -126,7 +126,7 @@ function getMasterData(rawMaster) {
     };
     master.tracks = {};
     const { trackMap, versionMap } = generateTrackInfoMaps(rawMaster);
-    for (let track of Object.values(trackMap)) {
+    for (const track of Object.values(trackMap)) {
         const { trackId } = track;
         if (!trackId) {
             master.tracks = {};

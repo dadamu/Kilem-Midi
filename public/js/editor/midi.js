@@ -36,7 +36,7 @@ class MidiFile {
 
     setTracks(tracks) {
         const newTracks = {};
-        for (let track of Object.values(tracks)) {
+        for (const track of Object.values(tracks)) {
             const { id, name, instrument, version, versions, locker, commiter, notes } = track;
             const newTrack = new Track(id, name, instrument);
             newTrack.set('version', version);
@@ -53,10 +53,10 @@ class MidiFile {
         const bpm = this.bpm;
         const midi = new Midi();
         midi.header.setTempo(bpm);
-        for (let track of Object.values(this.tracks)) {
+        for (const track of Object.values(this.tracks)) {
             const exTrack = midi.addTrack();
             exTrack.name = track.name;
-            for (let notes of Object.values(track.notes)) {
+            for (const notes of Object.values(track.notes)) {
                 notes.forEach(note => {
                     const midiNote = {
                         midi: note.pitch,
@@ -117,7 +117,7 @@ class Track {
 
     setNotes(notes) {
         const newNotes = {};
-        for (let [posX, xNotes] of Object.entries(notes)) {
+        for (const [posX, xNotes] of Object.entries(notes)) {
             newNotes[posX] = xNotes.map(note => new Note(note.pitch, note.posX, note.length));
         }
         this.notes = newNotes;

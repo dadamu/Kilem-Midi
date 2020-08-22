@@ -98,7 +98,7 @@ app.midiPlay = () => {
 };
 
 app.playTracks = (bpm, tracks) => {
-    for (let id in tracks) {
+    for (const id in tracks) {
         app.playTrack(bpm, tracks[id]);
     }
 };
@@ -153,7 +153,7 @@ app.playTrack = (bpm, track) => {
 };
 
 app.playTrackNotes = (bpm, instrument, notes) => {
-    for (let note of notes) {
+    for (const note of notes) {
         if (app.instruments[instrument].audio[note.pitch]) {
             const source = app.audioCtx.createBufferSource();
             const { buffer, pitchShift } = app.instruments[instrument].audio[note.pitch];
@@ -255,8 +255,8 @@ app.setLoopHeadDrag = (div) => {
     div.draggable({
         axis: 'x',
         start: function(){
-            let start = $('#loopControl').css('left');
-            let originalWidth = $('#loopControl').width();
+            const start = $('#loopControl').css('left');
+            const originalWidth = $('#loopControl').width();
             this.start = app.pxToNum(start);
             this.originalWidth = originalWidth;
         },
@@ -267,7 +267,7 @@ app.setLoopHeadDrag = (div) => {
             if (curr <= 0) {
                 curr = 0;
             }
-            let widthChange = this.start - curr;
+            const widthChange = this.start - curr;
             curr = Math.round(curr / resolution) * resolution;
             if (Math.abs(widthChange) >= resolution) {
                 this.width = Math.round(widthChange / resolution) * resolution + this.originalWidth;
@@ -304,7 +304,7 @@ app.setLoopTailDrag = (div) => {
             let start = $('#loopControl').css('left');
             start = app.pxToNum(start);
             const curr = evt.pageX + $('#tracksRegion').scrollLeft() - $('#tracksRegion').offset().left;
-            let width = curr - start;
+            const width = curr - start;
             const resolution = app.regionInterval * app.STANDARD_NOTE;
             if (width > resolution) {
                 this.width = Math.round(width / resolution) * resolution;

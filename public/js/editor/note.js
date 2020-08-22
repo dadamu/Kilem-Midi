@@ -87,11 +87,11 @@ app.playNote = async (instrument, pitch) => {
 
 app.svgToNote = (left, top) => {
     const height = app.pitchHeight * app.keysNum;
-    let bottom = height - top;
+    const bottom = height - top;
     const posFromLeft = Math.floor(left / app.gridsInterval * app.MUSIC_RESOLUTION);
     const posFromBottom = Math.floor(bottom / app.pitchHeight);
-    let posX = Math.floor(posFromLeft / (app.MUSIC_RESOLUTION * app.noteGrid)) * (app.MUSIC_RESOLUTION * app.noteGrid);
-    let pitch = posFromBottom + app.minPitch;
+    const posX = Math.floor(posFromLeft / (app.MUSIC_RESOLUTION * app.noteGrid)) * (app.MUSIC_RESOLUTION * app.noteGrid);
+    const pitch = posFromBottom + app.minPitch;
     return { posX, pitch };
 };
 
@@ -281,7 +281,7 @@ app.getNoteInfo = (noteDiv) => {
 };
 
 app.notesRender = (notes) => {
-    for (let note of notes) {
+    for (const note of notes) {
         const noteDiv = app.createNoteDiv(note);
         const tailDiv = $('<div></div>').addClass('tail');
         noteDiv.append(tailDiv);
