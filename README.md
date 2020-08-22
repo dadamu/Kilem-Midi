@@ -159,9 +159,8 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 * EC2
 * RDS
 * S3
-* CDN
+* CloudFront
 * ELB
-* Auto Scaling
 
 ### Networking
 
@@ -190,7 +189,7 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 
 ## Structure
 
-![](https://i.imgur.com/Btwl1X2.png)
+![](https://i.imgur.com/6S9hIIO.png)
 
 
 ## Database Design
