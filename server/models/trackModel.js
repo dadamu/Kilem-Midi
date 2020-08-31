@@ -5,8 +5,11 @@ module.exports = {
         let name = '';
         const trx = await knex.transaction();
         try {
-            const tracks = await trx('track AS t').select(['t.id AS trackId'])
-                .where('t.room_id', roomId).orderBy('t.id', 'desc');
+            const tracks = await trx('track AS t')
+                .select(['t.id AS trackId'])
+                .where('t.room_id', roomId)
+                .orderBy('t.id', 'desc')
+                .forUpdate();
             name = `Track${tracks.length + 1}`;
             const trackIds = await trx('track').insert({
                 name,
@@ -33,8 +36,10 @@ module.exports = {
     delete: async (trackId, user) => {
         const trx = await knex.transaction();
         try {
-            const tracks = await trx('track AS t').select(['t.user_id AS userId'])
-                .where('t.id', trackId).forUpdate();
+            const tracks = await trx('track AS t')
+                .select(['t.user_id AS userId'])
+                .where('t.id', trackId)
+                .forUpdate();
             const isAuth = tracks[0].userId === user.id || tracks[0].lock === 0;
             if (isAuth) {
                 await trx('track AS t').update('t.active', 0).where('t.id', trackId);
@@ -130,7 +135,6 @@ module.exports = {
         const lockers = await knex('track AS t')
             .select(['t.user_id AS id'])
             .where('t.id', trackId);
-        console.log(lockers, user);
         return lockers[0].id === user.id;
     },
     lockSet: async (trackId, user) => {
@@ -186,7 +190,8 @@ module.exports = {
             const lockers = await trx('track AS t')
                 .select(['id'])
                 .where('t.id', trackId)
-                .andWhere('t.user_id', user.id);
+                .andWhere('t.user_id', user.id)
+                .forUpdate();
             if (lockers.length === 0) {
                 await trx.rollback();
                 const err = new Error('lock failed');
@@ -209,15 +214,18 @@ module.exports = {
         try {
             const lockers = await trx('track AS t')
                 .select(['t.user_id AS id'])
-                .where('t.id', trackId);
+                .where('t.id', trackId)
+                .forUpdate();
             const isLocker = lockers[0].id === user.id;
             if (!isLocker) {
-                trx.rollback();
+                await trx.rollback();
                 const err = new Error('lock failed');
                 err.status = 401;
                 throw err;
             }
-            await trx('track AS t').update('t.instrument', instrument).where('t.id', trackId);
+            await trx('track AS t')
+                .update('t.instrument', instrument)
+                .where('t.id', trackId);
             await trx.commit();
             return {
                 id: trackId,
