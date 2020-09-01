@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const serveStatic = require('serve-static');
 const path = require('path');
@@ -10,8 +9,13 @@ const viewsPath = './views/';
 require('dotenv').config();
 const ioController = require('./server/controllers/ioController');
 const appDebug = require('debug')('app');
-const { API_VERSION, NODE_ENV, HOST_PORT, PORT_TEST } = process.env;
+const { API_VERSION, NODE_ENV, HOST_PORT, PORT_TEST, REDIS_HOST, REDIS_PORT } = process.env;
 const port = NODE_ENV == 'test' ? PORT_TEST : HOST_PORT;
+
+const io = require('socket.io')(http);
+const ioRedis = require('socket.io-redis');
+const redisAdapter = ioRedis({ host: REDIS_HOST, port: REDIS_PORT });
+io.adapter(redisAdapter);
 
 app.set('io', io);
 ioController.start(io);

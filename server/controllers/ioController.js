@@ -25,5 +25,9 @@ module.exports = {
             });
 
         });
+
+        io.of('/').adapter.on('error', function () {
+            ioDebug('ioRedis Error');
+        });
     }
 };
