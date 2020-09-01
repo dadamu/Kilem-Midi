@@ -145,6 +145,7 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 ### Database
 
 * MySQL
+* Redis
 
 ### Frontend
 
@@ -161,6 +162,7 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 * S3
 * CloudFront
 * ELB
+* Auto Scaling
 
 ### Networking
 
@@ -189,8 +191,7 @@ URL: [使用預設帳號進入](https://midi.kilem.site?test=kilem)
 
 ## Structure
 
-![](https://i.imgur.com/6S9hIIO.png)
-
+![](https://i.imgur.com/MO4cebO.png)
 
 ## Database Design
 
