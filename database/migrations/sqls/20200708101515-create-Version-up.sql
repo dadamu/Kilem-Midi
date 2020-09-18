@@ -3,7 +3,7 @@ CREATE TABLE `version` (
   `track_pid` BIGINT UNSIGNED NOT NULL,
   `version` INT UNSIGNED NOT NULL,
   `user_id` BIGINT UNSIGNED NOT NULL,
-  `notes` VARCHAR(16384) NOT NULL,
+  `notes` VARCHAR(10000) NOT NULL,
   PRIMARY KEY (`track_pid`, `version`),
   CONSTRAINT `fk_vt_track_pid`
     FOREIGN KEY (`track_pid`)

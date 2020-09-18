@@ -7,7 +7,9 @@
     "test": "set NODE_ENV=test&&mocha --recursive --exit",
     "lint": "eslint --fix --ext .js .",
     "debug": "@powershell -Command $env:DEBUG='app';nodemon",
-    "cover": "set NODE_ENV=test&&nyc mocha --recursive --timeout 2000 --exit"
+    "cover": "set NODE_ENV=test&&nyc mocha --recursive --timeout 2000 --exit",
+    "migrate": "cd database&db-migrate up --config ./config/config.json",
+    "test-migrate": "cd database&db-migrate up --config ./config/config.json"
   },
   "repository": {
     "type": "git",
@@ -32,7 +34,7 @@
     "lodash": "^4.17.19",
     "moment": "^2.27.0",
     "mysql": "^2.18.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "nyc": "^15.1.0",
     "path": "^0.12.7",
     "serve-static": "^1.14.1",
