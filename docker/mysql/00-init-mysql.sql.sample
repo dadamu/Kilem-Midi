@@ -1,4 +1,5 @@
 CREATE DATABASE db_name;
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 CREATE USER 'user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT ALL PRIVILEGES ON db_name to 'user'@'%';
 FLUSH PRIVILEGES;

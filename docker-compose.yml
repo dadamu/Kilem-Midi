@@ -3,22 +3,22 @@ services:
   kilem-midi:
     build: .
     container_name: kilem-midi
-    networks:
-      - "kilem-midi"
     depends_on:
       - "kilem-mysql"
       - "kilem-redis"
     ports:
       - 3000:3000
+    networks:
+      - "kilem-midi"
   kilem-nginx:
     build: ./docker/nginx/
     container_name: kilem-nginx
-    networks:
-      - "kilem-midi"
     depends_on:
       - "kilem-midi"
     ports:
       - 80:80
+    networks:
+      - "kilem-midi"
   kilem-mysql:
     build: ./docker/mysql
     container_name: kilem-mysql
@@ -26,6 +26,8 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD="ture"
     ports:
       - 3306:3306
+    networks:
+      - "kilem-midi"
   kilem-redis:
     image: "redis:alpine"
     container_name: kilem-redis
