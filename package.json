@@ -4,12 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "set NODE_ENV=test&&mocha --recursive --exit",
     "lint": "eslint --fix --ext .js .",
     "debug": "@powershell -Command $env:DEBUG='app';nodemon",
     "cover": "set NODE_ENV=test&&nyc mocha --recursive --timeout 2000 --exit",
-    "migrate": "cd database&db-migrate up --config ./config/config.json",
-    "test-migrate": "cd database&db-migrate up --config ./config/config.json"
+    "migrate": "cd database&&db-migrate up --config ./config/config.json",
+    "test-migrate": "cd database&&db-migrate up --config ./config/config.json"
   },
   "repository": {
     "type": "git",

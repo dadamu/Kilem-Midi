@@ -4,4 +4,4 @@ database/config/config.json
 public/instruments
 public/js/img
 
-scripts/init-mysql.sql
+docker/mysql/*.sql
