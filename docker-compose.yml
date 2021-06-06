@@ -6,8 +6,6 @@ services:
     depends_on:
       - "kilem-mysql"
       - "kilem-redis"
-    ports:
-      - 3000:3000
     networks:
       - "kilem-midi"
   kilem-nginx:
@@ -24,8 +22,6 @@ services:
     container_name: kilem-mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="ture"
-    ports:
-      - 3306:3306
     networks:
       - "kilem-midi"
   kilem-redis:
